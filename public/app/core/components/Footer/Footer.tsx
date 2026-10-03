@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { hasSolidBrandGradient, type GrafanaTheme2, type LinkTarget } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config } from '@grafana/runtime';
-import { Icon, type IconName, useStyles2 } from '@grafana/ui';
+import { Icon, type IconName, useStyles2, useTheme2 } from '@grafana/ui';
 
 export interface FooterLink {
   target: LinkTarget;
@@ -85,8 +85,10 @@ export interface Props {
 }
 
 export const Footer = memo(({ customLinks, hideEdition }: Props) => {
-  const links = (customLinks || getFooterLinks()).concat(getVersionLinks(hideEdition));
+  const theme = useTheme2();
   const styles = useStyles2(getStyles);
+  const fluent = hasSolidBrandGradient(theme);
+  const links = (customLinks || getFooterLinks()).concat(fluent ? [] : getVersionLinks(hideEdition));
 
   return (
     <footer className={styles.footer}>
