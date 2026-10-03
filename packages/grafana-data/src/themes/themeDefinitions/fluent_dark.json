@@ -87,6 +87,21 @@
       "activeBackground": "#479ef5",
       "activeBackgroundHover": "#62b0f7"
     },
+    "codeEditor": {
+      "keyword": "#479ef5",
+      "controlKeyword": "#7b8ff7",
+      "variable": "#ffffff",
+      "type": "#4ec7c9",
+      "function": "#c5b3e6",
+      "number": "#faa06b",
+      "string": "#54b054",
+      "operator": "#d6d6d6",
+      "regexp": "#faa06b",
+      "comment": "#adadad",
+      "heading": "#479ef5",
+      "link": "#479ef5",
+      "invalid": "#e88890"
+    },
     "tag": {
       "colors": [
         { "background": "#0f6cbd", "text": "#ffffff" },

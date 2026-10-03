@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { Icon } from '../Icon/Icon';
@@ -44,9 +44,9 @@ export const Label = ({ children, description, className, category, ...labelProp
 export const getLabelStyles = (theme: GrafanaTheme2) => ({
   label: css({
     label: 'Label',
-    fontSize: theme.typography.size.sm,
+    fontSize: hasSolidBrandGradient(theme) ? theme.typography.body.fontSize : theme.typography.size.sm,
     fontWeight: theme.typography.fontWeightMedium,
-    lineHeight: 1.25,
+    lineHeight: hasSolidBrandGradient(theme) ? theme.typography.body.lineHeight : 1.25,
     marginBottom: theme.spacing(0.5),
     color: theme.colors.text.primary,
     maxWidth: '480px',

@@ -52,7 +52,7 @@ describe('createTheme', () => {
     expect(theme.components.tag.colors).toEqual([{ background: '#fff', text: '#000' }]);
   });
 
-  it.each(['visual_refresh_dark', 'visual_refresh_light'])(
+  it.each(['visual_refresh_dark', 'visual_refresh_light', 'fluent_light', 'fluent_dark'])(
     'meets code editor contrast requirements for %s',
     (themeId) => {
       const theme = getThemeById(themeId);
@@ -90,6 +90,8 @@ describe('createTheme', () => {
     expect(theme.components.panel.borderColor).toBe('#e0e0e0');
     expect(theme.components.panel.headerHeight).toBe(4);
     expect(theme.components.switch.activeBackground).toBe('#0f6cbd');
+    expect(theme.components.codeEditor.keyword).toBe('#0f6cbd');
+    expect(theme.components.codeEditor.string).toBe('#107c10');
     expect(theme.shape.radius.default).toBe('4px');
     expect(theme.shape.radius.sm).toBe('2px');
     expect(theme.shape.radius.lg).toBe('8px');

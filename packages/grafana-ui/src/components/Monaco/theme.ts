@@ -10,6 +10,10 @@ function getColors(theme?: GrafanaTheme2): monacoTypes.editor.IColors {
   } else {
     const colors: Record<string, string> = {
       'editor.background': theme.components.input.background,
+      'editor.foreground': theme.colors.text.primary,
+      'editorLineNumber.foreground': theme.colors.text.disabled,
+      'editorCursor.foreground': theme.colors.primary.main,
+      'editor.selectionBackground': theme.colors.action.selected,
       'minimap.background': theme.colors.background.secondary,
     };
 
@@ -18,6 +22,32 @@ function getColors(theme?: GrafanaTheme2): monacoTypes.editor.IColors {
     });
     return colors;
   }
+}
+
+function getSyntaxRules(theme?: GrafanaTheme2): monacoTypes.editor.ITokenThemeRule[] {
+  const syntax = theme?.components.codeEditor;
+  return [
+    { token: 'comment', foreground: normalizeColorForMonaco(syntax?.comment) },
+    { token: 'string', foreground: normalizeColorForMonaco(syntax?.string) },
+    { token: 'keyword', foreground: normalizeColorForMonaco(syntax?.keyword) },
+    { token: 'number', foreground: normalizeColorForMonaco(syntax?.number) },
+    { token: 'regexp', foreground: normalizeColorForMonaco(syntax?.regexp) },
+    { token: 'type', foreground: normalizeColorForMonaco(syntax?.type) },
+    { token: 'function', foreground: normalizeColorForMonaco(syntax?.function) },
+    { token: 'variable', foreground: normalizeColorForMonaco(syntax?.variable) },
+    {
+      token: 'predefined',
+      foreground: normalizeColorForMonaco(syntax?.function ?? theme?.visualization.getColorByName('purple')),
+    },
+    {
+      token: 'operator',
+      foreground: normalizeColorForMonaco(syntax?.operator ?? theme?.visualization.getColorByName('orange')),
+    },
+    {
+      token: 'tag',
+      foreground: normalizeColorForMonaco(syntax?.string ?? theme?.visualization.getColorByName('green')),
+    },
+  ];
 }
 
 function normalizeColorForMonaco(color?: string): string {
@@ -35,23 +65,13 @@ export default function defineThemes(monaco: Monaco, theme?: GrafanaTheme2) {
     base: 'vs-dark',
     inherit: true,
     colors: colors,
-    // fallback syntax highlighting for languages that microsoft doesn't handle (ex cloudwatch's metric math)
-    rules: [
-      { token: 'predefined', foreground: normalizeColorForMonaco(theme?.visualization.getColorByName('purple')) },
-      { token: 'operator', foreground: normalizeColorForMonaco(theme?.visualization.getColorByName('orange')) },
-      { token: 'tag', foreground: normalizeColorForMonaco(theme?.visualization.getColorByName('green')) },
-    ],
+    rules: getSyntaxRules(theme),
   });
 
   monaco.editor.defineTheme('grafana-light', {
     base: 'vs',
     inherit: true,
     colors: colors,
-    // fallback syntax highlighting for languages that microsoft doesn't handle (ex cloudwatch's metric math)
-    rules: [
-      { token: 'predefined', foreground: normalizeColorForMonaco(theme?.visualization.getColorByName('purple')) },
-      { token: 'operator', foreground: normalizeColorForMonaco(theme?.visualization.getColorByName('orange')) },
-      { token: 'tag', foreground: normalizeColorForMonaco(theme?.visualization.getColorByName('green')) },
-    ],
+    rules: getSyntaxRules(theme),
   });
 }

@@ -159,7 +159,7 @@ export const getLoginStyles = (theme: GrafanaTheme2) => {
       position: 'relative',
       justifyContent: 'flex-start',
       zIndex: 1,
-      minHeight: 320,
+      minHeight: fluent ? 416 : 320,
       borderRadius: theme.shape.radius.lg,
       padding: fluent ? theme.spacing(5, 4) : theme.spacing(2, 0),
       gap: fluent ? theme.spacing(3) : undefined,
@@ -172,7 +172,7 @@ export const getLoginStyles = (theme: GrafanaTheme2) => {
       },
 
       [theme.breakpoints.up('sm')]: {
-        minHeight: theme.spacing(40),
+        minHeight: fluent ? 416 : theme.spacing(40),
         justifyContent: 'center',
       },
     }),

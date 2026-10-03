@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import Skeleton from 'react-loading-skeleton';
 
-import { type DataSourceSettings, type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type DataSourceSettings, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { Trans } from '@grafana/i18n';
 import { config } from '@grafana/runtime';
@@ -32,7 +32,7 @@ export function DataSourcesListCard({ dataSource, hasWriteRights, hasExploreRigh
       data-testid={selectors.pages.DataSources.dataSources(dataSource.name)}
     >
       <Card.Heading>{dataSource.name}</Card.Heading>
-      <Card.Figure>
+      <Card.Figure className={styles.figure}>
         <img src={dataSource.typeLogoUrl} alt="" height="40px" width="40px" className={styles.logo} />
       </Card.Figure>
       <Card.Meta>
@@ -105,6 +105,7 @@ const getSkeletonStyles = () => {
 };
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
   return {
     logo: css({
       objectFit: 'contain',
@@ -112,5 +113,21 @@ const getStyles = (theme: GrafanaTheme2) => {
     button: css({
       marginLeft: theme.spacing(2),
     }),
+    figure: css(
+      fluent
+        ? {
+            width: 40,
+            height: 40,
+            boxSizing: 'border-box',
+            background: theme.colors.background.primary,
+            border: `1px solid ${theme.colors.border.weak}`,
+            borderRadius: theme.shape.radius.default,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: theme.spacing(0.5),
+          }
+        : undefined
+    ),
   };
 };

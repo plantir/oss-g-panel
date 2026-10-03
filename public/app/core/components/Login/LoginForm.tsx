@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { type ReactElement, useId } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 import { Button, Input, Field, useStyles2 } from '@grafana/ui';
@@ -73,10 +73,12 @@ export const LoginForm = ({ children, onSubmit, isLoggingIn, passwordHint, login
 };
 
 export const getStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
   return {
     wrapper: css({
       width: '100%',
-      paddingBottom: theme.spacing(2),
+      maxWidth: fluent ? 412 : undefined,
+      paddingBottom: fluent ? 0 : theme.spacing(2),
     }),
 
     submitButton: css({

@@ -91,6 +91,21 @@
       "activeBackground": "#0f6cbd",
       "activeBackgroundHover": "#115ea3"
     },
+    "codeEditor": {
+      "keyword": "#0f6cbd",
+      "controlKeyword": "#3848c6",
+      "variable": "#242424",
+      "type": "#026c6c",
+      "function": "#705da0",
+      "number": "#b15415",
+      "string": "#107c10",
+      "operator": "#424242",
+      "regexp": "#b83300",
+      "comment": "#616161",
+      "heading": "#0f6cbd",
+      "link": "#0f6cbd",
+      "invalid": "#c50f1f"
+    },
     "tag": {
       "colors": [
         { "background": "#0f6cbd", "text": "#ffffff" },
