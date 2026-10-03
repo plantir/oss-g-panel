@@ -62,7 +62,12 @@ export const SingleTopBar = memo(function SingleTopBar({
   const styles = useStyles2(getStyles, menuDockedAndOpen, visualRefreshEnabled, fluent);
   const profileNode = useSelector((state) => state.navIndex['profile']);
   const homeNav = useHomeNav();
-  const breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  const sectionCrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
+  // Stock chrome uses the logo as Home. Fluent's docked Menu header has no logo, so surface Home in crumbs.
+  const breadcrumbs =
+    fluent && menuDockedAndOpen && homeNav
+      ? [{ text: homeNav.text || 'Home', href: homeNav.url ?? '/' }, ...sectionCrumbs]
+      : sectionCrumbs;
   const isSmallScreen = !useMediaQueryMinWidth('sm');
   const isLargeScreen = useMediaQueryMinWidth('lg');
   const topLevelScopes = !showToolbarLevel && isLargeScreen && scopes?.state.enabled;
