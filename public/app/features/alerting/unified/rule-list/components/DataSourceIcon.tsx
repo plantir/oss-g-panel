@@ -1,4 +1,5 @@
-import { Icon } from '@grafana/ui';
+import { hasSolidBrandGradient } from '@grafana/data';
+import { Icon, useTheme2 } from '@grafana/ui';
 import { PromApplication, type RulesSourceApplication } from 'app/types/unified-alerting-dto';
 
 import lokiIconSvg from '../../../../loki-helpers/loki_icon.svg';
@@ -12,6 +13,8 @@ interface DataSourceIconProps {
 }
 
 export const DataSourceIcon = ({ application, size = 16 }: DataSourceIconProps) => {
+  const fluent = hasSolidBrandGradient(useTheme2());
+
   switch (application) {
     case PromApplication.Prometheus:
       return <img width={size} height={size} src={prometheusLogoSvg} alt="Prometheus" />;
@@ -21,6 +24,6 @@ export const DataSourceIcon = ({ application, size = 16 }: DataSourceIconProps) 
       return <img width={size} height={size} src={lokiIconSvg} alt="Loki" />;
     case 'grafana':
     default:
-      return <Icon name="grafana" />;
+      return <Icon name={fluent ? 'bell' : 'grafana'} />;
   }
 };

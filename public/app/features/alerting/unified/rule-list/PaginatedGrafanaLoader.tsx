@@ -2,7 +2,8 @@ import { groupBy, isEmpty } from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Trans, t } from '@grafana/i18n';
-import { Dropdown, Icon, LinkButton, Menu, Stack, TextLink } from '@grafana/ui';
+import { Dropdown, Icon, LinkButton, Menu, Stack, TextLink, useTheme2 } from '@grafana/ui';
+import { Branding } from 'app/core/components/Branding/Branding';
 import { type GrafanaRuleGroupIdentifier, GrafanaRulesSourceSymbol } from 'app/types/unified-alerting';
 import { type GrafanaPromRuleGroupDTO, type PromRuleGroupDTO } from 'app/types/unified-alerting-dto';
 
@@ -53,6 +54,7 @@ export function PaginatedGrafanaLoader({ groupFilter, namespaceFilter, onLoading
 }
 
 function PaginatedGroupsLoader({ groupFilter, namespaceFilter, onLoadingStateChange }: LoaderProps) {
+  const theme = useTheme2();
   // When backend filters are enabled, groupFilter is handled on the backend
   const filterState = { namespace: namespaceFilter, groupName: groupFilter };
   const { backendFilter } = getGrafanaFilter(filterState);
@@ -125,7 +127,7 @@ function PaginatedGroupsLoader({ groupFilter, namespaceFilter, onLoadingStateCha
 
   return (
     <DataSourceSection
-      name="Grafana-managed"
+      name={Branding.getManagedRulesLabel(theme)}
       application="grafana"
       uid={GrafanaRulesSourceSymbol}
       isLoading={isLoading}

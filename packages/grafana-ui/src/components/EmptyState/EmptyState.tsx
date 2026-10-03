@@ -3,9 +3,9 @@ import { type AriaRole, type ReactNode } from 'react';
 import * as React from 'react';
 import SVG from 'react-inlinesvg';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
-import { useStyles2 } from '../../themes/ThemeContext';
+import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
 import { Box } from '../Layout/Box/Box';
 import { Stack } from '../Layout/Stack/Stack';
 import { Text } from '../Text/Text';
@@ -53,12 +53,14 @@ export const EmptyState = ({
   role,
 }: React.PropsWithChildren<Props>) => {
   const styles = useStyles2(getStyles);
+  const hideMascot = hasSolidBrandGradient(useTheme2());
   const imageToShow = image ?? getDefaultImageForVariant(variant);
+  const showImage = !hideImage && Boolean(image || !hideMascot);
 
   return (
     <Box paddingY={4} display="flex" direction="column" alignItems="center" role={role}>
       <div className={styles.container}>
-        {!hideImage && imageToShow}
+        {showImage && imageToShow}
         <Stack direction="column" alignItems="center">
           <Text variant="h4" textAlignment="center">
             {message}

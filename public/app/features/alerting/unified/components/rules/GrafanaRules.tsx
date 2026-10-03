@@ -5,7 +5,18 @@ import { useToggle } from 'react-use';
 import { type GrafanaTheme2 } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { config } from '@grafana/runtime';
-import { Button, LinkButton, LoadingPlaceholder, Pagination, Spinner, Stack, Text, useStyles2 } from '@grafana/ui';
+import {
+  Button,
+  LinkButton,
+  LoadingPlaceholder,
+  Pagination,
+  Spinner,
+  Stack,
+  Text,
+  useStyles2,
+  useTheme2,
+} from '@grafana/ui';
+import { Branding } from 'app/core/components/Branding/Branding';
 import { useQueryParams } from 'app/core/hooks/useQueryParams';
 import { type CombinedRuleNamespace } from 'app/types/unified-alerting';
 
@@ -32,6 +43,7 @@ interface Props {
 
 export const GrafanaRules = ({ namespaces, expandAll }: Props) => {
   const styles = useStyles2(getStyles);
+  const theme = useTheme2();
   const [queryParams] = useQueryParams();
 
   const { prom, ruler } = useUnifiedAlertingSelector((state) => ({
@@ -67,7 +79,7 @@ export const GrafanaRules = ({ namespaces, expandAll }: Props) => {
       <div className={styles.sectionHeader}>
         <div className={styles.headerRow}>
           <Text element="h2" variant="h5">
-            <Trans i18nKey="alerting.list-view.section.grafanaManaged.title">Grafana-managed</Trans>
+            {Branding.getManagedRulesLabel(theme)}
           </Text>
           {loading ? (
             <LoadingPlaceholder

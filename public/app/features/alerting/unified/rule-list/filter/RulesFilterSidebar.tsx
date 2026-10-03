@@ -6,7 +6,20 @@ import { ContactPointSelector, RoutingTreeSelector } from '@grafana/alerting/uns
 import type { RoutingTree } from '@grafana/api-clients/rtkq/notifications.alerting/v1beta1';
 import { type GrafanaTheme2 } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
-import { Button, Combobox, Icon, Input, Label, MultiCombobox, Stack, Text, Tooltip, useStyles2 } from '@grafana/ui';
+import {
+  Button,
+  Combobox,
+  Icon,
+  Input,
+  Label,
+  MultiCombobox,
+  Stack,
+  Text,
+  Tooltip,
+  useStyles2,
+  useTheme2,
+} from '@grafana/ui';
+import { Branding } from 'app/core/components/Branding/Branding';
 import { PromAlertingRuleState, PromRuleType } from 'app/types/unified-alerting-dto';
 
 import { trackAlertRuleFilterEvent } from '../../Analytics';
@@ -56,6 +69,7 @@ interface FilterSidebarFormProps {
 
 function FilterSidebarForm({ filterState }: FilterSidebarFormProps) {
   const styles = useStyles2(getStyles);
+  const theme = useTheme2();
 
   const { updateFilters } = useRulesFilter();
   const { pluginsFilterEnabled } = usePluginsFilterStatus();
@@ -257,7 +271,7 @@ function FilterSidebarForm({ filterState }: FilterSidebarFormProps) {
                   options={[
                     { label: t('common.all', 'All'), value: null },
                     {
-                      label: t('alerting.rules-filter.rule-source.grafana', 'Grafana managed'),
+                      label: Branding.getManagedRulesFilterLabel(theme),
                       value: RuleSource.Grafana,
                     },
                     {

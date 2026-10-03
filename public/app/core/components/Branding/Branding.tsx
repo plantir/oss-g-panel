@@ -177,4 +177,19 @@ export class Branding {
   static GetLoginSubTitle = (): null | string => {
     return null;
   };
+
+  /** Section heading on the alert rule list. Fluent must not show Grafana product identity. */
+  static getManagedRulesLabel(theme: { colors: { gradients: { brandHorizontal: string } } }): string {
+    return hasSolidBrandGradient(theme) ? 'Panel-managed' : 'Grafana-managed';
+  }
+
+  /** Filter chip / sidebar label for the same rule source. */
+  static getManagedRulesFilterLabel(theme: { colors: { gradients: { brandHorizontal: string } } }): string {
+    return hasSolidBrandGradient(theme) ? 'Panel managed' : 'Grafana managed';
+  }
+
+  /** Grafana mascot empty-state art is product identity; hide it on Fluent. */
+  static hideEmptyStateMascot(theme: { colors: { gradients: { brandHorizontal: string } } }): boolean {
+    return hasSolidBrandGradient(theme);
+  }
 }
