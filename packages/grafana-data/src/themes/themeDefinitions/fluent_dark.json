@@ -4,10 +4,18 @@
   "colors": {
     "mode": "dark",
     "primary": {
-      "main": "#479ef5"
+      "main": "#479ef5",
+      "text": "#479ef5",
+      "contrastText": "#000000"
     },
     "info": {
-      "main": "#479ef5"
+      "main": "#479ef5",
+      "text": "#479ef5",
+      "contrastText": "#000000"
+    },
+    "secondary": {
+      "main": "#292929",
+      "shade": "#333333"
     },
     "error": {
       "main": "#dc626d"
@@ -21,22 +29,33 @@
     "text": {
       "primary": "#ffffff",
       "secondary": "#d6d6d6",
-      "disabled": "#5c5c5c"
+      "disabled": "#5c5c5c",
+      "link": "#479ef5"
     },
     "background": {
       "canvas": "#141414",
       "primary": "#1f1f1f",
-      "secondary": "#292929"
+      "secondary": "#292929",
+      "elevated": "#292929"
     },
     "border": {
       "weak": "#333333",
       "medium": "#666666",
       "strong": "#adadad"
+    },
+    "action": {
+      "hover": "#383838",
+      "selected": "#333333",
+      "disabledBackground": "#141414"
+    },
+    "gradients": {
+      "brandVertical": "#479ef5",
+      "brandHorizontal": "#479ef5"
     }
   },
   "typography": {
-    "fontFamily": "\"Segoe UI Variable\", \"Segoe UI\", -apple-system, BlinkMacSystemFont, Roboto, \"Helvetica Neue\", sans-serif",
-    "fontFamilyMonospace": "Consolas, \"Courier New\", Courier, monospace",
+    "fontFamily": "\"Segoe UI\", \"Segoe UI Web (West European)\", -apple-system, BlinkMacSystemFont, Roboto, \"Helvetica Neue\", sans-serif",
+    "fontFamilyMonospace": "Consolas, \"Courier New\", monospace",
     "fontSize": 14,
     "htmlFontSize": 16
   },
@@ -49,6 +68,47 @@
     "z1": "0 0 2px rgba(0,0,0,0.24), 0 2px 4px rgba(0,0,0,0.28)",
     "z2": "0 0 2px rgba(0,0,0,0.24), 0 8px 16px rgba(0,0,0,0.28)",
     "z3": "0 0 8px rgba(0,0,0,0.24), 0 32px 64px rgba(0,0,0,0.28)"
+  },
+  "components": {
+    "input": {
+      "background": "#292929",
+      "borderColor": "#666666"
+    },
+    "panel": {
+      "background": "#1f1f1f",
+      "borderColor": "#333333",
+      "headerHeight": 4
+    },
+    "switch": {
+      "activeBackground": "#479ef5",
+      "activeBackgroundHover": "#62b0f7"
+    },
+    "checkbox": {
+      "activeBackground": "#479ef5",
+      "activeBackgroundHover": "#62b0f7"
+    },
+    "tag": {
+      "colors": [
+        { "background": "#0f6cbd", "text": "#ffffff" },
+        { "background": "#c239b3", "text": "#ffffff" },
+        { "background": "#13a10e", "text": "#ffffff" },
+        { "background": "#ca5010", "text": "#ffffff" },
+        { "background": "#4f6bed", "text": "#ffffff" },
+        { "background": "#038387", "text": "#ffffff" },
+        { "background": "#8764b8", "text": "#ffffff" },
+        { "background": "#c19c00", "text": "#ffffff" },
+        { "background": "#d13438", "text": "#ffffff" },
+        { "background": "#00b7c3", "text": "#ffffff" }
+      ]
+    },
+    "home": {
+      "background": {
+        "fade": "#141414",
+        "highlight": "transparent",
+        "right": "rgba(71, 158, 245, 0.16)",
+        "left": "rgba(71, 158, 245, 0.10)"
+      }
+    }
   },
   "visualization": {
     "palette": [

@@ -5,11 +5,21 @@
     "mode": "light",
     "primary": {
       "main": "#0f6cbd",
+      "text": "#0f6cbd",
+      "contrastText": "#ffffff",
+      "shade": "#115ea3",
       "mainEmphasis": "#115ea3"
     },
     "info": {
       "main": "#0f6cbd",
+      "text": "#0f6cbd",
+      "contrastText": "#ffffff",
+      "shade": "#115ea3",
       "mainEmphasis": "#115ea3"
+    },
+    "secondary": {
+      "main": "#f5f5f5",
+      "shade": "#ebebeb"
     },
     "error": {
       "main": "#c50f1f"
@@ -23,22 +33,33 @@
     "text": {
       "primary": "#242424",
       "secondary": "#424242",
-      "disabled": "#bdbdbd"
+      "disabled": "#bdbdbd",
+      "link": "#0f6cbd"
     },
     "background": {
       "canvas": "#fafafa",
       "primary": "#ffffff",
-      "secondary": "#f5f5f5"
+      "secondary": "#f5f5f5",
+      "elevated": "#ffffff"
     },
     "border": {
       "weak": "#e0e0e0",
       "medium": "#d1d1d1",
       "strong": "#616161"
+    },
+    "action": {
+      "hover": "#f5f5f5",
+      "selected": "#ebebeb",
+      "disabledBackground": "#f0f0f0"
+    },
+    "gradients": {
+      "brandVertical": "#0f6cbd",
+      "brandHorizontal": "#0f6cbd"
     }
   },
   "typography": {
-    "fontFamily": "\"Segoe UI Variable\", \"Segoe UI\", -apple-system, BlinkMacSystemFont, Roboto, \"Helvetica Neue\", sans-serif",
-    "fontFamilyMonospace": "Consolas, \"Courier New\", Courier, monospace",
+    "fontFamily": "\"Segoe UI\", \"Segoe UI Web (West European)\", -apple-system, BlinkMacSystemFont, Roboto, \"Helvetica Neue\", sans-serif",
+    "fontFamilyMonospace": "Consolas, \"Courier New\", monospace",
     "fontSize": 14,
     "htmlFontSize": 16
   },
@@ -51,6 +72,47 @@
     "z1": "0 0 2px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.14)",
     "z2": "0 0 2px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.14)",
     "z3": "0 0 8px rgba(0,0,0,0.12), 0 32px 64px rgba(0,0,0,0.14)"
+  },
+  "components": {
+    "input": {
+      "background": "#ffffff",
+      "borderColor": "#d1d1d1"
+    },
+    "panel": {
+      "background": "#ffffff",
+      "borderColor": "#e0e0e0",
+      "headerHeight": 4
+    },
+    "switch": {
+      "activeBackground": "#0f6cbd",
+      "activeBackgroundHover": "#115ea3"
+    },
+    "checkbox": {
+      "activeBackground": "#0f6cbd",
+      "activeBackgroundHover": "#115ea3"
+    },
+    "tag": {
+      "colors": [
+        { "background": "#0f6cbd", "text": "#ffffff" },
+        { "background": "#c239b3", "text": "#ffffff" },
+        { "background": "#13a10e", "text": "#ffffff" },
+        { "background": "#ca5010", "text": "#ffffff" },
+        { "background": "#4f6bed", "text": "#ffffff" },
+        { "background": "#038387", "text": "#ffffff" },
+        { "background": "#8764b8", "text": "#ffffff" },
+        { "background": "#c19c00", "text": "#ffffff" },
+        { "background": "#d13438", "text": "#ffffff" },
+        { "background": "#00b7c3", "text": "#ffffff" }
+      ]
+    },
+    "home": {
+      "background": {
+        "fade": "#fafafa",
+        "highlight": "transparent",
+        "right": "rgba(15, 108, 189, 0.08)",
+        "left": "rgba(15, 108, 189, 0.06)"
+      }
+    }
   },
   "visualization": {
     "palette": [
