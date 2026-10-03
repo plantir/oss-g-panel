@@ -14,9 +14,7 @@ import { type GrafanaTheme2 } from './types';
 import { zIndex } from './zIndex';
 
 /** Fluent themes use solid brand fills instead of Grafana's orange gradient. */
-export function hasSolidBrandGradient(theme: {
-  colors: { gradients: { brandHorizontal: string } };
-}): boolean {
+export function hasSolidBrandGradient(theme: { colors: { gradients: { brandHorizontal: string } } }): boolean {
   return !theme.colors.gradients.brandHorizontal.includes('gradient');
 }
 

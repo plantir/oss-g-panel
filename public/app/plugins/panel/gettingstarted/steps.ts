@@ -68,8 +68,7 @@ export const getSteps = (): SetupStep[] => [
   },
   {
     heading: 'Setup complete!',
-    subheading:
-      `All necessary steps to use ${Branding.AppTitle} are done. Now tackle advanced steps or make the best use of this home dashboard – it is, after all, a fully customizable dashboard – and remove this panel.`,
+    subheading: `All necessary steps to use ${Branding.AppTitle} are done. Now tackle advanced steps or make the best use of this home dashboard – it is, after all, a fully customizable dashboard – and remove this panel.`,
     title: 'Advanced',
     info: ' Manage your users and teams and add plugins. These steps are optional',
     done: false,
