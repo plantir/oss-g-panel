@@ -126,6 +126,14 @@
       "#c19c00",
       "#d13438",
       "#00b7c3"
+    ],
+    "hues": [
+      { "name": "green", "shades": [{ "name": "green", "color": "#13a10e" }] },
+      { "name": "yellow", "shades": [{ "name": "yellow", "color": "#c19c00" }] },
+      { "name": "blue", "shades": [{ "name": "blue", "color": "#0f6cbd" }] },
+      { "name": "orange", "shades": [{ "name": "orange", "color": "#ca5010" }] },
+      { "name": "red", "shades": [{ "name": "red", "color": "#d13438" }] },
+      { "name": "purple", "shades": [{ "name": "purple", "color": "#8764b8" }] }
     ]
   }
 }
