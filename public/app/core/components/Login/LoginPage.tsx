@@ -2,7 +2,7 @@
 import { css } from '@emotion/css';
 
 // Components
-import { type GrafanaTheme2, PageLayoutType } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, PageLayoutType } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { config } from '@grafana/runtime';
 import { Alert, LinkButton, Stack, useStyles2 } from '@grafana/ui';
@@ -95,6 +95,12 @@ const getStyles = (theme: GrafanaTheme2) => {
     forgottenPassword: css({
       padding: 0,
       marginTop: theme.spacing(0.5),
+      ...(hasSolidBrandGradient(theme)
+        ? {
+            ...theme.typography.bodySmall,
+            color: theme.colors.text.link,
+          }
+        : undefined),
     }),
 
     alert: css({

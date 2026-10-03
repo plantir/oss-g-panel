@@ -1,5 +1,5 @@
 import { getContrastRatio } from './colorManipulator';
-import { createTheme } from './createTheme';
+import { createTheme, hasSolidBrandGradient } from './createTheme';
 import { getThemeById } from './registry';
 
 describe('createTheme', () => {
@@ -121,5 +121,12 @@ describe('createTheme', () => {
     expect(theme.components.panel.borderColor).toBe('#333333');
     expect(theme.shape.radius.default).toBe('4px');
     expect(theme.typography.fontFamilyMonospace).toContain('Consolas');
+  });
+
+  it('detects solid Fluent brand fills without changing stock themes', () => {
+    expect(hasSolidBrandGradient(getThemeById('fluent_light'))).toBe(true);
+    expect(hasSolidBrandGradient(getThemeById('fluent_dark'))).toBe(true);
+    expect(hasSolidBrandGradient(createTheme())).toBe(false);
+    expect(hasSolidBrandGradient(createTheme({ colors: { mode: 'light' } }))).toBe(false);
   });
 });

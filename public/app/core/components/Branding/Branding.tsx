@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import { type FC, type JSX } from 'react';
 
-import { colorManipulator, type GrafanaTheme2, type NavModelItem } from '@grafana/data';
+import { colorManipulator, hasSolidBrandGradient, type GrafanaTheme2, type NavModelItem } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { reportInteraction } from '@grafana/runtime';
 import { Text, Tooltip, useStyles2, useTheme2 } from '@grafana/ui';
@@ -20,32 +20,50 @@ const LoginLogo: FC<BrandComponentProps & { logo?: string }> = ({ className, log
 
 const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
   const theme = useTheme2();
+  const fluent = hasSolidBrandGradient(theme);
+  const glow = colorManipulator.alpha(theme.colors.primary.main, theme.isDark ? 0.18 : 0.12);
 
-  const background = css({
-    '&:before': {
-      content: '""',
-      position: 'fixed',
-      left: 0,
-      right: 0,
-      bottom: 0,
-      top: 0,
-      background: `url(${theme.isDark ? g8LoginDarkSvg : g8LoginLightSvg})`,
-      backgroundPosition: 'top center',
-      backgroundSize: 'auto',
-      backgroundRepeat: 'no-repeat',
+  const background = css(
+    fluent
+      ? {
+          backgroundColor: theme.colors.background.canvas,
+          '&:before': {
+            content: '""',
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            top: 0,
+            background: `radial-gradient(ellipse 80% 55% at 100% 0%, ${glow} 0%, transparent 60%)`,
+            opacity: 1,
+          },
+        }
+      : {
+          '&:before': {
+            content: '""',
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            top: 0,
+            background: `url(${theme.isDark ? g8LoginDarkSvg : g8LoginLightSvg})`,
+            backgroundPosition: 'top center',
+            backgroundSize: 'auto',
+            backgroundRepeat: 'no-repeat',
 
-      opacity: 0,
+            opacity: 0,
 
-      [theme.transitions.handleMotion('no-preference', 'reduce')]: {
-        transition: 'opacity 3s ease-in-out',
-      },
+            [theme.transitions.handleMotion('no-preference', 'reduce')]: {
+              transition: 'opacity 3s ease-in-out',
+            },
 
-      [theme.breakpoints.up('md')]: {
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-      },
-    },
-  });
+            [theme.breakpoints.up('md')]: {
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+            },
+          },
+        }
+  );
 
   return <div className={cx(background, className)}>{children}</div>;
 };
@@ -135,6 +153,13 @@ function homeTitleStyles(theme: GrafanaTheme2) {
 
 const LoginBoxBackground = () => {
   const theme = useTheme2();
+  if (hasSolidBrandGradient(theme)) {
+    return css({
+      background: theme.colors.background.primary,
+      border: `1px solid ${theme.colors.border.weak}`,
+      boxShadow: theme.shadows.z3,
+    });
+  }
   return css({
     background: colorManipulator.alpha(theme.colors.background.primary, 0.7),
     backgroundSize: 'cover',

@@ -333,7 +333,7 @@ export { nullToValue } from './transformations/transformers/nulls/nullToValue';
 export { type MonacoLanguageRegistryItem, monacoLanguageRegistry } from './monaco/languageRegistry';
 
 // Theme
-export { createTheme } from './themes/createTheme';
+export { createTheme, hasSolidBrandGradient } from './themes/createTheme';
 export { getThemeById, getBuiltInThemes, type ThemeRegistryItem } from './themes/registry';
 export type { NewThemeOptions } from './themes/createTheme';
 export type { ThemeRichColor, GrafanaTheme2 } from './themes/types';

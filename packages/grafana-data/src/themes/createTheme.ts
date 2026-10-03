@@ -13,6 +13,13 @@ import { createVisualizationColors, ThemeVisualizationColorsInputSchema } from '
 import { type GrafanaTheme2 } from './types';
 import { zIndex } from './zIndex';
 
+/** Fluent themes use solid brand fills instead of Grafana's orange gradient. */
+export function hasSolidBrandGradient(theme: {
+  colors: { gradients: { brandHorizontal: string } };
+}): boolean {
+  return !theme.colors.gradients.brandHorizontal.includes('gradient');
+}
+
 export const NewThemeOptionsSchema = z.object({
   name: z.string(),
   id: z.string(),

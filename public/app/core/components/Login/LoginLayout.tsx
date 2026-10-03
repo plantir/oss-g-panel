@@ -2,7 +2,7 @@ import { cx, css, keyframes } from '@emotion/css';
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { Trans } from '@grafana/i18n';
 import { useStyles2 } from '@grafana/ui';
 
@@ -76,6 +76,8 @@ to{
 }`;
 
 export const getLoginStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
+
   return {
     loginMain: css({
       flexGrow: 1,
@@ -87,6 +89,7 @@ export const getLoginStyles = (theme: GrafanaTheme2) => {
     }),
     container: css({
       minHeight: '100%',
+      backgroundColor: fluent ? theme.colors.background.canvas : undefined,
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       flex: 1,
@@ -112,11 +115,11 @@ export const getLoginStyles = (theme: GrafanaTheme2) => {
     }),
     loginLogo: css({
       width: '100%',
-      maxWidth: 60,
-      marginBottom: theme.spacing(2),
+      maxWidth: fluent ? 48 : 60,
+      marginBottom: fluent ? 0 : theme.spacing(2),
 
       [theme.breakpoints.up('sm')]: {
-        maxWidth: 100,
+        maxWidth: fluent ? 48 : 100,
       },
     }),
     loginLogoWrapper: css({
@@ -124,18 +127,25 @@ export const getLoginStyles = (theme: GrafanaTheme2) => {
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'column',
-      padding: theme.spacing(3),
+      padding: fluent ? 0 : theme.spacing(3),
+      gap: fluent ? theme.spacing(3) : undefined,
     }),
     titleWrapper: css({
       textAlign: 'center',
     }),
-    mainTitle: css({
-      fontSize: 22,
+    mainTitle: css(
+      {
+        fontSize: 22,
 
-      [theme.breakpoints.up('sm')]: {
-        fontSize: 32,
+        [theme.breakpoints.up('sm')]: {
+          fontSize: 32,
+        },
       },
-    }),
+      fluent && {
+        ...theme.typography.h3,
+        color: theme.colors.text.primary,
+      }
+    ),
     subTitle: css({
       fontSize: theme.typography.size.md,
       color: theme.colors.text.secondary,
@@ -144,15 +154,16 @@ export const getLoginStyles = (theme: GrafanaTheme2) => {
       maxWidth: 478,
       width: `calc(100% - 2rem)`,
       display: 'flex',
-      alignItems: 'stretch',
+      alignItems: fluent ? 'center' : 'stretch',
       flexDirection: 'column',
       position: 'relative',
       justifyContent: 'flex-start',
       zIndex: 1,
       minHeight: 320,
       borderRadius: theme.shape.radius.lg,
-      padding: theme.spacing(2, 0),
-      opacity: 0,
+      padding: fluent ? theme.spacing(5, 4) : theme.spacing(2, 0),
+      gap: fluent ? theme.spacing(3) : undefined,
+      opacity: fluent ? 1 : 0,
       [theme.transitions.handleMotion('no-preference')]: {
         transition: 'opacity 0.5s ease-in-out',
       },
