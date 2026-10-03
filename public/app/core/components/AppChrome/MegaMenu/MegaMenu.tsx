@@ -3,11 +3,11 @@ import { DragDropContext, Draggable, type DraggableProvided, Droppable, type Dro
 import { type DOMAttributes } from '@react-types/shared';
 import { memo, forwardRef, useId } from 'react';
 
-import { type GrafanaTheme2, type NavModelItem } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type NavModelItem } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t, Trans } from '@grafana/i18n';
 import { useFlagGrafanaVisualDesignRefresh } from '@grafana/runtime/internal';
-import { ScrollContainer, Text, useStyles2, Button, IconButton } from '@grafana/ui';
+import { ScrollContainer, Text, useStyles2, useTheme2, Button, IconButton } from '@grafana/ui';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 import { useSyncStarredItemsInNav } from 'app/features/stars/hooks';
 
@@ -27,6 +27,7 @@ export interface Props extends DOMAttributes {
 export const MegaMenu = memo(
   forwardRef<HTMLDivElement, Props>(({ onClose, ...restProps }, ref) => {
     const visualRefreshEnabled = useFlagGrafanaVisualDesignRefresh();
+    const fluent = hasSolidBrandGradient(useTheme2());
     const styles = useStyles2(getStyles, visualRefreshEnabled);
     const { chrome } = useGrafana();
     const state = chrome.useState();
@@ -267,7 +268,7 @@ export const MegaMenu = memo(
                 <Trans i18nKey="navigation.megamenu.customise">Customise navigation</Trans>
               </Button>
             )}
-            {!editMode && !state.fullscreenWorkspace && (
+            {!editMode && !state.fullscreenWorkspace && !fluent && (
               <IconButton
                 id={DOCK_MENU_BUTTON_ID}
                 className={styles.dockMenuButton}

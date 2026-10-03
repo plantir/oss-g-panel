@@ -12679,6 +12679,7 @@
       "dock": "Dock menu",
       "header-title": "Navigation",
       "list-label": "Navigation",
+      "menu-title": "Menu",
       "open": "Main menu",
       "pin-error": "Failed to update pinned menu items",
       "pinned-list-label": "Pinned items",

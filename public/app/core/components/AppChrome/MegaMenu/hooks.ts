@@ -9,13 +9,15 @@ import {
   usePatchUserPreferencesMutation,
 } from '@grafana/api-clients/internal/rtkq/legacy/preferences/user';
 import { useListPreferencesQuery, useUpdatePreferencesMutation } from '@grafana/api-clients/rtkq/preferences/v1';
-import { type NavModelItem } from '@grafana/data';
+import { hasSolidBrandGradient, type NavModelItem } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { reportInteraction } from '@grafana/runtime';
 import { useFlagGrafanaNewPreferencesPage } from '@grafana/runtime/internal';
+import { useTheme2 } from '@grafana/ui';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 import { useAppNotification } from 'app/core/copy/appNotification';
 import { setBookmark } from 'app/core/reducers/navBarTree';
+import { HOME_NAV_ID } from 'app/core/reducers/navModel';
 import { useDispatch, useSelector } from 'app/types/store';
 
 import { contextSrv } from '../../../services/context_srv';
@@ -309,6 +311,7 @@ export const useNavCustomization = () => {
   const { chrome } = useGrafana();
   const state = chrome.useState();
   const docked = state.megaMenuDocked;
+  const fluent = hasSolidBrandGradient(useTheme2());
 
   const customizableMegaMenu = useBooleanFlagValue('grafana.customizableMegaMenu', false);
   const canCustomise = customizableMegaMenu && contextSrv.isSignedIn;
@@ -331,8 +334,10 @@ export const useNavCustomization = () => {
 
   // Base tree without the items the mega menu never lists directly. When customisation is on, the
   // dedicated Bookmarks section is also dropped — pinned items are re-presented in the pinned box.
+  // Stock chrome treats Home as the header logo. Fluent lists Home as the first menu row.
+  const hiddenNavIds = fluent ? new Set([...NON_MENU_NAV_IDS].filter((id) => id !== HOME_NAV_ID)) : NON_MENU_NAV_IDS;
   const baseItems = navTree.filter(
-    (item) => !NON_MENU_NAV_IDS.has(item.id ?? '') && !(canCustomise && item.id === 'bookmarks')
+    (item) => !hiddenNavIds.has(item.id ?? '') && !(canCustomise && item.id === 'bookmarks')
   );
 
   const {

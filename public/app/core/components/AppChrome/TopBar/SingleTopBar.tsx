@@ -1,12 +1,12 @@
 import { css, cx } from '@emotion/css';
 import React, { memo } from 'react';
 
-import { type GrafanaTheme2, type NavModelItem } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type NavModelItem } from '@grafana/data';
 import { Components } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 import { type ScopesContextValue } from '@grafana/runtime';
 import { useFlagGrafanaVisualDesignRefresh } from '@grafana/runtime/internal';
-import { Icon, Stack, ToolbarButton, useStyles2 } from '@grafana/ui';
+import { Icon, Stack, ToolbarButton, useStyles2, useTheme2 } from '@grafana/ui';
 import { MEGA_MENU_TOGGLE_ID } from 'app/core/constants';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 import { useHomeNav } from 'app/core/hooks/useHomeNav';
@@ -55,16 +55,18 @@ export const SingleTopBar = memo(function SingleTopBar({
   showToolbarLevel,
 }: Props) {
   const visualRefreshEnabled = useFlagGrafanaVisualDesignRefresh();
+  const fluent = hasSolidBrandGradient(useTheme2());
   const { chrome } = useGrafana();
   const state = chrome.useState();
   const menuDockedAndOpen = !state.chromeless && state.megaMenuDocked && state.megaMenuOpen;
-  const styles = useStyles2(getStyles, menuDockedAndOpen, visualRefreshEnabled);
+  const styles = useStyles2(getStyles, menuDockedAndOpen, visualRefreshEnabled, fluent);
   const profileNode = useSelector((state) => state.navIndex['profile']);
   const homeNav = useHomeNav();
   const breadcrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
   const isSmallScreen = !useMediaQueryMinWidth('sm');
   const isLargeScreen = useMediaQueryMinWidth('lg');
   const topLevelScopes = !showToolbarLevel && isLargeScreen && scopes?.state.enabled;
+  const centerSearch = fluent && isLargeScreen;
 
   return (
     <>
@@ -93,6 +95,12 @@ export const SingleTopBar = memo(function SingleTopBar({
           {!showToolbarLevel && breadcrumbActions}
         </Stack>
 
+        {centerSearch && (
+          <div className={styles.searchCenter}>
+            <TopSearchBarCommandPaletteTrigger />
+          </div>
+        )}
+
         <Stack
           gap={0.5}
           alignItems="center"
@@ -101,7 +109,7 @@ export const SingleTopBar = memo(function SingleTopBar({
           data-testid={!showToolbarLevel ? Components.NavToolbar.container : undefined}
         >
           <TopBarExtensionPoint />
-          <TopSearchBarCommandPaletteTrigger />
+          {!centerSearch && <TopSearchBarCommandPaletteTrigger />}
           {!isSmallScreen && <QuickAdd />}
           <FeatureControlButton />
           <HelpTopBarButton isSmallScreen={isSmallScreen} />
@@ -121,16 +129,28 @@ export const SingleTopBar = memo(function SingleTopBar({
   );
 });
 
-const getStyles = (theme: GrafanaTheme2, menuDockedAndOpen: boolean, visualRefreshEnabled: boolean) => ({
+const getStyles = (
+  theme: GrafanaTheme2,
+  menuDockedAndOpen: boolean,
+  visualRefreshEnabled: boolean,
+  fluent = false
+) => ({
   layout: css({
     height: getChromeTopBarHeight(theme),
-    display: 'flex',
+    display: fluent ? 'grid' : 'flex',
+    gridTemplateColumns: fluent ? 'minmax(0, 1fr) auto minmax(0, 1fr)' : undefined,
     gap: theme.spacing(2),
     alignItems: 'center',
     padding: theme.spacing(0, 1),
     paddingLeft: menuDockedAndOpen ? theme.spacing(visualRefreshEnabled ? 0.5 : 3.5) : theme.spacing(1),
     borderBottom: visualRefreshEnabled ? undefined : `1px solid ${theme.colors.border.weak}`,
-    justifyContent: 'space-between',
+    justifyContent: fluent ? undefined : 'space-between',
+  }),
+  searchCenter: css({
+    justifySelf: 'center',
+    minWidth: 280,
+    maxWidth: 480,
+    width: 'min(36vw, 480px)',
   }),
   breadcrumbsWrapper: css({
     display: 'flex',
