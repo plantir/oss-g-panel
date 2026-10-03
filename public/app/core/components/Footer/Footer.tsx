@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { memo } from 'react';
 
-import { type GrafanaTheme2, type LinkTarget } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type LinkTarget } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config } from '@grafana/runtime';
 import { Icon, type IconName, useStyles2 } from '@grafana/ui';
@@ -124,7 +124,7 @@ function FooterItem({ item }: { item: FooterLink }) {
 const getStyles = (theme: GrafanaTheme2) => ({
   footer: css({
     ...theme.typography.bodySmall,
-    color: theme.colors.text.primary,
+    color: hasSolidBrandGradient(theme) ? theme.colors.text.secondary : theme.colors.text.primary,
     display: 'block',
     padding: theme.spacing(2, 0),
     position: 'relative',

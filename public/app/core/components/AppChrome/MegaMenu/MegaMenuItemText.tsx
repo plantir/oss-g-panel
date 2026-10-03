@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 
-import { type GrafanaTheme2, type IconName } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type IconName } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 import { useFlagGrafanaVisualDesignRefresh } from '@grafana/runtime/internal';
@@ -162,6 +162,7 @@ export function MegaMenuItemText({
 MegaMenuItemText.displayName = 'MegaMenuItemText';
 
 const getStyles = (theme: GrafanaTheme2, isActive: Props['isActive'], visualRefreshEnabled: boolean) => {
+  const fluent = hasSolidBrandGradient(theme);
   const wrapperActiveOld = css({
     backgroundColor: theme.colors.action.selected,
     borderTopRightRadius: theme.shape.radius.default,
@@ -171,6 +172,7 @@ const getStyles = (theme: GrafanaTheme2, isActive: Props['isActive'], visualRefr
 
     '&::before': {
       backgroundImage: theme.colors.gradients.brandVertical,
+      backgroundColor: theme.colors.gradients.brandVertical,
       borderRadius: theme.shape.radius.default,
       content: '" "',
       display: 'block',
@@ -178,7 +180,7 @@ const getStyles = (theme: GrafanaTheme2, isActive: Props['isActive'], visualRefr
       position: 'absolute',
       transform: 'translateX(-50%)',
       left: 0,
-      width: theme.spacing(0.25),
+      width: fluent ? theme.spacing(0.5) : theme.spacing(0.25),
     },
   });
 
@@ -238,7 +240,7 @@ const getStyles = (theme: GrafanaTheme2, isActive: Props['isActive'], visualRefr
     hiddenInEdit: css({
       opacity: 0.5,
     }),
-    wrapperActive: visualRefreshEnabled ? wrapperActiveVisualRefresh : wrapperActiveOld,
+    wrapperActive: visualRefreshEnabled && !fluent ? wrapperActiveVisualRefresh : wrapperActiveOld,
     container: css({
       alignItems: 'center',
       color: 'inherit',
