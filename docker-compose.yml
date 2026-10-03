@@ -1,0 +1,30 @@
+# Local run: docker compose up -d --build
+# Builds this repo with the same OSS/alpine args as `make build-docker-full`.
+
+services:
+  grafana:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-alpine
+      args:
+        NODE_ENV: production
+        JS_NODE_ENV: production
+        JS_YARN_INSTALL_FLAG: --immutable
+        JS_YARN_BUILD_FLAG: build
+        GO_BUILD_TAGS: oss
+        WIRE_TAGS: oss
+        SLIM: "false"
+    image: oss-g-panel:dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:-admin}
+      GF_USERS_DEFAULT_THEME: fluent_light
+    restart: unless-stopped
+
+volumes:
+  grafana-data:

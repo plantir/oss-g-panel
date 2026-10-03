@@ -60,6 +60,10 @@ docs/GIT_BRANCH
 docs/GITCOMMIT
 docs/changed-files
 
+# Local docker compose overrides / secrets
+/.env
+/docker-compose.override.yml
+
 # locally required config files
 public/css/*.min.css
 

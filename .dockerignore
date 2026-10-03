@@ -3,6 +3,10 @@
 .git
 .gitignore
 .vscode
+.env
+.env.example
+docker-compose.yml
+docker-compose.override.yml
 bin
 !bin/grafana-linux-k8s
 !bin/grafana-linux-k8s-debug
