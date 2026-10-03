@@ -18,8 +18,7 @@ import { MegaMenuItem } from './MegaMenuItem';
 import { MegaMenuPinnedItem } from './MegaMenuPinnedItem';
 import { MegaMenuSkeleton } from './MegaMenuSkeleton';
 import { useNavCustomization } from './hooks';
-
-export const MENU_WIDTH = '320px';
+import { getMegaMenuWidth } from './megaMenuWidth';
 
 export interface Props extends DOMAttributes {
   onClose: () => void;
@@ -315,7 +314,7 @@ const getStyles = (theme: GrafanaTheme2, visualRefreshEnabled: boolean) => {
       listStyleType: 'none',
       padding: theme.spacing(1, 1, 2, 1),
       [theme.breakpoints.up('md')]: {
-        width: MENU_WIDTH,
+        width: getMegaMenuWidth(theme),
       },
     }),
     list: css({

@@ -10,7 +10,8 @@ import { useSelector } from 'app/types/store';
 
 import { Breadcrumbs } from '../../Breadcrumbs/Breadcrumbs';
 import { buildBreadcrumbs } from '../../Breadcrumbs/utils';
-import { MegaMenu, MENU_WIDTH } from '../MegaMenu/MegaMenu';
+import { MegaMenu } from '../MegaMenu/MegaMenu';
+import { getMegaMenuWidth } from '../MegaMenu/megaMenuWidth';
 
 export function FullscreenWorkspacePlatformBar() {
   const { chrome } = useGrafana();
@@ -73,7 +74,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     top: 0,
     bottom: 0,
     left: 0,
-    width: MENU_WIDTH,
+    width: getMegaMenuWidth(theme),
     maxWidth: '100%',
     zIndex: theme.zIndex.modal,
     overflowY: 'auto',

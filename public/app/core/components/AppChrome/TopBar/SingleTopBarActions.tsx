@@ -11,7 +11,7 @@ import { ScopesSelector } from 'app/features/scopes/selector/ScopesSelector';
 import { useExtensionSidebarContext } from '../ExtensionSidebar/ExtensionSidebarProvider';
 import { NavToolbarSeparator } from '../NavToolbar/NavToolbarSeparator';
 
-import { getChromeHeaderLevelHeight } from './useChromeHeaderHeight';
+import { getChromeActionsBarHeight } from './useChromeHeaderHeight';
 
 export interface Props {
   actions?: React.ReactNode;
@@ -48,7 +48,7 @@ const getStyles = (theme: GrafanaTheme2, extensionSidebarWidth = 0, visualRefres
       alignItems: 'center',
       borderBottom: visualRefreshEnabled ? undefined : `1px solid ${theme.colors.border.weak}`,
       display: 'flex',
-      height: getChromeHeaderLevelHeight(),
+      height: getChromeActionsBarHeight(theme),
       padding: theme.spacing(0, 1, 0, 2),
     }),
     constrained: css({

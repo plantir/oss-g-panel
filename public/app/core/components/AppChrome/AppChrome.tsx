@@ -28,11 +28,12 @@ import { FeatureControlFloating } from './FeatureControl/FeatureControlFloating'
 import { FullscreenWorkspacePlatformBar } from './FullscreenWorkspace/FullscreenWorkspacePlatformBar';
 import { FullscreenWorkspaceShell } from './FullscreenWorkspace/FullscreenWorkspaceShell';
 import { useFullscreenWorkspace } from './FullscreenWorkspace/useFullscreenWorkspace';
-import { MegaMenu, MENU_WIDTH } from './MegaMenu/MegaMenu';
+import { MegaMenu } from './MegaMenu/MegaMenu';
+import { getMegaMenuWidth } from './MegaMenu/megaMenuWidth';
 import { useMegaMenuFocusHelper } from './MegaMenu/utils';
 import { ReturnToPrevious } from './ReturnToPrevious/ReturnToPrevious';
 import { SingleTopBar } from './TopBar/SingleTopBar';
-import { getChromeHeaderLevelHeight, useChromeHeaderLevels } from './TopBar/useChromeHeaderHeight';
+import { getChromeTotalHeaderHeight, useChromeHeaderLevels } from './TopBar/useChromeHeaderHeight';
 
 export const EXTENSION_SIDEBAR_FLOATING_TESTID = 'extension-sidebar-floating';
 
@@ -79,7 +80,7 @@ export function AppChrome({ children }: Props) {
   );
 
   const headerLevels = useChromeHeaderLevels();
-  const styles = useStyles2(getStyles, headerLevels, getChromeHeaderLevelHeight(), visualRefreshEnabled);
+  const styles = useStyles2(getStyles, headerLevels, visualRefreshEnabled);
   const contentSizeStyles = useStyles2(getContentSizeStyles, extensionSidebarWidth);
   const dragStyles = useStyles2(getDragStyles);
   const isSmallScreen = !useMediaQueryMinWidth('sm');
@@ -271,13 +272,16 @@ function useResponsiveDockedMegaMenu(chrome: AppChromeService) {
   }, [isLargeScreen, chrome, dockedMenuLocalStorageState]);
 }
 
-const getStyles = (theme: GrafanaTheme2, headerLevels: number, headerHeight: number, visualRefreshEnabled: boolean) => {
+const getStyles = (theme: GrafanaTheme2, headerLevels: number, visualRefreshEnabled: boolean) => {
+  const menuWidth = getMegaMenuWidth(theme);
+  const headerHeight = getChromeTotalHeaderHeight(headerLevels, theme);
+
   return {
     content: css({
       label: 'page-content',
       display: 'flex',
       flexDirection: 'column',
-      paddingTop: headerLevels * headerHeight,
+      paddingTop: headerHeight,
       flexGrow: 1,
       height: 'auto',
     }),
@@ -295,7 +299,7 @@ const getStyles = (theme: GrafanaTheme2, headerLevels: number, headerHeight: num
       height: '100%',
       position: 'fixed',
       top: 0,
-      width: MENU_WIDTH,
+      width: menuWidth,
       zIndex: 2,
 
       [theme.breakpoints.up('xl')]: {
@@ -310,10 +314,10 @@ const getStyles = (theme: GrafanaTheme2, headerLevels: number, headerHeight: num
     }),
     scopesDashboardsContainerDocked: css(
       {
-        left: MENU_WIDTH,
+        left: menuWidth,
       },
       visualRefreshEnabled && {
-        left: `calc(${MENU_WIDTH} + ${theme.spacing(0.5)})`,
+        left: `calc(${menuWidth} + ${theme.spacing(0.5)})`,
       }
     ),
     topNav: css({
@@ -326,7 +330,7 @@ const getStyles = (theme: GrafanaTheme2, headerLevels: number, headerHeight: num
       flexDirection: 'column',
     }),
     topNavMenuDocked: css({
-      left: MENU_WIDTH,
+      left: menuWidth,
     }),
     panes: css({
       display: 'flex',
@@ -340,10 +344,10 @@ const getStyles = (theme: GrafanaTheme2, headerLevels: number, headerHeight: num
       position: 'relative',
     }),
     pageContainerMenuDocked: css({
-      paddingLeft: MENU_WIDTH,
+      paddingLeft: menuWidth,
     }),
     pageContainerMenuDockedScopes: css({
-      paddingLeft: `calc(${MENU_WIDTH} * 2)`,
+      paddingLeft: `calc(${menuWidth} * 2)`,
     }),
     pageContainer: css({
       label: 'page-container',

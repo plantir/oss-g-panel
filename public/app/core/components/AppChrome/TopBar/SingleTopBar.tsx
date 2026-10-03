@@ -31,7 +31,7 @@ import { SignInLink } from './SignInLink';
 import { SingleTopBarActions } from './SingleTopBarActions';
 import { TopBarExtensionPoint } from './TopBarExtensionPoint';
 import { TopSearchBarCommandPaletteTrigger } from './TopSearchBarCommandPaletteTrigger';
-import { getChromeHeaderLevelHeight } from './useChromeHeaderHeight';
+import { getChromeTopBarHeight } from './useChromeHeaderHeight';
 
 interface Props {
   sectionNav: NavModelItem;
@@ -123,7 +123,7 @@ export const SingleTopBar = memo(function SingleTopBar({
 
 const getStyles = (theme: GrafanaTheme2, menuDockedAndOpen: boolean, visualRefreshEnabled: boolean) => ({
   layout: css({
-    height: getChromeHeaderLevelHeight(),
+    height: getChromeTopBarHeight(theme),
     display: 'flex',
     gap: theme.spacing(2),
     alignItems: 'center',

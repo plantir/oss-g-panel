@@ -9,7 +9,7 @@ import { useHomeNav } from 'app/core/hooks/useHomeNav';
 
 import { HomeLogo, HomeTitle } from '../../Branding/Branding';
 import { OrganizationSwitcher } from '../OrganizationSwitcher/OrganizationSwitcher';
-import { getChromeHeaderLevelHeight } from '../TopBar/useChromeHeaderHeight';
+import { getChromeTopBarHeight } from '../TopBar/useChromeHeaderHeight';
 
 export interface Props {
   handleDockedMenu: () => void;
@@ -76,7 +76,7 @@ const getStyles = (theme: GrafanaTheme2, visualRefreshEnabled: boolean) => ({
     gap: theme.spacing(1),
     justifyContent: 'space-between',
     padding: theme.spacing(0, 1, 0, 1),
-    height: getChromeHeaderLevelHeight(),
+    height: getChromeTopBarHeight(theme),
     flexShrink: 0,
   }),
   flexGrow: css({ flexGrow: 1 }),

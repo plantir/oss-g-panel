@@ -12,8 +12,9 @@ import { useFlagGrafanaVisualDesignRefresh } from '@grafana/runtime/internal';
 import { useStyles2, useTheme2 } from '@grafana/ui';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 
-import { MegaMenu, MENU_WIDTH } from './MegaMenu/MegaMenu';
-import { getChromeHeaderLevelHeight } from './TopBar/useChromeHeaderHeight';
+import { MegaMenu } from './MegaMenu/MegaMenu';
+import { getMegaMenuWidth } from './MegaMenu/megaMenuWidth';
+import { getChromeTopBarHeight } from './TopBar/useChromeHeaderHeight';
 
 interface Props {}
 
@@ -89,7 +90,7 @@ const getStyles = (theme: GrafanaTheme2, visualRefreshEnabled: boolean) => {
       left: 0,
       position: 'fixed',
       right: 0,
-      top: `${getChromeHeaderLevelHeight()}px`,
+      top: `${getChromeTopBarHeight(theme)}px`,
       zIndex: theme.zIndex.modalBackdrop,
     }),
     menu: css({
@@ -101,7 +102,7 @@ const getStyles = (theme: GrafanaTheme2, visualRefreshEnabled: boolean) => {
       // Needs to below navbar should we change the navbarFixed? add add a new level?
       zIndex: theme.zIndex.modal,
       position: 'fixed',
-      top: `${getChromeHeaderLevelHeight()}px`,
+      top: `${getChromeTopBarHeight(theme)}px`,
       borderRight: `1px solid ${theme.colors.border.weak}`,
       backgroundColor: visualRefreshEnabled ? theme.colors.background.canvas : theme.colors.background.primary,
       flex: '1 1 0',
@@ -150,7 +151,7 @@ const getAnimStyles = (theme: GrafanaTheme2, animationDuration: number, visualRe
     [theme.breakpoints.up('md')]: {
       borderRight: visualRefreshEnabled ? undefined : `1px solid ${theme.colors.border.weak}`,
       boxShadow: theme.shadows.z3,
-      width: MENU_WIDTH,
+      width: getMegaMenuWidth(theme),
     },
   };
 

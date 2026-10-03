@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { config, useScopes } from '@grafana/runtime';
+import { useTheme2 } from '@grafana/ui';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 import { useMediaQueryMinWidth } from 'app/core/hooks/useMediaQueryMinWidth';
 
@@ -77,6 +79,7 @@ function getHeaderLevelsGivenState(
  */
 export function useChromeHeaderHeight() {
   const levels = useChromeHeaderLevels();
+  const theme = useTheme2();
 
   // if the extension sidebar is open, the inner pane will be scrollable, thus we need to set the header height to 0
   const { isOpen: isExtensionSidebarOpen } = useExtensionSidebarContext();
@@ -85,7 +88,7 @@ export function useChromeHeaderHeight() {
     return 0;
   }
 
-  return levels * getChromeHeaderLevelHeight();
+  return getChromeTotalHeaderHeight(levels, theme);
 }
 
 /**
@@ -94,4 +97,24 @@ export function useChromeHeaderHeight() {
 export function getChromeHeaderLevelHeight() {
   // Waiting with switch to 48 until we have a story for scopes
   return config.featureToggles.unifiedNavbars || config.featureToggles.dashboardNewLayouts ? 48 : 40;
+}
+
+/** Fluent frames use a 40px top bar regardless of unifiedNavbars. */
+export function getChromeTopBarHeight(theme: GrafanaTheme2) {
+  return hasSolidBrandGradient(theme) ? 40 : getChromeHeaderLevelHeight();
+}
+
+/** Fluent dashboard controls row is 48px; stock themes keep the shared header level height. */
+export function getChromeActionsBarHeight(theme: GrafanaTheme2) {
+  return hasSolidBrandGradient(theme) ? 48 : getChromeHeaderLevelHeight();
+}
+
+export function getChromeTotalHeaderHeight(levels: number, theme: GrafanaTheme2) {
+  if (levels <= 0) {
+    return 0;
+  }
+  if (levels === 1) {
+    return getChromeTopBarHeight(theme);
+  }
+  return getChromeTopBarHeight(theme) + getChromeActionsBarHeight(theme);
 }
