@@ -1,0 +1,67 @@
+{
+  "name": "Fluent Dark",
+  "id": "fluent_dark",
+  "colors": {
+    "mode": "dark",
+    "primary": {
+      "main": "#479ef5"
+    },
+    "info": {
+      "main": "#479ef5"
+    },
+    "error": {
+      "main": "#dc626d"
+    },
+    "warning": {
+      "main": "#faa06b"
+    },
+    "success": {
+      "main": "#54b054"
+    },
+    "text": {
+      "primary": "#ffffff",
+      "secondary": "#d6d6d6",
+      "disabled": "#5c5c5c"
+    },
+    "background": {
+      "canvas": "#141414",
+      "primary": "#1f1f1f",
+      "secondary": "#292929"
+    },
+    "border": {
+      "weak": "#333333",
+      "medium": "#666666",
+      "strong": "#adadad"
+    }
+  },
+  "typography": {
+    "fontFamily": "\"Segoe UI Variable\", \"Segoe UI\", -apple-system, BlinkMacSystemFont, Roboto, \"Helvetica Neue\", sans-serif",
+    "fontFamilyMonospace": "Consolas, \"Courier New\", Courier, monospace",
+    "fontSize": 14,
+    "htmlFontSize": 16
+  },
+  "shape": {
+    "borderRadiusSm": 2,
+    "borderRadius": 4,
+    "borderRadiusLg": 8
+  },
+  "shadows": {
+    "z1": "0 0 2px rgba(0,0,0,0.24), 0 2px 4px rgba(0,0,0,0.28)",
+    "z2": "0 0 2px rgba(0,0,0,0.24), 0 8px 16px rgba(0,0,0,0.28)",
+    "z3": "0 0 8px rgba(0,0,0,0.24), 0 32px 64px rgba(0,0,0,0.28)"
+  },
+  "visualization": {
+    "palette": [
+      "#0f6cbd",
+      "#c239b3",
+      "#13a10e",
+      "#ca5010",
+      "#4f6bed",
+      "#038387",
+      "#8764b8",
+      "#c19c00",
+      "#d13438",
+      "#00b7c3"
+    ]
+  }
+}
