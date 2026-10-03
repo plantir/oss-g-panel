@@ -10,7 +10,7 @@ test.describe(
       await page.goto('/');
 
       // Wait for the page to load
-      await expect(page.getByText('Welcome to Grafana')).toBeVisible();
+      await expect(page.getByText('Welcome to Monitor Panel')).toBeVisible();
     });
 
     test('sequence shortcuts should work', async ({ page, selectors }) => {
@@ -26,7 +26,7 @@ test.describe(
 
       // Navigate back to home with 'gh' shortcut
       await page.keyboard.type('gh');
-      await expect(page.getByText('Welcome to Grafana')).toBeVisible();
+      await expect(page.getByText('Welcome to Monitor Panel')).toBeVisible();
     });
 
     test('ctrl+z should zoom out the time range', async ({ page, selectors }) => {

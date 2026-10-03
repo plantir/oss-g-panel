@@ -108,17 +108,12 @@ describe('enrichConfigItems', () => {
     const helpNode = getEnrichedHelpItem(mockHelpNode);
     expect(helpNode.children).toContainEqual(
       expect.objectContaining({
+        text: 'Source code (AGPL-3.0)',
+      })
+    );
+    expect(helpNode.children).not.toContainEqual(
+      expect.objectContaining({
         text: 'Documentation',
-      })
-    );
-    expect(helpNode.children).toContainEqual(
-      expect.objectContaining({
-        text: 'Support',
-      })
-    );
-    expect(helpNode.children).toContainEqual(
-      expect.objectContaining({
-        text: 'Community',
       })
     );
     expect(helpNode.children).toContainEqual(

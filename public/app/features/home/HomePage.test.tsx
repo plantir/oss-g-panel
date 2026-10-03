@@ -95,7 +95,7 @@ describe('HomePage', () => {
     config.buildInfo.edition = GrafanaEdition.OpenSource;
 
     render(<HomePage />);
-    expect(await screen.findByText('Welcome to Grafana.')).toBeInTheDocument();
+    expect(await screen.findByText('Welcome to Monitor Panel.')).toBeInTheDocument();
   });
 
   it('renders dashboard tabs and auto-switches to starred', async () => {
@@ -111,14 +111,14 @@ describe('HomePage', () => {
     config.buildInfo.edition = GrafanaEdition.Enterprise;
 
     render(<HomePage />);
-    expect(await screen.findByText('Welcome to Grafana Enterprise.')).toBeInTheDocument();
+    expect(await screen.findByText('Welcome to Monitor Panel.')).toBeInTheDocument();
   });
 
   it('renders the Cloud welcome message', async () => {
     config.namespace = 'stacks-12345';
 
     render(<HomePage />);
-    expect(await screen.findByText('Welcome to Grafana Cloud.')).toBeInTheDocument();
+    expect(await screen.findByText('Welcome to Monitor Panel.')).toBeInTheDocument();
   });
 
   it('renders homepage assistant extension components', async () => {

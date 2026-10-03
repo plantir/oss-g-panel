@@ -2,14 +2,13 @@ import { css } from '@emotion/css';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 
 import { PageLayoutType, PluginExtensionPoints } from '@grafana/data';
-import { GrafanaEdition } from '@grafana/data/internal';
 import { t } from '@grafana/i18n';
 import { config, renderLimitedComponents, usePluginComponents } from '@grafana/runtime';
 import { useFlagGrafanaGrowthHomepage } from '@grafana/runtime/internal';
 import { Grid, Stack, useStyles2 } from '@grafana/ui';
+import { Branding } from 'app/core/components/Branding/Branding';
 import { Page } from 'app/core/components/Page/Page';
 import { ASSISTANT_PLUGIN_ID, SETUPGUIDE_PLUGIN_ID } from 'app/core/constants';
-import { isOnPrem } from 'app/core/utils/isOnPrem';
 
 import { AlertIncidentTabs, type AlertIncidentSwitchHandle } from './AlertsIncidents/AlertIncidentTabs';
 import { FiringAlertsCard } from './AlertsIncidents/FiringAlertsCard';
@@ -27,17 +26,7 @@ import { Recommendations } from './Recommendations/Recommendations';
 import { homepageViewed } from './analytics/main';
 import useHomeGreeting from './useHomeGreeting';
 
-const getEdition = () => {
-  if (!isOnPrem()) {
-    return t('home.home-page.edition.cloud', 'Grafana Cloud');
-  }
-
-  if (config.buildInfo.edition === GrafanaEdition.Enterprise) {
-    return t('home.home-page.edition.enterprise', 'Grafana Enterprise');
-  }
-
-  return t('home.home-page.edition.open-source', 'Grafana');
-};
+const getEdition = () => Branding.AppTitle;
 
 /**
  * Renders nothing; reports a view on mount. Inside a Suspense boundary, React defers

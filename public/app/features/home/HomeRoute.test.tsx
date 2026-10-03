@@ -91,7 +91,7 @@ describe('HomeRoute', () => {
 
     render(<HomeRoute {...props} />);
 
-    expect(await screen.findByText(/Welcome to Grafana/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Welcome to Monitor Panel/i)).toBeInTheDocument();
     expect(jest.mocked(homepageViewed)).toHaveBeenCalledTimes(1);
   });
 
@@ -100,7 +100,7 @@ describe('HomeRoute', () => {
 
     render(<HomeRoute {...props} />);
 
-    expect(await screen.findByText(/Welcome to Grafana/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Welcome to Monitor Panel/i)).toBeInTheDocument();
     expect(jest.mocked(homepageViewed)).toHaveBeenCalledTimes(1);
   });
 
@@ -131,7 +131,7 @@ describe('HomeRoute', () => {
 
     render(<HomeRoute {...props} />);
 
-    expect(await screen.findByText(/Welcome to Grafana/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Welcome to Monitor Panel/i)).toBeInTheDocument();
     expect(jest.mocked(homepageViewed)).toHaveBeenCalledTimes(1);
   });
 
