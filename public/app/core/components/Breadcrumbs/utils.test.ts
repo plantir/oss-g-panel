@@ -1,6 +1,6 @@
 import { type NavModelItem } from '@grafana/data';
 
-import { buildBreadcrumbs } from './utils';
+import { applyFluentBreadcrumbs, buildBreadcrumbs } from './utils';
 
 const mockHomeNav: NavModelItem = {
   text: 'Home',
@@ -133,6 +133,31 @@ describe('breadcrumb utils', () => {
       expect(buildBreadcrumbs(sectionNav, pageNav, mockHomeNav)).toEqual([
         { text: 'My section', href: '/my-section?from=1h&to=now' },
         { text: 'My page', href: '/my-page' },
+      ]);
+    });
+  });
+
+  describe('applyFluentBreadcrumbs', () => {
+    it('prepends Home and drops dashboard-folder crumbs', () => {
+      expect(
+        applyFluentBreadcrumbs(
+          [
+            { text: 'Dashboards', href: '/dashboards' },
+            { text: 'Infrastructure', href: '/dashboards/f/infra/infrastructure' },
+            { text: 'Node Exporter Full', href: '/d/node-exporter-full/node-exporter-full' },
+          ],
+          mockHomeNav
+        )
+      ).toEqual([
+        { text: 'Home', href: '/home' },
+        { text: 'Dashboards', href: '/dashboards' },
+        { text: 'Node Exporter Full', href: '/d/node-exporter-full/node-exporter-full' },
+      ]);
+    });
+
+    it('leaves stock-shaped crumbs unchanged when home nav is missing', () => {
+      expect(applyFluentBreadcrumbs([{ text: 'Dashboards', href: '/dashboards' }])).toEqual([
+        { text: 'Dashboards', href: '/dashboards' },
       ]);
     });
   });

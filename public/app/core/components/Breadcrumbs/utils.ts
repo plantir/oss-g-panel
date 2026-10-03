@@ -59,3 +59,17 @@ export function buildBreadcrumbs(sectionNav: NavModelItem, pageNav?: NavModelIte
 
   return crumbs;
 }
+
+const FOLDER_CRUMB_HREF = /\/dashboards\/f\//;
+
+/**
+ * Fluent chrome prepends Home (stock uses the logo) and omits dashboard-folder
+ * crumbs so Home > Dashboards > <title> stay fully visible at 1440px.
+ */
+export function applyFluentBreadcrumbs(crumbs: Breadcrumb[], homeNav?: NavModelItem): Breadcrumb[] {
+  const withoutFolders = crumbs.filter((crumb) => !FOLDER_CRUMB_HREF.test(crumb.href));
+  if (!homeNav) {
+    return withoutFolders;
+  }
+  return [{ text: homeNav.text || 'Home', href: homeNav.url ?? '/' }, ...withoutFolders];
+}

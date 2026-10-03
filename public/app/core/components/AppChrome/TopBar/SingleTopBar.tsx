@@ -17,7 +17,7 @@ import { useSelector } from 'app/types/store';
 
 import { HomeLogo } from '../../Branding/Branding';
 import { Breadcrumbs } from '../../Breadcrumbs/Breadcrumbs';
-import { buildBreadcrumbs } from '../../Breadcrumbs/utils';
+import { applyFluentBreadcrumbs, buildBreadcrumbs } from '../../Breadcrumbs/utils';
 import { ExtensionToolbarItem } from '../ExtensionSidebar/ExtensionToolbarItem';
 import { FeatureControlButton } from '../FeatureControl/FeatureControlButton';
 import { AssistantToolbarButtons } from '../FullscreenWorkspace/AssistantToolbarButtons';
@@ -63,9 +63,9 @@ export const SingleTopBar = memo(function SingleTopBar({
   const profileNode = useSelector((state) => state.navIndex['profile']);
   const homeNav = useHomeNav();
   const sectionCrumbs = buildBreadcrumbs(sectionNav, pageNav, homeNav);
-  // Stock chrome uses the logo as Home. Fluent always surfaces Home as the first crumb.
-  const breadcrumbs =
-    fluent && homeNav ? [{ text: homeNav.text || 'Home', href: homeNav.url ?? '/' }, ...sectionCrumbs] : sectionCrumbs;
+  // Stock chrome uses the logo as Home. Fluent prepends Home and drops folder crumbs
+  // so Home > Dashboards > <title> fit at 1440px (Figma omits the folder crumb).
+  const breadcrumbs = fluent ? applyFluentBreadcrumbs(sectionCrumbs, homeNav) : sectionCrumbs;
   const isSmallScreen = !useMediaQueryMinWidth('sm');
   const isLargeScreen = useMediaQueryMinWidth('lg');
   const topLevelScopes = !showToolbarLevel && isLargeScreen && scopes?.state.enabled;
