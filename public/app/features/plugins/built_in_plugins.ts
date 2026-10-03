@@ -8,6 +8,8 @@ const mixedPlugin = async () =>
   await import(/* webpackChunkName: "mixedPlugin" */ 'app/plugins/datasource/mixed/module');
 const alertmanagerPlugin = async () =>
   await import(/* webpackChunkName: "alertmanagerPlugin" */ 'app/plugins/datasource/alertmanager/module');
+const testdataPlugin = async () =>
+  await import(/* webpackChunkName: "testdataPlugin" */ 'app/plugins/datasource/grafana-testdata-datasource/module');
 
 // Async loaded panels
 const alertListPanel = async () =>
@@ -67,6 +69,7 @@ const builtInPlugins: Record<string, System.Module | (() => Promise<System.Modul
   'core:plugin/grafana': grafanaPlugin,
   'core:plugin/mixed': mixedPlugin,
   'core:plugin/alertmanager': alertmanagerPlugin,
+  'core:plugin/grafana-testdata-datasource': testdataPlugin,
   // panels
   'core:plugin/text': textPanel,
   'core:plugin/timeseries': timeseriesPanel,
