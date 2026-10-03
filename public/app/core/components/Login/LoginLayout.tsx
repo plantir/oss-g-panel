@@ -183,13 +183,13 @@ export const getLoginStyles = (theme: GrafanaTheme2) => {
       justifyContent: 'center',
     }),
     loginInnerBox: css({
-      padding: theme.spacing(0, 2, 2, 2),
+      padding: fluent ? 0 : theme.spacing(0, 2, 2, 2),
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       flexGrow: 1,
-      maxWidth: 415,
+      maxWidth: fluent ? '100%' : 415,
       width: '100%',
       transform: 'translate(0px, 0px)',
       [theme.transitions.handleMotion('no-preference')]: {
