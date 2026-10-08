@@ -1,13 +1,15 @@
 import { css, cx } from '@emotion/css';
 import { memo, useId } from 'react';
 
-import { type GrafanaTheme2, type TimeOption } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type TimeOption } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2 } from '../../../themes/ThemeContext';
 import { getFocusStyles } from '../../../themes/mixins';
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
+
   return {
     container: css({
       display: 'flex',
@@ -35,17 +37,21 @@ const getStyles = (theme: GrafanaTheme2) => {
     labelSelected: css({
       background: theme.colors.action.selected,
 
-      '&::before': {
-        backgroundImage: theme.colors.gradients.brandVertical,
-        borderRadius: theme.shape.radius.default,
-        content: '" "',
-        display: 'block',
-        height: '100%',
-        position: 'absolute',
-        width: theme.spacing(0.5),
-        left: 0,
-        top: 0,
-      },
+      '&::before': fluent
+        ? {
+            display: 'none',
+          }
+        : {
+            backgroundImage: theme.colors.gradients.brandVertical,
+            borderRadius: theme.shape.radius.default,
+            content: '" "',
+            display: 'block',
+            height: '100%',
+            position: 'absolute',
+            width: theme.spacing(0.5),
+            left: 0,
+            top: 0,
+          },
     }),
   };
 };

@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import { useMemo } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { t } from '@grafana/i18n';
 
 import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
@@ -24,6 +24,7 @@ interface Props {
 export const TagItem = ({ name, disabled, onRemove, autoColors = true }: Props) => {
   const theme = useTheme2();
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const fluent = hasSolidBrandGradient(theme);
   const styles = useStyles2(getStyles);
 
   // If configured, use random colors based on name.
@@ -38,9 +39,9 @@ export const TagItem = ({ name, disabled, onRemove, autoColors = true }: Props) 
 
   return (
     <li
-      className={cx(styles.itemStyle, !tagColors && styles.defaultTagColor)}
+      className={cx(styles.itemStyle, (!tagColors || fluent) && styles.defaultTagColor)}
       style={
-        tagColors
+        tagColors && !fluent
           ? visualRefreshEnabled
             ? { backgroundColor: tagColors.background, color: tagColors.text }
             : { backgroundColor: tagColors.background, borderColor: theme.colors.emphasize(tagColors.background, 0.2) }
@@ -63,6 +64,7 @@ export const TagItem = ({ name, disabled, onRemove, autoColors = true }: Props) 
 const getStyles = (theme: GrafanaTheme2) => {
   const height = theme.spacing.gridSize * 3;
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const fluent = hasSolidBrandGradient(theme);
 
   return {
     itemStyle: css({
@@ -77,7 +79,7 @@ const getStyles = (theme: GrafanaTheme2) => {
       padding: `0 ${theme.spacing(0.5)}`,
       whiteSpace: 'nowrap',
       textShadow: 'none',
-      fontWeight: 500,
+      fontWeight: fluent ? theme.typography.fontWeightRegular : 500,
       fontSize: theme.typography.size.sm,
       color: '#fff',
     }),

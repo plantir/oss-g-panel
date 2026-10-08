@@ -97,6 +97,18 @@ describe('createTheme', () => {
     expect(theme.shape.radius.lg).toBe('8px');
     expect(theme.typography.fontFamily).toContain('Segoe UI');
     expect(theme.typography.fontFamilyMonospace).toContain('Consolas');
+    expect(theme.typography.fontWeightMedium).toBe(600);
+    expect(theme.typography.fontWeightBold).toBe(700);
+    expect(theme.typography.h1.fontWeight).toBe(600);
+    expect(theme.typography.body.fontWeight).toBe(400);
+    expect(theme.colors.accent.main).toBe('#0f6cbd');
+    expect(theme.colors.secondary.border).toBe('#d1d1d1');
+    expect(theme.colors.action.selectedBorder).toBe('#0f6cbd');
+    expect(theme.components.menu.borderRadius).toBe('default');
+    expect(theme.components.overlay.background).toBe('rgba(0, 0, 0, 0.4)');
+    expect(theme.colors.scrollbar).toBe('#8f8f8f');
+    expect(theme.components.table.rowHoverBackground).toBe('#f5f5f5');
+    expect(theme.components.table.rowSelected).toBe('#ebebeb');
     expect(theme.shadows.z3).toContain('32px 64px');
   });
 
@@ -123,6 +135,11 @@ describe('createTheme', () => {
     expect(theme.components.panel.borderColor).toBe('#333333');
     expect(theme.shape.radius.default).toBe('4px');
     expect(theme.typography.fontFamilyMonospace).toContain('Consolas');
+    expect(theme.typography.fontWeightMedium).toBe(600);
+    expect(theme.typography.h3.fontWeight).toBe(600);
+    expect(theme.colors.accent.main).toBe('#479ef5');
+    expect(theme.colors.accent.contrastText).toBe('#000000');
+    expect(theme.components.menu.borderRadius).toBe('default');
   });
 
   it('detects solid Fluent brand fills without changing stock themes', () => {

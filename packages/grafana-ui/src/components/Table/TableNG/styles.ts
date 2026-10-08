@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { type Property } from 'csstype';
 import memoize, { type Key, type RawKey } from 'micro-memoize';
 
-import { type GrafanaTheme2, colorManipulator } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, colorManipulator } from '@grafana/data';
 
 import { COLUMN, TABLE } from './constants';
 import { type TableCellStyles } from './types';
@@ -43,6 +43,7 @@ export const isTableCellStylesKeyEqual = (cacheKey: Key, key: RawKey): boolean =
   cacheKey[1].textWrap === key[1].textWrap;
 
 export const getGridStyles = memoize((theme: GrafanaTheme2, enablePagination?: boolean, transparent?: boolean) => {
+  const fluent = hasSolidBrandGradient(theme);
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
   let bgColor = transparent ? theme.colors.background.canvas : theme.colors.background.primary;
   if (visualRefreshEnabled) {
@@ -51,16 +52,23 @@ export const getGridStyles = memoize((theme: GrafanaTheme2, enablePagination?: b
   // this needs to be pre-calc'd since the theme colors have alpha and the border color becomes
   // unpredictable for background color cells
   const borderColor = colorManipulator.onBackground(theme.colors.border.weak, bgColor).toHexString();
-  const selectedRowColor = theme.isDark
-    ? colorManipulator.onBackground(theme.colors.warning.main, bgColor).darken(37).toHexString()
-    : colorManipulator.onBackground(theme.colors.warning.main, bgColor).lighten(25).toHexString();
+  const selectedRowColor = fluent
+    ? theme.components.table.rowSelected
+    : theme.isDark
+      ? colorManipulator.onBackground(theme.colors.warning.main, bgColor).darken(37).toHexString()
+      : colorManipulator.onBackground(theme.colors.warning.main, bgColor).lighten(25).toHexString();
 
   const selectedRowHoverColor = theme.colors.emphasize(selectedRowColor, 0.05);
+  const rowHoverColor = fluent
+    ? theme.components.table.rowHoverBackground
+    : transparent
+      ? theme.colors.background.primary
+      : theme.colors.background.secondary;
 
   return {
     grid: css({
       '--rdg-background-color': bgColor,
-      '--rdg-header-background-color': bgColor,
+      '--rdg-header-background-color': fluent ? theme.colors.background.secondary : bgColor,
       '--rdg-border-color': borderColor,
       '--rdg-color': theme.colors.text.primary,
       '--rdg-summary-border-color': borderColor,
@@ -71,9 +79,7 @@ export const getGridStyles = memoize((theme: GrafanaTheme2, enablePagination?: b
       // note: this cannot have any transparency since default cells that
       // overlay/overflow on hover inherit this background and need to occlude cells below
       '--rdg-row-background-color': bgColor,
-      '--rdg-row-hover-background-color': transparent
-        ? theme.colors.background.primary
-        : theme.colors.background.secondary,
+      '--rdg-row-hover-background-color': rowHoverColor,
       '--rdg-row-selected-background-color': selectedRowColor,
       '--rdg-row-selected-hover-background-color': selectedRowHoverColor,
 
@@ -99,7 +105,7 @@ export const getGridStyles = memoize((theme: GrafanaTheme2, enablePagination?: b
 
       // add a box shadow on hover and selection for all body cells
       '& > :not(.rdg-summary-row, .rdg-header-row) > .rdg-cell': {
-        [getActiveCellSelector()]: { boxShadow: theme.shadows.z2 },
+        [getActiveCellSelector()]: { boxShadow: fluent ? 'none' : theme.shadows.z2 },
         // selected cells should appear below hovered cells.
         ...(!IS_SAFARI_26 && { '&:hover': { zIndex: theme.zIndex.tooltip - 7 } }),
         '&[aria-selected=true]': { zIndex: theme.zIndex.tooltip - 6 },
@@ -126,6 +132,11 @@ export const getGridStyles = memoize((theme: GrafanaTheme2, enablePagination?: b
 
       '.rdg-header-row, .rdg-summary-row': {
         '.rdg-cell': {
+          ...(fluent && {
+            color: theme.colors.text.secondary,
+            fontWeight: theme.typography.fontWeightMedium,
+            borderBlockEnd: `1px solid ${theme.colors.border.medium}`,
+          }),
           zIndex: theme.zIndex.tooltip - 5,
           '&.rdg-cell-frozen': {
             zIndex: theme.zIndex.tooltip - 1,
@@ -142,7 +153,7 @@ export const getGridStyles = memoize((theme: GrafanaTheme2, enablePagination?: b
           height: '100%',
           minHeight: 'fit-content',
           overflowY: 'visible',
-          boxShadow: theme.shadows.z2,
+          boxShadow: fluent ? 'none' : theme.shadows.z2,
         },
       },
     }),
@@ -176,7 +187,7 @@ export const getGridStyles = memoize((theme: GrafanaTheme2, enablePagination?: b
     }),
     headerRow: css({
       paddingBlockStart: 0,
-      fontWeight: 'normal',
+      fontWeight: fluent ? theme.typography.fontWeightMedium : 'normal',
       '& .rdg-cell': { height: '100%', alignItems: 'flex-end' },
     }),
     displayNone: css({ display: 'none' }),

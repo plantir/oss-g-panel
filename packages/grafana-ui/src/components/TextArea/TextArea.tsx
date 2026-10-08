@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import { forwardRef, type HTMLProps } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { useFieldContext } from '../Forms/FieldContext';
@@ -58,7 +58,9 @@ const getTextAreaStyle = (theme: GrafanaTheme2, invalid = false) => ({
       borderRadius: theme.shape.radius.default,
       padding: `${theme.spacing.gridSize / 4}px ${theme.spacing.gridSize}px`,
       width: '100%',
-      borderColor: invalid ? theme.colors.error.border : theme.components.input.borderColor,
+      ...(!hasSolidBrandGradient(theme) && {
+        borderColor: invalid ? theme.colors.error.border : theme.components.input.borderColor,
+      }),
     })
   ),
 });

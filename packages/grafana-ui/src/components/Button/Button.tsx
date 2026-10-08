@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import { type AnchorHTMLAttributes, type ButtonHTMLAttributes } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2, textUtil, type ThemeRichColor } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, textUtil, type ThemeRichColor } from '@grafana/data';
 
 import { useTheme2 } from '../../themes/ThemeContext';
 import { getButtonFocusStyles, getMouseFocusStyles } from '../../themes/mixins';
@@ -328,7 +328,94 @@ export function getActiveButtonStyles(color: ThemeRichColor, fill: ButtonFill, v
   };
 }
 
+function getFluentButtonVariantStyles(theme: GrafanaTheme2, color: ThemeRichColor, fill: ButtonFill) {
+  const pressed = theme.colors.emphasize(color.shade, 0.12);
+
+  if (fill === 'text') {
+    const text = color.name === 'secondary' ? theme.colors.text.primary : color.text;
+
+    return {
+      background: 'transparent',
+      color: text,
+      border: '1px solid transparent',
+
+      '&:hover': {
+        background: theme.colors.action.hover,
+        color: color.name === 'secondary' ? theme.colors.text.primary : color.textEmphasis,
+        boxShadow: 'none',
+      },
+
+      '&:focus': {
+        background: 'transparent',
+        color: text,
+      },
+
+      '&:active': {
+        background: theme.colors.action.selected,
+      },
+    };
+  }
+
+  if (fill === 'outline' || color.name === 'secondary') {
+    const brandOutline = fill === 'outline' && color.name !== 'secondary';
+    const borderRest = brandOutline ? color.main : theme.components.input.borderColor;
+    const borderBottom = brandOutline ? color.main : theme.colors.border.strong;
+    const text = brandOutline ? color.text : theme.colors.text.primary;
+
+    return {
+      background: theme.colors.background.primary,
+      color: text,
+      border: `1px solid ${borderRest}`,
+      borderBottomColor: borderBottom,
+
+      '&:hover': {
+        background: theme.colors.action.hover,
+        color: brandOutline ? color.textEmphasis : theme.colors.text.primary,
+        borderColor: brandOutline ? color.shade : theme.components.input.borderColor,
+        borderBottomColor: brandOutline ? color.shade : theme.colors.text.primary,
+        boxShadow: 'none',
+      },
+
+      '&:focus': {
+        background: theme.colors.background.primary,
+        color: text,
+      },
+
+      '&:active': {
+        background: theme.colors.action.selected,
+      },
+    };
+  }
+
+  return {
+    background: color.main,
+    color: color.contrastText,
+    border: '1px solid transparent',
+
+    '&:hover': {
+      background: color.shade,
+      color: color.contrastText,
+      borderColor: 'transparent',
+      boxShadow: 'none',
+    },
+
+    '&:focus': {
+      background: color.main,
+      color: color.contrastText,
+    },
+
+    '&:active': {
+      background: pressed,
+      color: color.contrastText,
+    },
+  };
+}
+
 function getButtonVariantStyles(theme: GrafanaTheme2, color: ThemeRichColor, fill: ButtonFill) {
+  if (hasSolidBrandGradient(theme)) {
+    return getFluentButtonVariantStyles(theme, color, fill);
+  }
+
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
   let outlineBorderColor = color.border;
   let borderColor = visualRefreshEnabled ? color.border : 'transparent';

@@ -1,8 +1,10 @@
 import { css } from '@emotion/css';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 export const getModalStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
+
   return {
     modal: css({
       position: 'fixed',
@@ -44,8 +46,8 @@ export const getModalStyles = (theme: GrafanaTheme2) => {
       label: 'modalHeader',
       display: 'flex',
       alignItems: 'center',
-      minHeight: '42px',
-      margin: theme.spacing(1, 2, 0, 2),
+      minHeight: fluent ? '48px' : '42px',
+      margin: fluent ? theme.spacing(1, 3, 0, 3) : theme.spacing(1, 2, 0, 2),
       [theme.breakpoints.down('sm')]: {
         margin: theme.spacing(0, 1, 0, 1),
       },
@@ -54,12 +56,13 @@ export const getModalStyles = (theme: GrafanaTheme2) => {
       borderBottom: `1px solid ${theme.colors.border.weak}`,
     }),
     modalHeaderTitle: css({
-      fontSize: theme.typography.size.lg,
+      fontSize: fluent ? theme.typography.h4.fontSize : theme.typography.size.lg,
+      fontWeight: fluent ? theme.typography.fontWeightMedium : undefined,
       margin: theme.spacing(0, 4, 0, 1),
       display: 'flex',
       alignItems: 'center',
       position: 'relative',
-      top: '2px',
+      top: fluent ? 0 : '2px',
     }),
     modalHeaderIcon: css({
       marginRight: theme.spacing(2),
@@ -78,7 +81,7 @@ export const getModalStyles = (theme: GrafanaTheme2) => {
     }),
     modalContent: css({
       overflow: 'auto',
-      padding: theme.spacing(3, 3, 0, 3),
+      padding: fluent ? theme.spacing(2, 3, 0, 3) : theme.spacing(3, 3, 0, 3),
       marginBottom: theme.spacing(2.5),
       scrollbarWidth: 'thin',
       width: '100%',
@@ -88,10 +91,15 @@ export const getModalStyles = (theme: GrafanaTheme2) => {
         marginBottom: theme.spacing(2),
       },
 
-      '&:focus-visible': {
-        outline: `2px solid ${theme.colors.accent.main}`,
-        outlineOffset: '-2px',
-      },
+      '&:focus-visible': fluent
+        ? {
+            outline: `2px solid ${theme.isDark ? '#ffffff' : '#000000'}`,
+            outlineOffset: '-2px',
+          }
+        : {
+            outline: `2px solid ${theme.colors.accent.main}`,
+            outlineOffset: '-2px',
+          },
     }),
     modalButtonRow: css({
       background: theme.colors.background.primary,

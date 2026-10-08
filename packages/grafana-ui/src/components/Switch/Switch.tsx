@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import { forwardRef, type HTMLProps, useId } from 'react';
 
-import { type GrafanaTheme2, deprecationWarning } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, deprecationWarning } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2 } from '../../themes/ThemeContext';
@@ -125,7 +125,9 @@ export const InlineSwitch = forwardRef<HTMLInputElement, InlineSwitchProps>(
 InlineSwitch.displayName = 'Switch';
 
 const getSwitchStyles = (theme: GrafanaTheme2, transparent?: boolean) => {
+  const fluent = hasSolidBrandGradient(theme);
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const thumb = '#ffffff';
 
   return {
     switch: css({
@@ -154,8 +156,8 @@ const getSwitchStyles = (theme: GrafanaTheme2, transparent?: boolean) => {
 
           '~ svg': {
             transform: `translate3d(${theme.spacing(2.25)}, -50%, 0)`,
-            background: theme.colors.accent.contrastText,
-            color: theme.components.switch.activeBackground,
+            background: fluent ? thumb : theme.colors.accent.contrastText,
+            color: fluent ? 'transparent' : theme.components.switch.activeBackground,
           },
         },
 
@@ -191,8 +193,12 @@ const getSwitchStyles = (theme: GrafanaTheme2, transparent?: boolean) => {
         height: '100%',
         cursor: 'pointer',
         borderRadius: theme.shape.radius.pill,
-        background: visualRefreshEnabled ? theme.colors.border.medium : theme.components.input.background,
-        border: `1px solid ${theme.components.input.borderColor}`,
+        background: fluent
+          ? theme.colors.border.strong
+          : visualRefreshEnabled
+            ? theme.colors.border.medium
+            : theme.components.input.background,
+        border: `1px solid ${fluent ? theme.colors.border.strong : theme.components.input.borderColor}`,
         [theme.transitions.handleMotion('no-preference')]: {
           transition: 'all 0.3s ease',
         },
@@ -208,8 +214,12 @@ const getSwitchStyles = (theme: GrafanaTheme2, transparent?: boolean) => {
         width: theme.spacing(1.5),
         height: theme.spacing(1.5),
         borderRadius: theme.shape.radius.circle,
-        background: visualRefreshEnabled ? theme.colors.accent.contrastText : theme.colors.text.secondary,
-        boxShadow: theme.shadows.z1,
+        background: fluent
+          ? thumb
+          : visualRefreshEnabled
+            ? theme.colors.accent.contrastText
+            : theme.colors.text.secondary,
+        boxShadow: fluent ? 'none' : theme.shadows.z1,
         left: 0,
         pointerEvents: 'none',
         top: '50%',

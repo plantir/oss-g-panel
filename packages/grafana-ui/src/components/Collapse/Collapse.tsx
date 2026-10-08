@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import { useId, useState } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { IconButton } from '../IconButton/IconButton';
@@ -11,10 +11,11 @@ const getStyles = (theme: GrafanaTheme2) => ({
   collapse: css({
     label: 'collapse',
     marginBottom: theme.spacing(1),
-    backgroundColor: theme.colors.background.primary,
-    border: `1px solid ${theme.colors.border.weak}`,
+    backgroundColor: hasSolidBrandGradient(theme) ? 'transparent' : theme.colors.background.primary,
+    border: hasSolidBrandGradient(theme) ? 'none' : `1px solid ${theme.colors.border.weak}`,
+    borderBottom: hasSolidBrandGradient(theme) ? `1px solid ${theme.colors.border.weak}` : undefined,
     position: 'relative',
-    borderRadius: theme.shape.radius.default,
+    borderRadius: hasSolidBrandGradient(theme) ? 0 : theme.shape.radius.default,
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -78,6 +79,12 @@ const getStyles = (theme: GrafanaTheme2) => ({
     padding: theme.spacing(1),
     display: 'flex',
     gap: theme.spacing(1),
+    ...(hasSolidBrandGradient(theme) && {
+      borderRadius: theme.shape.radius.default,
+      '&:hover': {
+        background: theme.colors.action.hover,
+      },
+    }),
   }),
   button: css({
     marginRight: 0,

@@ -1,16 +1,30 @@
 import { css, cx } from '@emotion/css';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { getFocusStyles } from '../../themes/mixins';
 import { type ComponentSize } from '../../types/size';
 
+/** Thick brand underline used by Fluent text fields on focus. */
+export function getFluentFieldFocusStyle(theme: GrafanaTheme2, invalid = false) {
+  const stroke = invalid ? theme.colors.error.border : theme.colors.primary.main;
+
+  return {
+    outline: 'none',
+    borderBottomColor: stroke,
+    boxShadow: `inset 0 -1px 0 0 ${stroke}`,
+  };
+}
+
 export const getFocusStyle = (theme: GrafanaTheme2) =>
-  css({
-    '&:focus': getFocusStyles(theme),
-  });
+  hasSolidBrandGradient(theme)
+    ? ''
+    : css({
+        '&:focus': getFocusStyles(theme),
+      });
 
 export const sharedInputStyle = (theme: GrafanaTheme2, invalid = false) => {
+  const fluent = hasSolidBrandGradient(theme);
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
   let borderColor = invalid ? theme.colors.error.border : theme.components.input.borderColor;
   let borderColorHover = invalid ? theme.colors.error.shade : theme.components.input.borderHover;
@@ -18,6 +32,8 @@ export const sharedInputStyle = (theme: GrafanaTheme2, invalid = false) => {
     borderColor = invalid ? theme.colors.error.border : theme.components.input.borderColor;
     borderColorHover = invalid ? theme.colors.error.borderEmphasis : theme.components.input.borderHover;
   }
+  const bottomBorder = invalid ? theme.colors.error.border : theme.colors.border.strong;
+  const bottomHover = invalid ? theme.colors.error.shade : theme.colors.text.primary;
   const background = theme.components.input.background;
   const textColor = theme.components.input.text;
 
@@ -33,6 +49,9 @@ export const sharedInputStyle = (theme: GrafanaTheme2, invalid = false) => {
       fontSize: theme.typography.size.md,
       color: textColor,
       border: `1px solid ${borderColor}`,
+      ...(fluent && {
+        borderBottomColor: bottomBorder,
+      }),
 
       '&:-webkit-autofill, &:-webkit-autofill:hover': {
         /* Welcome to 2005. This is a HACK to get rid od Chromes default autofill styling */
@@ -48,12 +67,17 @@ export const sharedInputStyle = (theme: GrafanaTheme2, invalid = false) => {
       },
 
       '&:hover': {
-        borderColor: borderColorHover,
+        borderColor: fluent ? borderColor : borderColorHover,
+        ...(fluent && {
+          borderBottomColor: bottomHover,
+        }),
       },
 
-      '&:focus': {
-        outline: 'none',
-      },
+      '&:focus': fluent
+        ? getFluentFieldFocusStyle(theme, invalid)
+        : {
+            outline: 'none',
+          },
 
       '&:disabled': {
         backgroundColor: theme.colors.action.disabledBackground,

@@ -3,7 +3,7 @@ import { autoUpdate, offset, type Side, useFloating, useTransitionStyles } from 
 import { useLayoutEffect } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
 import { type IconName } from '../../types/icon';
@@ -73,14 +73,18 @@ export function InlineToast({ referenceElement, children, suffixIcon, placement 
 }
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
+
   return {
     root: css({
       ...theme.typography.bodySmall,
       willChange: 'transform',
-      background: theme.components.tooltip.background,
-      color: theme.components.tooltip.text,
+      background: fluent ? theme.colors.background.elevated : theme.components.tooltip.background,
+      color: fluent ? theme.colors.text.primary : theme.components.tooltip.text,
+      border: fluent ? `1px solid ${theme.colors.border.weak}` : 'none',
+      boxShadow: fluent ? theme.shadows.z1 : 'none',
       padding: theme.spacing(0.5, 1.5), // get's an extra .5 of vertical padding to account for the rounded corners
-      borderRadius: theme.shape.radius.pill,
+      borderRadius: fluent ? theme.shape.radius.default : theme.shape.radius.pill,
       display: 'inline-flex',
       gap: theme.spacing(0.5),
       alignItems: 'center',

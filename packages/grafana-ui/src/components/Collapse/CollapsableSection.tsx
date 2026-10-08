@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import { type ReactNode, useId, useState } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { getFocusStyles } from '../../themes/mixins';
@@ -119,6 +119,12 @@ const collapsableSectionStyles = (theme: GrafanaTheme2) => ({
     fontSize: theme.typography.size.lg,
     padding: `${theme.spacing(0.5)} 0`,
     '&:focus-within': getFocusStyles(theme),
+    ...(hasSolidBrandGradient(theme) && {
+      borderRadius: theme.shape.radius.default,
+      '&:hover': {
+        background: theme.colors.action.hover,
+      },
+    }),
   }),
   button: css({
     all: 'unset',

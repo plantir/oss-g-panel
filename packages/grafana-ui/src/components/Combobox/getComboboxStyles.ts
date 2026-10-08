@@ -1,8 +1,8 @@
 import { css } from '@emotion/css';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
-import { getFocusStyles } from '../../themes/mixins';
+import { getCalloutChrome, getFocusStyles } from '../../themes/mixins';
 
 // We need a px font size to accurately measure the width of items.
 // This should be in sync with the body font size in the theme.
@@ -22,6 +22,8 @@ export const MENU_OPTION_HEIGHT_DESCRIPTION =
 export const POPOVER_MAX_HEIGHT = MENU_OPTION_HEIGHT * 8.5;
 
 export const getComboboxStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
+
   return {
     menuClosed: css({
       display: 'none',
@@ -34,6 +36,7 @@ export const getComboboxStyles = (theme: GrafanaTheme2) => {
       position: 'relative',
       borderRadius: theme.shape.radius.lg,
       overflow: 'hidden',
+      ...getCalloutChrome(theme),
     }),
     menuUlContainer: css({
       label: 'combobox-menu-ul-container',
@@ -107,7 +110,7 @@ export const getComboboxStyles = (theme: GrafanaTheme2) => {
     optionLabel: css({
       label: 'combobox-option-label',
       fontSize: MENU_ITEM_FONT_SIZE,
-      fontWeight: MENU_ITEM_FONT_WEIGHT,
+      fontWeight: theme.typography.fontWeightMedium,
       lineHeight: MENU_ITEM_LINE_HEIGHT,
       letterSpacing: 0,
       textOverflow: 'ellipsis',
@@ -138,17 +141,24 @@ export const getComboboxStyles = (theme: GrafanaTheme2) => {
     }),
     optionSelected: css({
       background: theme.colors.action.selected,
-      '&::before': {
-        backgroundImage: theme.colors.gradients.brandVertical,
-        borderRadius: theme.shape.radius.default,
-        content: '" "',
-        display: 'block',
-        height: '100%',
-        position: 'absolute',
-        width: theme.spacing(0.5),
-        left: 0,
-        top: 0,
-      },
+      ...(fluent && {
+        fontWeight: theme.typography.fontWeightMedium,
+      }),
+      '&::before': fluent
+        ? {
+            display: 'none',
+          }
+        : {
+            backgroundImage: theme.colors.gradients.brandVertical,
+            borderRadius: theme.shape.radius.default,
+            content: '" "',
+            display: 'block',
+            height: '100%',
+            position: 'absolute',
+            width: theme.spacing(0.5),
+            left: 0,
+            top: 0,
+          },
     }),
     optionInfo: css({
       label: 'combobox-option-info',

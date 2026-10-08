@@ -2,7 +2,7 @@ import { cx, css } from '@emotion/css';
 import * as React from 'react';
 import SVG from 'react-inlinesvg';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { t } from '@grafana/i18n';
 
 import { useStyles2 } from '../../themes/ThemeContext';
@@ -103,6 +103,9 @@ const getStyles = (theme: GrafanaTheme2) => ({
     lineHeight: 0,
   }),
   spin: css({
+    ...(hasSolidBrandGradient(theme) && {
+      color: theme.colors.primary.main,
+    }),
     [theme.transitions.handleMotion('no-preference')]: {
       animation: `${spin} 2s infinite linear`,
     },

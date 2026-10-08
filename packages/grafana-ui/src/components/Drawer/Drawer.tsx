@@ -4,7 +4,7 @@ import RcDrawer from '@rc-component/drawer';
 import { type ReactNode, useCallback, useEffect, useId, useState } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 
@@ -253,6 +253,7 @@ function useBodyClassWhileOpen() {
 
 const getStyles = (theme: GrafanaTheme2) => {
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const floating = visualRefreshEnabled || hasSolidBrandGradient(theme);
 
   return {
     container: css({
@@ -282,7 +283,7 @@ const getStyles = (theme: GrafanaTheme2) => {
         minHeight: 0,
         minWidth: 0,
       },
-      visualRefreshEnabled && {
+      floating && {
         borderBottomLeftRadius: theme.shape.radius.lg,
         borderBottomRightRadius: theme.shape.radius.lg,
         overflow: 'hidden',
@@ -298,7 +299,7 @@ const getStyles = (theme: GrafanaTheme2) => {
     drawerMotion: css({
       '&-appear': {
         [theme.transitions.handleMotion('no-preference')]: {
-          transform: visualRefreshEnabled ? `translateX(calc(100% + ${theme.spacing(1)}))` : 'translateX(100%)',
+          transform: floating ? `translateX(calc(100% + ${theme.spacing(1)}))` : 'translateX(100%)',
           transition: 'none',
         },
         [theme.transitions.handleMotion('reduce')]: {
@@ -351,7 +352,7 @@ const getStyles = (theme: GrafanaTheme2) => {
     header: css({
       label: 'drawer-header',
       flexGrow: 0,
-      padding: theme.spacing(2, 2, 3),
+      padding: hasSolidBrandGradient(theme) ? theme.spacing(2, 3, 2) : theme.spacing(2, 2, 3),
       borderBottom: `1px solid ${theme.colors.border.weak}`,
     }),
     headerWithTabs: css({
@@ -388,7 +389,7 @@ const getStyles = (theme: GrafanaTheme2) => {
 };
 
 function getWrapperStyles(theme: GrafanaTheme2, size: 'sm' | 'md' | 'lg') {
-  const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const floating = theme.flags.visualDesignRefresh || hasSolidBrandGradient(theme);
   return css(
     {
       backgroundColor: theme.colors.background.primary,
@@ -404,7 +405,7 @@ function getWrapperStyles(theme: GrafanaTheme2, size: 'sm' | 'md' | 'lg') {
         minWidth: '0 !important',
       },
     },
-    visualRefreshEnabled && {
+    floating && {
       borderRadius: theme.shape.radius.lg,
       bottom: theme.spacing(1),
       right: theme.spacing(1),

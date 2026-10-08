@@ -1,9 +1,10 @@
 import { css } from '@emotion/css';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { type TableCellHeight } from '@grafana/schema';
 
 export function useTableStyles(theme: GrafanaTheme2, cellHeightOption: TableCellHeight) {
+  const fluent = hasSolidBrandGradient(theme);
   const borderColor = theme.colors.border.weak;
   const resizerColor = theme.colors.primary.border;
   const cellPadding = 6;
@@ -59,7 +60,7 @@ export function useTableStyles(theme: GrafanaTheme2, cellHeightOption: TableCell
         minHeight: `${rowHeight - 1}px`,
         wordBreak: textShouldWrap ? 'break-word' : undefined,
         whiteSpace: textShouldWrap && overflowOnHover ? 'normal' : 'nowrap',
-        boxShadow: overflowOnHover ? `0 0 2px ${theme.colors.primary.main}` : undefined,
+        boxShadow: overflowOnHover && !fluent ? `0 0 2px ${theme.colors.primary.main}` : undefined,
         background: rowStyled ? 'inherit' : (backgroundHover ?? theme.colors.background.primary),
         zIndex: 1,
         '.cellActions': {
@@ -116,6 +117,7 @@ export function useTableStyles(theme: GrafanaTheme2, cellHeightOption: TableCell
     thead: css({
       label: 'thead',
       height: `${headerHeight}px`,
+      background: fluent ? theme.colors.background.secondary : undefined,
       overflowY: 'auto',
       overflowX: 'hidden',
       position: 'relative',
@@ -158,10 +160,14 @@ export function useTableStyles(theme: GrafanaTheme2, cellHeightOption: TableCell
       alignItems: 'center',
       marginRight: theme.spacing(0.5),
 
-      '&:hover': {
-        textDecoration: 'underline',
-        color: theme.colors.text.link,
-      },
+      '&:hover': fluent
+        ? {
+            color: theme.colors.text.primary,
+          }
+        : {
+            textDecoration: 'underline',
+            color: theme.colors.text.link,
+          },
     }),
     cellContainerText: buildCellContainerStyle(undefined, undefined, undefined, true, true),
     cellContainerTextNoOverflow: buildCellContainerStyle(undefined, undefined, undefined, false, true),

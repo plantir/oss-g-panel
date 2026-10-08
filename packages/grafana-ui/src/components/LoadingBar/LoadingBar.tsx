@@ -1,7 +1,7 @@
 import { css, keyframes } from '@emotion/css';
 import { type CSSProperties } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 
@@ -31,13 +31,14 @@ export function LoadingBar({ width, delay = DEFAULT_ANIMATION_DELAY, ariaLabel =
   };
 
   return (
-    <div style={containerStyles}>
+    <div style={containerStyles} className={styles.track}>
       <div aria-label={ariaLabel} role="status" className={styles.bar} />
     </div>
   );
 }
 
 const getStyles = (theme: GrafanaTheme2, delay: number, duration: number) => {
+  const fluent = hasSolidBrandGradient(theme);
   const animation = keyframes({
     '0%': {
       transform: 'translateX(-100%)',
@@ -49,10 +50,15 @@ const getStyles = (theme: GrafanaTheme2, delay: number, duration: number) => {
   });
 
   return {
+    track: css({
+      background: fluent ? theme.colors.border.weak : 'transparent',
+    }),
     bar: css({
       width: BAR_WIDTH + '%',
-      height: 1,
-      background: `linear-gradient(90deg, transparent 0%, ${theme.colors.accent.main} 80.75%, transparent 100%)`,
+      height: fluent ? 2 : 1,
+      background: fluent
+        ? theme.colors.primary.main
+        : `linear-gradient(90deg, transparent 0%, ${theme.colors.accent.main} 80.75%, transparent 100%)`,
       transform: 'translateX(-100%)',
       willChange: 'transform',
       [theme.transitions.handleMotion('no-preference')]: {

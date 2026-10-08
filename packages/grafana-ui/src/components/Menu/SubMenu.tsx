@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { autoUpdate, useFloating } from '@floating-ui/react';
 import { memo, type CSSProperties, type ReactElement } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2 } from '../../themes/ThemeContext';
@@ -91,7 +91,8 @@ const getStyles = (theme: GrafanaTheme2) => {
     itemsWrapper: css({
       background: theme.colors.background.elevated,
       padding: theme.spacing(0.5),
-      boxShadow: theme.shadows.z3,
+      boxShadow: hasSolidBrandGradient(theme) ? theme.shadows.z2 : theme.shadows.z3,
+      border: hasSolidBrandGradient(theme) ? `1px solid ${theme.colors.border.weak}` : undefined,
       display: 'inline-block',
       borderRadius: theme.shape.radius.default,
     }),

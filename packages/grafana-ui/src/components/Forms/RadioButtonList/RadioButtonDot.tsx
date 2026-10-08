@@ -1,9 +1,10 @@
 import { css } from '@emotion/css';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../../themes/ThemeContext';
+import { getFocusStyles } from '../../../themes/mixins';
 
 export interface RadioButtonDotProps<T>
   extends Omit<React.HTMLProps<HTMLInputElement>, 'label' | 'value' | 'onChange' | 'type'> {
@@ -90,10 +91,15 @@ const getStyles = (theme: GrafanaTheme2) => ({
       left: '4px',
     },
 
-    ':focus': {
-      outline: 'none !important',
-      boxShadow: `0 0 0 1px ${theme.colors.background.canvas}, 0 0 0 3px ${theme.colors.accent.main}`,
-    },
+    ':focus': hasSolidBrandGradient(theme)
+      ? {
+          ...getFocusStyles(theme),
+          outlineOffset: '2px',
+        }
+      : {
+          outline: 'none !important',
+          boxShadow: `0 0 0 1px ${theme.colors.background.canvas}, 0 0 0 3px ${theme.colors.accent.main}`,
+        },
   }),
   label: css({
     fontSize: theme.typography.fontSize,

@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { forwardRef, useId, type HTMLProps } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { type StringSelector, selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2 } from '../../../themes/ThemeContext';
@@ -88,6 +88,7 @@ RadioButton.displayName = 'RadioButton';
 
 const getRadioButtonStyles = (theme: GrafanaTheme2, size: RadioButtonSize, fullWidth?: boolean) => {
   const { fontSize, height, padding } = getPropertiesForButtonSize(size, theme);
+  const fluent = hasSolidBrandGradient(theme);
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
 
   const textColor = theme.colors.text.secondary;
@@ -116,7 +117,8 @@ const getRadioButtonStyles = (theme: GrafanaTheme2, size: RadioButtonSize, fullW
         '&:checked + label': {
           color: theme.colors.text.primary,
           fontWeight: theme.typography.fontWeightMedium,
-          background: theme.colors.action.selected,
+          background: fluent ? theme.colors.background.primary : theme.colors.action.selected,
+          boxShadow: fluent ? theme.shadows.z1 : undefined,
           zIndex: 1,
           // this ensures the selected radio button is shown when forced colors are active
           '@media (forced-colors: active)': {

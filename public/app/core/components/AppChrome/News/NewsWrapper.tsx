@@ -1,9 +1,9 @@
 import { css } from '@emotion/css';
 import { useEffect } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { t } from '@grafana/i18n';
-import { useStyles2 } from '@grafana/ui';
+import { useStyles2, useTheme2 } from '@grafana/ui';
 import { News } from 'app/plugins/panel/news/component/News';
 import { useNewsFeed } from 'app/plugins/panel/news/useNewsFeed';
 import grotNewsSvg from 'img/grot-news.svg';
@@ -13,6 +13,7 @@ interface NewsWrapperProps {
 }
 export function NewsWrapper({ feedUrl }: NewsWrapperProps) {
   const styles = useStyles2(getStyles);
+  const hideMascot = hasSolidBrandGradient(useTheme2());
   const { state, getNews } = useNewsFeed(feedUrl);
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export function NewsWrapper({ feedUrl }: NewsWrapperProps) {
           ))}
         </>
       )}
+      {!hideMascot && (
       <div className={styles.grot}>
         <a
           href="https://grafana.com/blog/"
@@ -50,6 +52,7 @@ export function NewsWrapper({ feedUrl }: NewsWrapperProps) {
           <img src={grotNewsSvg} alt="Grot reading news" />
         </a>
       </div>
+      )}
     </div>
   );
 }

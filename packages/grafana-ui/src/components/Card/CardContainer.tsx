@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import { type HTMLAttributes } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { getFocusStyles } from '../../themes/mixins';
@@ -95,13 +95,15 @@ export const getCardContainerStyles = (
   noMargin = false
 ) => {
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const fluent = hasSolidBrandGradient(theme);
   const isSelectable = isSelected !== undefined;
 
   const headingRow = `"Figure Heading ${hasTagsComponent && !isSelectable ? 'Tags' : 'Heading'}" ${hasDescriptionComponent ? '' : '1fr'}`;
   const metaRow = `"Figure Meta ${hasTagsComponent ? 'Tags' : 'Meta'}"`;
   const descriptionRow = `"Figure Description ${hasTagsComponent ? 'Tags' : 'Description'}" 1fr`;
   const actionsRow = `"Figure Actions Secondary" / auto 1fr auto`;
-  const backgroundColor = visualRefreshEnabled ? theme.colors.background.primary : theme.colors.background.secondary;
+  const backgroundColor =
+    visualRefreshEnabled || fluent ? theme.colors.background.primary : theme.colors.background.secondary;
 
   return {
     container: css(
@@ -145,7 +147,7 @@ export const getCardContainerStyles = (
           outline: `solid 2px ${theme.colors.primary.border}`,
         }),
       },
-      visualRefreshEnabled && {
+      (visualRefreshEnabled || fluent) && {
         border: `1px solid ${theme.colors.border.weak}`,
       }
     ),

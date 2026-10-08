@@ -6,6 +6,7 @@ import { type GrafanaTheme2, colorManipulator } from '@grafana/data';
 import { t } from '@grafana/i18n';
 
 import { useTheme2 } from '../../themes/ThemeContext';
+import { getCalloutChrome } from '../../themes/mixins';
 import { Tab } from '../Tabs/Tab';
 import { TabsBar } from '../Tabs/TabsBar';
 import { type PopoverContentProps } from '../Tooltip/types';
@@ -123,6 +124,7 @@ const getStyles = (theme: GrafanaTheme2) => {
       background: theme.colors.background.elevated,
       padding: theme.spacing(0.5),
       border: `1px solid ${theme.colors.border.weak}`,
+      ...getCalloutChrome(theme),
     }),
     colorPickerPopoverContent: css({
       width: '246px',

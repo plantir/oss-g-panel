@@ -1,6 +1,6 @@
 import { css, cx } from '@emotion/css';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { Components } from '@grafana/e2e-selectors';
 import { reportInteraction } from '@grafana/runtime';
 import { Icon, useStyles2 } from '@grafana/ui';
@@ -52,18 +52,25 @@ export function BreadcrumbItem({ href, isCurrent, text, index, flexGrow }: Props
 }
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
+
   return {
     breadcrumb: css({
       display: 'block',
       textOverflow: 'ellipsis',
       overflow: 'hidden',
       whiteSpace: 'nowrap',
-      color: theme.colors.text.secondary,
+      color: fluent ? theme.colors.text.primary : theme.colors.text.secondary,
+      fontWeight: fluent ? theme.typography.fontWeightMedium : undefined,
     }),
     breadcrumbLink: css({
       color: theme.colors.text.primary,
+      fontWeight: fluent ? theme.typography.fontWeightRegular : undefined,
       '&:hover': {
         textDecoration: 'underline',
+        ...(fluent && {
+          color: theme.colors.text.link,
+        }),
       },
     }),
     breadcrumbWrapper: css({

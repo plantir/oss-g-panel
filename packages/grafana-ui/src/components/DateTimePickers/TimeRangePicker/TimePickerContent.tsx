@@ -15,7 +15,7 @@ import { selectors } from '@grafana/e2e-selectors';
 import { t, Trans } from '@grafana/i18n';
 
 import { useStyles2, useTheme2 } from '../../../themes/ThemeContext';
-import { getFocusStyles } from '../../../themes/mixins';
+import { getCalloutChrome, getFocusStyles } from '../../../themes/mixins';
 import { FilterInput } from '../../FilterInput/FilterInput';
 import { Icon } from '../../Icon/Icon';
 import { TextLink } from '../../Link/TextLink';
@@ -304,6 +304,7 @@ const getStyles = (
     width: `${isFullscreen ? '546px' : '262px'}`,
     borderRadius: theme.shape.radius.lg,
     border: `1px solid ${theme.colors.border.weak}`,
+    ...getCalloutChrome(theme),
     [`${isReversed ? 'left' : 'right'}`]: 0,
     display: 'flex',
     flexDirection: 'column',

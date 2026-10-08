@@ -5,7 +5,7 @@ import { FocusScope } from '@react-aria/focus';
 import { useOverlay } from '@react-aria/overlays';
 import { type FormEvent, useCallback, useRef, useState } from 'react';
 
-import { type RelativeTimeRange, type GrafanaTheme2, type TimeOption } from '@grafana/data';
+import { hasSolidBrandGradient, type RelativeTimeRange, type GrafanaTheme2, type TimeOption } from '@grafana/data';
 import { t, Trans } from '@grafana/i18n';
 
 import { useStyles2 } from '../../../themes/ThemeContext';
@@ -255,7 +255,7 @@ const getStyles = (fromError?: string, toError?: string) => (theme: GrafanaTheme
     ),
     content: css({
       background: theme.colors.background.primary,
-      boxShadow: theme.shadows.z3,
+      boxShadow: hasSolidBrandGradient(theme) ? theme.shadows.z2 : theme.shadows.z3,
       position: 'absolute',
       zIndex: theme.zIndex.modal,
       width: '500px',

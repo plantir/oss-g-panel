@@ -2,9 +2,9 @@ import { css, cx } from '@emotion/css';
 import { useImperativeHandle, useRef } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
-import { useStyles2 } from '../../themes/ThemeContext';
+import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
 import { Box } from '../Layout/Box/Box';
 
 import { MenuDivider } from './MenuDivider';
@@ -28,6 +28,8 @@ export interface MenuProps extends React.HTMLAttributes<HTMLDivElement> {
 const MenuComp = React.forwardRef<HTMLDivElement, MenuProps>(
   ({ header, children, ariaLabel, onOpen, onClose, onKeyDown, ...otherProps }, forwardedRef) => {
     const styles = useStyles2(getStyles);
+    const theme = useTheme2();
+    const fluent = hasSolidBrandGradient(theme);
     const componentTokens = useComponentTokens();
 
     const localRef = useRef<HTMLDivElement>(null);
@@ -41,7 +43,9 @@ const MenuComp = React.forwardRef<HTMLDivElement, MenuProps>(
         aria-label={ariaLabel}
         backgroundColor="elevated"
         borderRadius={componentTokens.borderRadius}
-        boxShadow="z3"
+        borderColor={fluent ? 'weak' : undefined}
+        borderStyle={fluent ? 'solid' : undefined}
+        boxShadow={fluent ? 'z2' : 'z3'}
         display="inline-block"
         onKeyDown={handleKeys}
         padding={componentTokens.padding}

@@ -3,7 +3,7 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import * as React from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
 import { type IconName } from '../../types/icon';
@@ -73,22 +73,26 @@ const getSkeletonStyles = () => ({
 
 const getTagStyles = (theme: GrafanaTheme2, name: string, colorIndex?: number) => {
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const fluent = hasSolidBrandGradient(theme);
   const { background, text } =
     colorIndex === undefined ? getTagColorsFromName(name, theme) : getTagColor(colorIndex, theme);
   return {
     wrapper: css({
       appearance: 'none',
-      borderStyle: 'none',
-      fontWeight: visualRefreshEnabled ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
+      borderStyle: fluent ? 'solid' : 'none',
+      borderWidth: fluent ? 1 : 0,
+      borderColor: fluent ? theme.colors.border.medium : 'transparent',
+      fontWeight:
+        fluent || visualRefreshEnabled ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
       fontSize: theme.typography.size.sm,
       lineHeight: theme.typography.bodySmall.lineHeight,
       verticalAlign: 'baseline',
-      backgroundColor: background,
-      color: text,
+      backgroundColor: fluent ? theme.colors.background.secondary : background,
+      color: fluent ? theme.colors.text.primary : text,
       whiteSpace: 'pre',
       textShadow: 'none',
-      padding: '3px 6px',
-      borderRadius: theme.shape.radius.sm,
+      padding: fluent ? '2px 8px' : '3px 6px',
+      borderRadius: fluent ? theme.shape.radius.default : theme.shape.radius.sm,
     }),
     hover: css({
       '&:hover': {

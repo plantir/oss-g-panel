@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import { type HTMLProps, useCallback } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { getFocusStyles, getMouseFocusStyles } from '../../themes/mixins';
@@ -96,8 +96,33 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   }
 );
 
+const fluentCheckMask = `url("data:image/svg+xml,${encodeURIComponent(
+  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='black' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'><path d='M2.25 6.15 4.9 8.8 9.75 3.35'/></svg>"
+)}")`;
+
+const fluentCheckShape = {
+  content: '""',
+  position: 'absolute' as const,
+  zIndex: 2,
+  inset: '1px',
+  width: 'auto',
+  height: 'auto',
+  border: 'none',
+  transform: 'none',
+  backgroundColor: 'transparent',
+  maskImage: fluentCheckMask,
+  WebkitMaskImage: fluentCheckMask,
+  maskRepeat: 'no-repeat',
+  WebkitMaskRepeat: 'no-repeat',
+  maskPosition: 'center',
+  WebkitMaskPosition: 'center',
+  maskSize: 'contain',
+  WebkitMaskSize: 'contain',
+};
+
 const getCheckboxStyles = (theme: GrafanaTheme2, invalid = false) => {
   const labelStyles = getLabelStyles(theme);
+  const fluent = hasSolidBrandGradient(theme);
   const checkboxSize = 2;
   const labelPadding = 1;
 
@@ -114,6 +139,11 @@ const getCheckboxStyles = (theme: GrafanaTheme2, invalid = false) => {
       gridAutoRows: 'max-content',
       position: 'relative',
       verticalAlign: 'middle',
+      ...(fluent && {
+        '&:hover:not(:has(input:disabled)) > div > span:after': {
+          backgroundColor: theme.colors.border.strong,
+        },
+      }),
     }),
     input: css({
       position: 'absolute',
@@ -142,18 +172,23 @@ const getCheckboxStyles = (theme: GrafanaTheme2, invalid = false) => {
           border: `1px solid ${getBorderColor(theme.components.checkbox.activeBackgroundHover)}`,
         },
 
-        '&:after': {
-          content: '""',
-          position: 'absolute',
-          zIndex: 2,
-          left: theme.spacing(0.5),
-          top: 0,
-          width: theme.spacing(0.75),
-          height: theme.spacing(1.5),
-          border: `solid ${theme.colors.accent.contrastText}`,
-          borderWidth: '0 3px 3px 0',
-          transform: 'rotate(45deg)',
-        },
+        '&:after': fluent
+          ? {
+              ...fluentCheckShape,
+              backgroundColor: theme.colors.accent.contrastText,
+            }
+          : {
+              content: '""',
+              position: 'absolute',
+              zIndex: 2,
+              left: theme.spacing(0.5),
+              top: 0,
+              width: theme.spacing(0.75),
+              height: theme.spacing(1.5),
+              border: `solid ${theme.colors.accent.contrastText}`,
+              borderWidth: '0 3px 3px 0',
+              transform: 'rotate(45deg)',
+            },
       },
 
       '&:disabled + span': {
@@ -169,6 +204,14 @@ const getCheckboxStyles = (theme: GrafanaTheme2, invalid = false) => {
           borderColor: theme.colors.action.disabledText,
         },
       },
+      ...(fluent && {
+        '&:disabled:not(:checked) + span:after': {
+          backgroundColor: 'transparent',
+        },
+        '&:disabled:checked + span:after': {
+          backgroundColor: theme.colors.action.disabledText,
+        },
+      }),
     }),
 
     inputIndeterminate: css({
@@ -185,14 +228,19 @@ const getCheckboxStyles = (theme: GrafanaTheme2, invalid = false) => {
           content: '""',
           position: 'absolute',
           zIndex: 2,
-          left: '2px',
-          right: '2px',
-          top: 'calc(50% - 1.5px)',
-          height: '3px',
-          border: `1.5px solid ${theme.colors.accent.contrastText}`,
+          left: fluent ? '3px' : '2px',
+          right: fluent ? '3px' : '2px',
+          top: fluent ? 'calc(50% - 1px)' : 'calc(50% - 1.5px)',
+          height: fluent ? '2px' : '3px',
+          border: fluent ? 'none' : `1.5px solid ${theme.colors.accent.contrastText}`,
           backgroundColor: theme.colors.accent.contrastText,
           width: 'auto',
           transform: 'none',
+          ...(fluent && {
+            inset: 'auto',
+            maskImage: 'none',
+            WebkitMaskImage: 'none',
+          }),
         },
       },
       "&:disabled[aria-checked='mixed'] + span": {
@@ -201,6 +249,9 @@ const getCheckboxStyles = (theme: GrafanaTheme2, invalid = false) => {
 
         '&:after': {
           borderColor: theme.colors.action.disabledText,
+          ...(fluent && {
+            backgroundColor: theme.colors.action.disabledText,
+          }),
         },
       },
     }),
@@ -219,11 +270,18 @@ const getCheckboxStyles = (theme: GrafanaTheme2, invalid = false) => {
       height: theme.spacing(checkboxSize),
       borderRadius: theme.shape.radius.sm,
       background: theme.components.input.background,
-      border: `1px solid ${getBorderColor(theme.components.input.borderColor)}`,
+      border: `1px solid ${getBorderColor(fluent ? theme.colors.border.strong : theme.components.input.borderColor)}`,
+
+      ...(fluent && {
+        '&:after': fluentCheckShape,
+        '&:hover:after': {
+          backgroundColor: theme.colors.border.strong,
+        },
+      }),
 
       '&:hover': {
         cursor: 'pointer',
-        borderColor: getBorderColor(theme.components.input.borderHover),
+        borderColor: getBorderColor(fluent ? theme.colors.text.primary : theme.components.input.borderHover),
       },
     }),
     label: cx(

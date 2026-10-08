@@ -1,7 +1,13 @@
 import { css } from '@emotion/css';
 import { type AnchorHTMLAttributes, forwardRef } from 'react';
 
-import { type GrafanaTheme2, locationUtil, textUtil, type ThemeTypographyVariantTypes } from '@grafana/data';
+import {
+  hasSolidBrandGradient,
+  type GrafanaTheme2,
+  locationUtil,
+  textUtil,
+  type ThemeTypographyVariantTypes,
+} from '@grafana/data';
 
 import { useTheme2 } from '../../themes/ThemeContext';
 import { type IconName, type IconSize } from '../../types/icon';
@@ -88,6 +94,8 @@ const getLinkStyles = (
   weight?: TextLinkProps['weight'],
   color?: TextLinkProps['color']
 ) => {
+  const fluent = hasSolidBrandGradient(theme);
+
   return {
     icon: css({
       marginLeft: '0.25em',
@@ -107,15 +115,16 @@ const getLinkStyles = (
         textDecoration: 'none',
         '&:hover': {
           textDecoration: 'underline',
-          color: theme.colors.text.link,
+          color: fluent ? theme.colors.primary.shade || theme.colors.text.link : theme.colors.text.link,
         },
       },
-      inline && {
-        textDecoration: 'underline',
-        '&:hover': {
-          textDecoration: 'none',
+      inline &&
+        !fluent && {
+          textDecoration: 'underline',
+          '&:hover': {
+            textDecoration: 'none',
+          },
         },
-      },
     ]),
   };
 };

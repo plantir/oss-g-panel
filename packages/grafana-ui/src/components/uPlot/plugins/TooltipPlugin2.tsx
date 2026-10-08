@@ -4,7 +4,7 @@ import * as React from 'react';
 import { createPortal } from 'react-dom';
 import type uPlot from 'uplot';
 
-import { type GrafanaTheme2, type LinkModel } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type LinkModel } from '@grafana/data';
 import { DashboardCursorSync } from '@grafana/schema';
 
 import { useStyles2 } from '../../../themes/ThemeContext';
@@ -780,7 +780,7 @@ const getStyles = (theme: GrafanaTheme2, maxWidth?: number) => ({
     left: 0,
     zIndex: theme.zIndex.tooltip,
     whiteSpace: 'pre',
-    borderRadius: theme.shape.radius.lg,
+    borderRadius: hasSolidBrandGradient(theme) ? theme.shape.radius.default : theme.shape.radius.lg,
     position: 'fixed',
     background: theme.colors.background.elevated,
     border: `1px solid ${theme.colors.border.weak}`,

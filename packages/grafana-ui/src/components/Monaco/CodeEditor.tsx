@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import type * as monacoType from 'monaco-editor/esm/vs/editor/editor.api';
 import { PureComponent } from 'react';
 
-import { type GrafanaTheme2, monacoLanguageRegistry } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, monacoLanguageRegistry } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
 import { withTheme2 } from '../../themes/ThemeContext';
@@ -208,6 +208,10 @@ const getStyles = (theme: GrafanaTheme2) => {
     container: css({
       borderRadius: theme.shape.radius.default,
       border: `1px solid ${theme.components.input.borderColor}`,
+      ...(hasSolidBrandGradient(theme) && {
+        borderBottomColor: theme.colors.border.strong,
+        background: theme.components.input.background,
+      }),
       overflow: 'hidden',
     }),
   };

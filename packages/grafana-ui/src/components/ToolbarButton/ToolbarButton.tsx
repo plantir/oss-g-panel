@@ -2,7 +2,7 @@ import { cx, css } from '@emotion/css';
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2, type IconName, isIconName } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type IconName, isIconName } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2 } from '../../themes/ThemeContext';
@@ -140,6 +140,7 @@ function renderIcon(icon: IconName | React.ReactNode, iconSize?: IconSize) {
 }
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
   const primaryVariant = getPropertiesForVariant(theme, 'primary', 'solid');
   const destructiveVariant = getPropertiesForVariant(theme, 'destructive', 'solid');
 
@@ -215,23 +216,49 @@ const getStyles = (theme: GrafanaTheme2) => {
         ...getActiveButtonStyles(theme.colors.secondary, 'solid', theme.flags.visualDesignRefresh),
       },
     }),
-    canvas: defaultOld,
-    active: cx(
-      defaultOld,
-      css({
-        '&::before': {
-          display: 'block',
-          content: '" "',
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          height: '2px',
-          bottom: 0,
-          borderRadius: theme.shape.radius.default,
-          backgroundImage: theme.colors.gradients.brandHorizontal,
-        },
-      })
-    ),
+    canvas: fluent
+      ? css({
+          color: theme.colors.text.primary,
+          background: theme.colors.background.primary,
+          border: `1px solid ${theme.components.input.borderColor}`,
+          borderBottomColor: theme.colors.border.strong,
+
+          '&:hover, &:focus': {
+            color: theme.colors.text.primary,
+            background: theme.colors.action.hover,
+            borderColor: theme.components.input.borderColor,
+            borderBottomColor: theme.colors.text.primary,
+          },
+        })
+      : defaultOld,
+    active: fluent
+      ? css({
+          color: theme.colors.text.primary,
+          background: theme.colors.action.selected,
+          border: '1px solid transparent',
+          fontWeight: theme.typography.fontWeightMedium,
+
+          '&:hover, &:focus': {
+            color: theme.colors.text.primary,
+            background: theme.colors.action.hover,
+          },
+        })
+      : cx(
+          defaultOld,
+          css({
+            '&::before': {
+              display: 'block',
+              content: '" "',
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              height: '2px',
+              bottom: 0,
+              borderRadius: theme.shape.radius.default,
+              backgroundImage: theme.colors.gradients.brandHorizontal,
+            },
+          })
+        ),
     primary: css(primaryVariant),
     destructive: css(destructiveVariant),
     narrow: css({

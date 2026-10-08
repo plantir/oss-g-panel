@@ -1,17 +1,21 @@
 import { css } from '@emotion/css';
 import { css as cssCore } from '@emotion/react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import '@rc-component/slider/assets/index.css';
 
 export const getStyles = (theme: GrafanaTheme2, isHorizontal: boolean, hasMarks = false) => {
   const { spacing } = theme;
-  const railColor = theme.colors.border.strong;
+  const fluent = hasSolidBrandGradient(theme);
+  const railColor = fluent ? theme.colors.border.medium : theme.colors.border.strong;
   const trackColor = theme.colors.accent.main;
   const handleColor = theme.colors.accent.main;
   const blueOpacity = theme.colors.accent.transparent;
-  const hoverStyle = `box-shadow: 0px 0px 0px 6px ${blueOpacity}`;
+  const hoverStyle = fluent
+    ? `border-color: ${theme.colors.primary.shade || handleColor}; box-shadow: none;`
+    : `box-shadow: 0px 0px 0px 6px ${blueOpacity}`;
+  const focusRing = theme.isDark ? '#ffffff' : '#000000';
 
   return {
     container: css({
@@ -27,7 +31,7 @@ export const getStyles = (theme: GrafanaTheme2, isHorizontal: boolean, hasMarks 
       .rc-slider {
         display: flex;
         flex-grow: 1;
-        margin-left: 7px; // half the size of the handle to align handle to the left on 0 value
+        margin-left: ${fluent ? '8px' : '7px'}; // half the handle, so 0 sits on the start of the rail
       }
       .rc-slider-mark {
         top: ${theme.spacing(1.75)};
@@ -40,9 +44,10 @@ export const getStyles = (theme: GrafanaTheme2, isHorizontal: boolean, hasMarks 
         color: ${theme.colors.text.primary};
       }
       .rc-slider-handle {
-        border: none;
-        background-color: ${handleColor};
-        box-shadow: ${theme.shadows.z1};
+        border: ${fluent ? `2px solid ${handleColor}` : 'none'};
+        background-color: ${fluent ? theme.colors.background.primary : handleColor};
+        box-shadow: ${fluent ? 'none' : theme.shadows.z1};
+        ${fluent ? 'width: 16px; height: 16px; margin-top: -6px;' : ''}
         cursor: pointer;
         opacity: 1;
       }
@@ -56,7 +61,17 @@ export const getStyles = (theme: GrafanaTheme2, isHorizontal: boolean, hasMarks 
       // The triple class names is needed because that's the specificity used in the source css :(
       .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging,
       .rc-slider-handle:focus-visible {
-        box-shadow: 0 0 0 5px ${theme.colors.text.primary};
+        ${
+          fluent
+            ? `box-shadow: none; outline: 2px solid ${focusRing}; outline-offset: 2px;`
+            : `box-shadow: 0 0 0 5px ${theme.colors.text.primary};`
+        }
+      }
+
+      ${
+        fluent
+          ? `.rc-slider-rail, .rc-slider-track { height: 4px; border-radius: ${theme.shape.radius.pill}; }`
+          : ''
       }
 
       .rc-slider-dot,

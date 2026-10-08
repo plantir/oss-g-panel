@@ -8,6 +8,7 @@ import { type DateTime, type GrafanaTheme2, type TimeZone } from '@grafana/data'
 import { selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2, useTheme2 } from '../../../themes/ThemeContext';
+import { getCalloutChrome } from '../../../themes/mixins';
 import { getModalStyles } from '../../Modal/getModalStyles';
 import { type WeekStart } from '../WeekStartPicker';
 
@@ -38,6 +39,7 @@ const getStyles = (theme: GrafanaTheme2, isReversed = false) => {
       backgroundColor: theme.colors.background.elevated,
       border: `1px solid ${theme.colors.border.weak}`,
       borderRadius: theme.shape.radius.lg,
+      ...getCalloutChrome(theme),
     }),
 
     modal: css({

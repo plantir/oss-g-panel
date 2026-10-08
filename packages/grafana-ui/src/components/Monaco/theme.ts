@@ -1,6 +1,6 @@
 import tinycolor from 'tinycolor2';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { type Monaco, type monacoTypes } from './types';
 
@@ -15,6 +15,14 @@ function getColors(theme?: GrafanaTheme2): monacoTypes.editor.IColors {
       'editorCursor.foreground': theme.colors.primary.main,
       'editor.selectionBackground': theme.colors.action.selected,
       'minimap.background': theme.colors.background.secondary,
+      ...(hasSolidBrandGradient(theme) && {
+        'editor.lineHighlightBackground': theme.colors.action.hover,
+        'editorWidget.background': theme.colors.background.elevated,
+        'editorWidget.border': theme.colors.border.weak,
+        focusBorder: theme.colors.primary.main,
+        'scrollbarSlider.background': theme.colors.scrollbar,
+        'scrollbarSlider.hoverBackground': theme.colors.border.strong,
+      }),
     };
 
     Object.keys(colors).forEach((resultKey) => {

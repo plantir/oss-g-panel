@@ -19,7 +19,17 @@
     },
     "secondary": {
       "main": "#f5f5f5",
-      "shade": "#ebebeb"
+      "shade": "#ebebeb",
+      "text": "#242424",
+      "contrastText": "#242424",
+      "border": "#d1d1d1"
+    },
+    "accent": {
+      "main": "#0f6cbd",
+      "text": "#0f6cbd",
+      "contrastText": "#ffffff",
+      "shade": "#115ea3",
+      "mainEmphasis": "#115ea3"
     },
     "error": {
       "main": "#c50f1f"
@@ -50,18 +60,24 @@
     "action": {
       "hover": "#f5f5f5",
       "selected": "#ebebeb",
+      "selectedBorder": "#0f6cbd",
+      "focus": "#f5f5f5",
       "disabledBackground": "#f0f0f0"
     },
     "gradients": {
       "brandVertical": "#0f6cbd",
       "brandHorizontal": "#0f6cbd"
-    }
+    },
+    "scrollbar": "#8f8f8f"
   },
   "typography": {
     "fontFamily": "\"Segoe UI\", \"Segoe UI Web (West European)\", -apple-system, BlinkMacSystemFont, Roboto, \"Helvetica Neue\", sans-serif",
     "fontFamilyMonospace": "Consolas, \"Courier New\", monospace",
     "fontSize": 14,
-    "htmlFontSize": 16
+    "htmlFontSize": 16,
+    "fontWeightRegular": 400,
+    "fontWeightMedium": 600,
+    "fontWeightBold": 700
   },
   "shape": {
     "borderRadiusSm": 2,
@@ -90,6 +106,16 @@
     "checkbox": {
       "activeBackground": "#0f6cbd",
       "activeBackgroundHover": "#115ea3"
+    },
+    "overlay": {
+      "background": "rgba(0, 0, 0, 0.4)"
+    },
+    "menu": {
+      "borderRadius": "default"
+    },
+    "table": {
+      "rowHoverBackground": "#f5f5f5",
+      "rowSelected": "#ebebeb"
     },
     "codeEditor": {
       "keyword": "#0f6cbd",

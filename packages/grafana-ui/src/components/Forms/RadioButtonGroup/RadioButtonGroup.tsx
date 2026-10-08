@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import { type HTMLAttributes, useCallback, useEffect, useId, useRef } from 'react';
 
-import { type GrafanaTheme2, type SelectableValue, toIconName } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type SelectableValue, toIconName } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2 } from '../../../themes/ThemeContext';
@@ -151,6 +151,7 @@ const getStyles = (theme: GrafanaTheme2) => {
       minWidth: 0,
       border: `1px solid ${theme.components.input.borderColor}`,
       borderRadius: theme.shape.radius.default,
+      background: hasSolidBrandGradient(theme) ? theme.colors.background.secondary : undefined,
       padding: RADIO_GROUP_PADDING,
       '&:hover': {
         borderColor: theme.components.input.borderHover,

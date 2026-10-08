@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { type GrafanaTheme2, type ThemeTypographyVariant } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type ThemeTypographyVariant } from '@grafana/data';
 
 import { getFocusStyles } from '../mixins';
 
@@ -64,6 +64,21 @@ export function getElementStyles(theme: GrafanaTheme2) {
     'body *': {
       scrollbarColor: `${theme.colors.scrollbar} transparent`,
       scrollbarWidth: 'thin',
+      ...(hasSolidBrandGradient(theme) && {
+        '&::-webkit-scrollbar': {
+          width: '10px',
+          height: '10px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: theme.colors.scrollbar,
+          borderRadius: theme.shape.radius.default,
+          border: '2px solid transparent',
+          backgroundClip: 'content-box',
+        },
+        '&::-webkit-scrollbar-track': {
+          backgroundColor: 'transparent',
+        },
+      }),
     },
 
     'h1, .h1': getVariantStyles(theme.typography.h1),
@@ -423,7 +438,14 @@ export function getElementStyles(theme: GrafanaTheme2) {
     },
 
     '.text-link': {
-      textDecoration: 'underline',
+      textDecoration: hasSolidBrandGradient(theme) ? 'none' : 'underline',
+      ...(hasSolidBrandGradient(theme) && {
+        color: theme.colors.text.link,
+        '&:hover': {
+          textDecoration: 'underline',
+          color: theme.colors.primary.shade || theme.colors.text.link,
+        },
+      }),
     },
 
     '.text-left': {

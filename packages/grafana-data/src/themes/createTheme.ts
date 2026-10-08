@@ -54,6 +54,13 @@ export function createTheme(
   const shape = createShape(shapeInput);
   const spacing = createSpacing(spacingInput);
   const typography = createTypography(colors, typographyInput);
+
+  if (hasSolidBrandGradient({ colors })) {
+    const headingWeight = typography.fontWeightMedium;
+    for (const key of ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const) {
+      typography[key] = { ...typography[key], fontWeight: headingWeight };
+    }
+  }
   const shadows = createShadows(colors, shadowsInput);
   const components = createComponents(colors, componentsInput);
 

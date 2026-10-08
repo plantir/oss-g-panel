@@ -2,6 +2,7 @@ import { css, keyframes } from '@emotion/css';
 
 import { type GrafanaTheme2 } from '@grafana/data';
 
+import { getCalloutChrome } from '../../themes/mixins';
 import { getIconPath } from '../Icon/utils';
 
 const slideUpIn = keyframes({
@@ -80,6 +81,7 @@ export const getCascaderStyles = (theme: GrafanaTheme2) => {
           border: `none`,
           borderRadius: theme.shape.radius.lg,
           boxShadow: theme.shadows.z3,
+          ...getCalloutChrome(theme),
           whiteSpace: 'nowrap',
 
           '&.slide-up-enter, &.slide-up-appear': {

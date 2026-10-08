@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { useCallback } from 'react';
 import Calendar, { type CalendarType } from 'react-calendar';
 
-import { type GrafanaTheme2, dateTimeParse, type DateTime, type TimeZone } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, dateTimeParse, type DateTime, type TimeZone } from '@grafana/data';
 import { t } from '@grafana/i18n';
 
 import { useStyles2 } from '../../../themes/ThemeContext';
@@ -92,6 +92,8 @@ export const getBodyStyles = (theme: GrafanaTheme2) => {
   // If a time range is part of only 1 day but does not encompass the whole day,
   // the class that react-calendar uses is '--hasActive' by itself (without being part of a '--range')
   const hasActiveSelector = `.react-calendar__tile--hasActive:not(.react-calendar__tile--range)`;
+  const fluent = hasSolidBrandGradient(theme);
+  const dayRadius = fluent ? theme.shape.radius.default : theme.shape.radius.pill;
 
   return {
     title: css({
@@ -129,7 +131,7 @@ export const getBodyStyles = (theme: GrafanaTheme2) => {
       '.react-calendar__month-view__weekdays': {
         backgroundColor: 'inherit',
         textAlign: 'center',
-        color: theme.colors.primary.text,
+        color: fluent ? theme.colors.text.secondary : theme.colors.primary.text,
 
         abbr: {
           border: 0,
@@ -150,6 +152,13 @@ export const getBodyStyles = (theme: GrafanaTheme2) => {
         height: '26px',
       },
 
+      ...(fluent && {
+        '.react-calendar__tile--now:not(.react-calendar__tile--active):not(.react-calendar__tile--rangeStart):not(.react-calendar__tile--rangeEnd)':
+          {
+            borderColor: theme.colors.primary.main,
+          },
+      }),
+
       '.react-calendar__navigation__label, .react-calendar__navigation > button:focus, .time-picker-calendar-tile:focus':
         {
           outline: 0,
@@ -165,32 +174,32 @@ export const getBodyStyles = (theme: GrafanaTheme2) => {
       },
 
       '.react-calendar__tile--hoverStart': {
-        borderTopLeftRadius: theme.shape.radius.pill,
-        borderBottomLeftRadius: theme.shape.radius.pill,
+        borderTopLeftRadius: dayRadius,
+        borderBottomLeftRadius: dayRadius,
       },
 
       '.react-calendar__tile--hoverEnd': {
-        borderTopRightRadius: theme.shape.radius.pill,
-        borderBottomRightRadius: theme.shape.radius.pill,
+        borderTopRightRadius: dayRadius,
+        borderBottomRightRadius: dayRadius,
       },
 
       // Addiitonally, when hovering a date before clicking any, it should show the hover bg.
       '.react-calendar__tile:hover:not(.react-calendar__tile--hover):not(.react-calendar__tile--active):not(.react-calendar__tile--hasActive)':
         {
           backgroundColor: theme.colors.action.hover,
-          borderRadius: theme.shape.radius.pill,
+          borderRadius: dayRadius,
         },
 
       // When the user is selecting a range (they've clicked one date, tiles have --hover), both --rangeStart and --rangeEnd are on the tile.
       // The --hover classes above  handle the rounding of the tiles so they're contigious with the range
       [`${hasActiveSelector}, .react-calendar__tile--rangeStart:not(.react-calendar__tile--hover)`]: {
-        borderTopLeftRadius: theme.shape.radius.pill,
-        borderBottomLeftRadius: theme.shape.radius.pill,
+        borderTopLeftRadius: dayRadius,
+        borderBottomLeftRadius: dayRadius,
       },
 
       [`${hasActiveSelector}, .react-calendar__tile--rangeEnd:not(.react-calendar__tile--hover)`]: {
-        borderTopRightRadius: theme.shape.radius.pill,
-        borderBottomRightRadius: theme.shape.radius.pill,
+        borderTopRightRadius: dayRadius,
+        borderBottomRightRadius: dayRadius,
       },
 
       [`${hasActiveSelector}, .react-calendar__tile--active, .react-calendar__tile--rangeEnd, .react-calendar__tile--rangeStart`]:

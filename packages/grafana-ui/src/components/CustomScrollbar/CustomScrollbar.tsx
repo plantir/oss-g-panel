@@ -3,7 +3,7 @@ import { type RefCallback, useCallback, useEffect, useRef, type JSX } from 'reac
 import * as React from 'react';
 import Scrollbars, { type positionValues } from 'react-custom-scrollbars-2';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 
@@ -155,6 +155,8 @@ export const CustomScrollbar = ({
 };
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const thumb = hasSolidBrandGradient(theme) ? theme.colors.border.strong : theme.colors.action.focus;
+
   return {
     customScrollbar: css({
       // Fix for Firefox. For some reason sometimes .view container gets a height of its content, but in order to
@@ -182,12 +184,12 @@ const getStyles = (theme: GrafanaTheme2) => {
         left: theme.spacing(0.25),
       },
       '.thumb-vertical': {
-        background: theme.colors.action.focus,
+        background: thumb,
         borderRadius: theme.shape.borderRadius(2),
         opacity: 0,
       },
       '.thumb-horizontal': {
-        background: theme.colors.action.focus,
+        background: thumb,
         borderRadius: theme.shape.borderRadius(2),
         opacity: 0,
       },

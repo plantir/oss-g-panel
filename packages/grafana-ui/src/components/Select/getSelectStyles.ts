@@ -1,11 +1,13 @@
 import { css } from '@emotion/css';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
-import { getFocusStyles } from '../../themes/mixins';
+import { getCalloutChrome, getFocusStyles } from '../../themes/mixins';
 import { stylesFactory } from '../../themes/stylesFactory';
 
 export const getSelectStyles = stylesFactory((theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
+
   return {
     menu: css({
       label: 'grafana-select-menu',
@@ -16,6 +18,7 @@ export const getSelectStyles = stylesFactory((theme: GrafanaTheme2) => {
       minWidth: '100%',
       overflow: 'hidden',
       zIndex: 1,
+      ...getCalloutChrome(theme),
     }),
     option: css({
       label: 'grafana-select-option',
@@ -73,17 +76,24 @@ export const getSelectStyles = stylesFactory((theme: GrafanaTheme2) => {
     }),
     optionSelected: css({
       background: theme.colors.action.selected,
-      '&::before': {
-        backgroundImage: theme.colors.gradients.brandVertical,
-        borderRadius: theme.shape.radius.default,
-        content: '" "',
-        display: 'block',
-        height: '100%',
-        position: 'absolute',
-        transform: 'translateX(-50%)',
-        width: theme.spacing(0.5),
-        left: 0,
-      },
+      ...(fluent && {
+        fontWeight: theme.typography.fontWeightMedium,
+      }),
+      '&::before': fluent
+        ? {
+            display: 'none',
+          }
+        : {
+            backgroundImage: theme.colors.gradients.brandVertical,
+            borderRadius: theme.shape.radius.default,
+            content: '" "',
+            display: 'block',
+            height: '100%',
+            position: 'absolute',
+            transform: 'translateX(-50%)',
+            width: theme.spacing(0.5),
+            left: 0,
+          },
     }),
     optionDisabled: css({
       label: 'grafana-select-option-disabled',

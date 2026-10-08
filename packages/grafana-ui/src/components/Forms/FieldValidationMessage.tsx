@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { Icon } from '../Icon/Icon';
@@ -37,6 +37,8 @@ export const FieldValidationMessage = ({
 
 const getFieldValidationMessageStyles = (theme: GrafanaTheme2) => {
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const fluent = hasSolidBrandGradient(theme);
+  const softError = visualRefreshEnabled || fluent;
   const baseStyle = css(
     {
       fontSize: theme.typography.size.sm,
@@ -44,7 +46,7 @@ const getFieldValidationMessageStyles = (theme: GrafanaTheme2) => {
       padding: theme.spacing(0.5, 1),
       color: theme.colors.error.contrastText,
       background: theme.colors.error.main,
-      borderRadius: theme.shape.radius.lg,
+      borderRadius: fluent ? theme.shape.radius.default : theme.shape.radius.lg,
       position: 'relative',
       display: 'inline-block',
       alignSelf: 'flex-start',
@@ -58,7 +60,7 @@ const getFieldValidationMessageStyles = (theme: GrafanaTheme2) => {
         },
       },
     },
-    visualRefreshEnabled && {
+    softError && {
       background: theme.colors.error.background,
       border: `1px solid ${theme.colors.error.border}`,
       color: theme.colors.error.text,
@@ -91,9 +93,14 @@ const getFieldValidationMessageStyles = (theme: GrafanaTheme2) => {
           borderStyle: 'solid',
         },
       },
-      visualRefreshEnabled && {
+      softError && {
         '&:before': {
           borderColor: `transparent transparent ${theme.colors.error.border} transparent`,
+        },
+      },
+      fluent && {
+        '&:before': {
+          display: 'none',
         },
       }
     ),
@@ -114,9 +121,14 @@ const getFieldValidationMessageStyles = (theme: GrafanaTheme2) => {
           borderStyle: 'solid',
         },
       },
-      visualRefreshEnabled && {
+      softError && {
         '&:before': {
           borderColor: `transparent ${theme.colors.error.border} transparent transparent`,
+        },
+      },
+      fluent && {
+        '&:before': {
+          display: 'none',
         },
       }
     ),

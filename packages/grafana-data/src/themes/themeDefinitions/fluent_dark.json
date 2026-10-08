@@ -15,7 +15,17 @@
     },
     "secondary": {
       "main": "#292929",
-      "shade": "#333333"
+      "shade": "#333333",
+      "text": "#ffffff",
+      "contrastText": "#ffffff",
+      "border": "#666666"
+    },
+    "accent": {
+      "main": "#479ef5",
+      "text": "#479ef5",
+      "contrastText": "#000000",
+      "shade": "#62b0f7",
+      "mainEmphasis": "#62b0f7"
     },
     "error": {
       "main": "#dc626d"
@@ -46,18 +56,24 @@
     "action": {
       "hover": "#383838",
       "selected": "#333333",
+      "selectedBorder": "#479ef5",
+      "focus": "#383838",
       "disabledBackground": "#141414"
     },
     "gradients": {
       "brandVertical": "#479ef5",
       "brandHorizontal": "#479ef5"
-    }
+    },
+    "scrollbar": "#adadad"
   },
   "typography": {
     "fontFamily": "\"Segoe UI\", \"Segoe UI Web (West European)\", -apple-system, BlinkMacSystemFont, Roboto, \"Helvetica Neue\", sans-serif",
     "fontFamilyMonospace": "Consolas, \"Courier New\", monospace",
     "fontSize": 14,
-    "htmlFontSize": 16
+    "htmlFontSize": 16,
+    "fontWeightRegular": 400,
+    "fontWeightMedium": 600,
+    "fontWeightBold": 700
   },
   "shape": {
     "borderRadiusSm": 2,
@@ -86,6 +102,16 @@
     "checkbox": {
       "activeBackground": "#479ef5",
       "activeBackgroundHover": "#62b0f7"
+    },
+    "overlay": {
+      "background": "rgba(0, 0, 0, 0.5)"
+    },
+    "menu": {
+      "borderRadius": "default"
+    },
+    "table": {
+      "rowHoverBackground": "#383838",
+      "rowSelected": "#333333"
     },
     "codeEditor": {
       "keyword": "#479ef5",

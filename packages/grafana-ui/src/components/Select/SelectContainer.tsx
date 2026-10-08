@@ -1,11 +1,11 @@
 import { css, cx } from '@emotion/css';
 import { components, type ContainerProps as BaseContainerProps, type GroupBase } from 'react-select';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { getFocusStyles } from '../../themes/mixins';
-import { sharedInputStyle } from '../Forms/commonStyles';
+import { getFluentFieldFocusStyle, sharedInputStyle } from '../Forms/commonStyles';
 import { getInputStyles } from '../Input/Input';
 
 import { type CustomComponentProps } from './types';
@@ -40,7 +40,7 @@ const getSelectContainerStyles = (theme: GrafanaTheme2, focused: boolean, disabl
     wrapper: cx(
       styles.wrapper,
       sharedInputStyle(theme, invalid),
-      focused && css(getFocusStyles(theme)),
+      focused && css(hasSolidBrandGradient(theme) ? getFluentFieldFocusStyle(theme, invalid) : getFocusStyles(theme)),
       disabled && styles.inputDisabled,
       css({
         position: 'relative',

@@ -1,8 +1,8 @@
 import { css } from '@emotion/css';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { t } from '@grafana/i18n';
-import { Drawer, useStyles2, Text } from '@grafana/ui';
+import { Drawer, useStyles2, useTheme2, Text } from '@grafana/ui';
 import { DEFAULT_FEED_URL } from 'app/plugins/panel/news/constants';
 import grotNewsSvg from 'img/grot-news.svg';
 
@@ -15,12 +15,14 @@ interface NewsContainerProps {
 
 export function NewsContainer({ onClose }: NewsContainerProps) {
   const styles = useStyles2(getStyles);
+  const hideMascot = hasSolidBrandGradient(useTheme2());
 
   return (
     <Drawer
       title={
         <div className={styles.title}>
           <Text element="h2">{t('news.title', 'Latest from the blog')}</Text>
+          {!hideMascot && (
           <a
             href="https://grafana.com/blog/"
             target="_blank"
@@ -30,6 +32,7 @@ export function NewsContainer({ onClose }: NewsContainerProps) {
           >
             <img src={grotNewsSvg} alt="Grot reading news" />
           </a>
+          )}
         </div>
       }
       onClose={onClose}

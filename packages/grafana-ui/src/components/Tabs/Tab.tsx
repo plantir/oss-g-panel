@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import { type HTMLProps } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2, type NavModelItem } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type NavModelItem } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
 import { useStyles2 } from '../../themes/ThemeContext';
@@ -133,6 +133,8 @@ export const Tab = React.forwardRef<HTMLElement, TabProps>(
 Tab.displayName = 'Tab';
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
+
   return {
     item: css({
       listStyle: 'none',
@@ -178,20 +180,30 @@ const getStyles = (theme: GrafanaTheme2) => {
     notActive: css({
       'a:hover, &:hover, &:focus': {
         color: theme.colors.text.primary,
+        ...(fluent && {
+          background: theme.colors.action.hover,
+        }),
 
         '&::before': {
-          backgroundColor: theme.colors.action.hover,
+          backgroundColor: fluent ? 'transparent' : theme.colors.action.hover,
         },
       },
     }),
     activeStyle: css({
       label: 'activeTabStyle',
-      color: theme.colors.text.primary,
+      color: fluent ? theme.colors.primary.text : theme.colors.text.primary,
+      fontWeight: fluent ? theme.typography.fontWeightMedium : undefined,
       overflow: 'hidden',
 
-      '&::before': {
-        backgroundImage: theme.colors.gradients.brandHorizontal,
-      },
+      '&::before': fluent
+        ? {
+            backgroundImage: 'none',
+            backgroundColor: theme.colors.primary.main,
+            borderRadius: 0,
+          }
+        : {
+            backgroundImage: theme.colors.gradients.brandHorizontal,
+          },
     }),
     suffix: css({
       marginLeft: theme.spacing(1),

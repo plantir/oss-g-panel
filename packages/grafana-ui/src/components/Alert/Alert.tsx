@@ -1,8 +1,9 @@
 import { css, cx } from '@emotion/css';
 import { type AriaRole, type HTMLAttributes, type ReactNode } from 'react';
 import * as React from 'react';
+import tinycolor from 'tinycolor2';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 
@@ -52,6 +53,7 @@ export const Alert = React.forwardRef<HTMLDivElement, Props>(
     ref
   ) => {
     const theme = useTheme2();
+    const fluent = hasSolidBrandGradient(theme);
     const hasTitle = Boolean(title);
     const styles = getStyles(theme, severity, hasTitle, elevated, bottomSpacing, topSpacing);
     const rolesBySeverity: Record<AlertVariant, AriaRole> = {
@@ -81,7 +83,7 @@ export const Alert = React.forwardRef<HTMLDivElement, Props>(
         >
           <Box paddingTop={1} paddingRight={2}>
             <div className={styles.icon}>
-              <Icon size="xl" name={getIconFromSeverity(severity)} />
+              <Icon size={fluent ? 'md' : 'xl'} name={getIconFromSeverity(severity)} />
             </div>
           </Box>
 
@@ -122,6 +124,25 @@ export const Alert = React.forwardRef<HTMLDivElement, Props>(
 
 Alert.displayName = 'Alert';
 
+const getFluentMessageSurface = (theme: GrafanaTheme2, severity: AlertVariant) => {
+  if (severity === 'info') {
+    return {
+      background: theme.colors.background.secondary,
+      border: theme.colors.border.weak,
+      icon: theme.colors.text.secondary,
+    };
+  }
+
+  const base = theme.colors[severity].main;
+  const mixAmount = theme.isDark ? 22 : 12;
+
+  return {
+    background: tinycolor.mix(theme.colors.background.primary, base, mixAmount).toString(),
+    border: tinycolor.mix(theme.colors.background.primary, base, theme.isDark ? 40 : 28).toString(),
+    icon: base,
+  };
+};
+
 const getIconFromSeverity = (severity: AlertVariant): IconName => {
   switch (severity) {
     case 'error':
@@ -144,6 +165,8 @@ const getStyles = (
   topSpacing?: number
 ) => {
   const color = theme.colors[severity];
+  const fluent = hasSolidBrandGradient(theme);
+  const messageSurface = fluent ? getFluentMessageSurface(theme, severity) : undefined;
 
   return {
     wrapper: css({
@@ -160,12 +183,20 @@ const getStyles = (
         bottom: 0,
         right: 0,
         background: theme.colors.background.primary,
-        borderRadius: theme.shape.radius.lg,
+        borderRadius: fluent ? theme.shape.radius.default : theme.shape.radius.lg,
         zIndex: -1,
       },
+
+      ...(messageSurface && {
+        '& > div': {
+          backgroundColor: messageSurface.background,
+          borderColor: messageSurface.border,
+          borderRadius: theme.shape.radius.default,
+        },
+      }),
     }),
     icon: css({
-      color: color.text,
+      color: messageSurface ? messageSurface.icon : color.text,
       position: 'relative',
       top: '-1px',
     }),

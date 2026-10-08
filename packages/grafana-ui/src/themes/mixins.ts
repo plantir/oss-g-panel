@@ -1,6 +1,6 @@
 import tinycolor from 'tinycolor2';
 
-import { type GrafanaTheme, type GrafanaTheme2, type Radii } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme, type GrafanaTheme2, type Radii } from '@grafana/data';
 
 export function cardChrome(theme: GrafanaTheme2): string {
   return `
@@ -62,6 +62,17 @@ export function getMouseFocusStyles(theme: GrafanaTheme | GrafanaTheme2) {
 }
 
 export function getFocusStyles(theme: GrafanaTheme2) {
+  if (hasSolidBrandGradient(theme)) {
+    return {
+      outline: `2px solid ${theme.isDark ? '#ffffff' : '#000000'}`,
+      outlineOffset: '2px',
+      boxShadow: 'none',
+      transitionTimingFunction: 'cubic-bezier(0.33, 0, 0.67, 1)',
+      transitionDuration: '0.1s',
+      transitionProperty: 'outline, outline-offset, box-shadow',
+    };
+  }
+
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
   const boxShadowPlacement = visualRefreshEnabled ? 3 : 4;
   return {
@@ -71,6 +82,19 @@ export function getFocusStyles(theme: GrafanaTheme2) {
     transitionTimingFunction: `cubic-bezier(0.19, 1, 0.22, 1)`,
     transitionDuration: '0.2s',
     transitionProperty: 'outline, outline-offset, box-shadow',
+  };
+}
+
+/** Fluent callouts use a small radius, a hairline border, and a short shadow. */
+export function getCalloutChrome(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return {};
+  }
+
+  return {
+    borderRadius: theme.shape.radius.default,
+    boxShadow: theme.shadows.z2,
+    border: `1px solid ${theme.colors.border.weak}`,
   };
 }
 
@@ -88,7 +112,8 @@ export const getTooltipContainerStyles = (theme: GrafanaTheme2) => ({
   boxShadow: theme.shadows.z2,
   maxWidth: '800px',
   padding: theme.spacing(1),
-  borderRadius: theme.shape.radius.lg,
+  borderRadius: hasSolidBrandGradient(theme) ? theme.shape.radius.default : theme.shape.radius.lg,
+  border: hasSolidBrandGradient(theme) ? `1px solid ${theme.colors.border.weak}` : undefined,
   zIndex: theme.zIndex.tooltip,
 });
 
