@@ -1,5 +1,8 @@
 import { render, screen } from '@testing-library/react';
 
+import { getThemeById, ThemeContext } from '@grafana/data';
+
+import { fluentChromeIconNames } from './fluentChrome';
 import { Icon } from './Icon';
 
 /**
@@ -63,5 +66,38 @@ describe('Icon', () => {
 
     svg = screen.getByTestId('icon-star');
     expect(svg).toHaveAttribute('id', expect.stringContaining('star.svg'));
+  });
+
+  it.each(fluentChromeIconNames)('draws a fluent stroke glyph for %s', (name) => {
+    render(
+      <ThemeContext.Provider value={getThemeById('fluent_light')}>
+        <Icon name={name} />
+      </ThemeContext.Provider>
+    );
+
+    const svg = screen.getByTestId(`icon-${name}`);
+    expect(svg).toHaveAttribute('viewBox', '0 0 16 16');
+    expect(svg).toHaveAttribute('stroke-width', '1.25');
+    expect(svg.querySelector('path, circle, rect')).toBeInTheDocument();
+  });
+
+  it('keeps the unicon file for chrome names on stock themes', () => {
+    render(
+      <ThemeContext.Provider value={getThemeById('light')}>
+        <Icon name="search" />
+      </ThemeContext.Provider>
+    );
+
+    expect(screen.getByTestId('icon-search')).toHaveAttribute('id', expect.stringContaining('search.svg'));
+  });
+
+  it('keeps the unicon file for icons outside the chrome set', () => {
+    render(
+      <ThemeContext.Provider value={getThemeById('fluent_dark')}>
+        <Icon name="heart" />
+      </ThemeContext.Provider>
+    );
+
+    expect(screen.getByTestId('icon-heart')).toHaveAttribute('id', expect.stringContaining('heart.svg'));
   });
 });

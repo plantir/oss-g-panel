@@ -2,12 +2,13 @@ import { css, cx } from '@emotion/css';
 import { useCallback, useState, useRef, memo, forwardRef } from 'react';
 import SVG from 'react-inlinesvg';
 
-import { type GrafanaTheme2, isIconName } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, isIconName } from '@grafana/data';
 
-import { useStyles2 } from '../../themes/ThemeContext';
+import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
 import { type IconName, type IconType, type IconSize } from '../../types/icon';
 import { spin } from '../../utils/keyframes';
 
+import { getFluentChromeIcon } from './fluentChrome';
 import { getIconPath, getSvgSize } from './utils';
 
 export interface IconProps extends Omit<React.SVGProps<SVGElement>, 'onLoad' | 'onError' | 'ref'> {
@@ -30,6 +31,12 @@ const getIconStyles = (theme: GrafanaTheme2) => {
       // line-height: 0; is needed for correct icon alignment in Safari
       lineHeight: 0,
       verticalAlign: 'middle',
+    }),
+    fluentChrome: css({
+      fill: 'none',
+      stroke: 'currentColor',
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
     }),
     orange: css({
       fill: theme.v1.palette.orange,
@@ -92,6 +99,7 @@ function useIconWorkaround(name: IconName) {
 export const Icon = memo(
   forwardRef<SVGElement, IconProps>(
     ({ size = 'md', type = 'default', name: nameProp, className, style, title = '', ...rest }, ref) => {
+      const theme = useTheme2();
       const styles = useStyles2(getIconStyles);
       const { nameToUse: name, handleLoad } = useIconWorkaround(nameProp);
 
@@ -106,9 +114,11 @@ export const Icon = memo(
       const svgHgt = svgSize;
       const svgWid = name.startsWith('gf-bar-align') ? 16 : name.startsWith('gf-interp') ? 30 : svgSize;
       const svgPath = getIconPath(iconName, type);
+      const fluentChrome = hasSolidBrandGradient(theme) ? getFluentChromeIcon(iconName) : undefined;
 
       const composedClassName = cx(
         styles.icon,
+        fluentChrome && styles.fluentChrome,
         className,
         type === 'mono' ? { [styles.orange]: name === 'favorite' } : '',
         {
@@ -116,16 +126,37 @@ export const Icon = memo(
         }
       );
 
+      const hiddenFromScreenReaders =
+        rest.tabIndex === undefined &&
+        !title &&
+        !rest['aria-label'] &&
+        !rest['aria-labelledby'] &&
+        !rest['aria-describedby'];
+
+      if (fluentChrome) {
+        return (
+          <svg
+            data-testid={`icon-${iconName}`}
+            aria-hidden={hiddenFromScreenReaders}
+            ref={ref}
+            width={svgWid}
+            height={svgHgt}
+            viewBox="0 0 16 16"
+            strokeWidth={1.25}
+            title={title}
+            className={composedClassName}
+            style={style}
+            {...rest}
+          >
+            {fluentChrome}
+          </svg>
+        );
+      }
+
       return (
         <SVG
           data-testid={`icon-${iconName}`}
-          aria-hidden={
-            rest.tabIndex === undefined &&
-            !title &&
-            !rest['aria-label'] &&
-            !rest['aria-labelledby'] &&
-            !rest['aria-describedby']
-          }
+          aria-hidden={hiddenFromScreenReaders}
           onLoad={handleLoad}
           onError={handleLoad}
           innerRef={ref}
