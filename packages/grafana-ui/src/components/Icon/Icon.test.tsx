@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 
 import { getThemeById, ThemeContext } from '@grafana/data';
 
-import { fluentChromeIconNames } from './fluentChrome';
 import { Icon } from './Icon';
+import { fluentChromeIconNames } from './fluentChrome';
 
 /**
  * These tests are a bit weird because they use an entirely mocked out react-inlinesvg, so these are very superficial
@@ -66,6 +66,23 @@ describe('Icon', () => {
 
     svg = screen.getByTestId('icon-star');
     expect(svg).toHaveAttribute('id', expect.stringContaining('star.svg'));
+  });
+
+  it('includes the toolbar chrome glyphs', () => {
+    expect(fluentChromeIconNames).toEqual(
+      expect.arrayContaining([
+        'plus',
+        'bars',
+        'ellipsis-v',
+        'info-circle',
+        'question-circle',
+        'cog',
+        'sync',
+        'save',
+        'copy',
+        'trash-alt',
+      ])
+    );
   });
 
   it.each(fluentChromeIconNames)('draws a fluent stroke glyph for %s', (name) => {

@@ -13,7 +13,7 @@ import {
 import { type Placement } from '@popperjs/core';
 import { memo, cloneElement, isValidElement, useRef, useState, type JSX } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { t } from '@grafana/i18n';
 
 import { useStyles2 } from '../../themes/ThemeContext';
@@ -173,13 +173,32 @@ export const Toggletip = memo(
 
 Toggletip.displayName = 'Toggletip';
 
+/** Fluent teaching bubble: elevated card, semibold title, ruled footer. */
+export function getFluentTeachingBubbleChrome(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
+
+  return {
+    background: theme.colors.background.elevated,
+    border: `1px solid ${theme.colors.border.weak}`,
+    borderRadius: theme.shape.radius.lg,
+    boxShadow: theme.shadows.z2,
+    titleColor: theme.colors.text.primary,
+    titleFontWeight: theme.typography.fontWeightMedium,
+    bodyColor: theme.colors.text.primary,
+    footerBorder: `1px solid ${theme.colors.border.weak}`,
+  };
+}
+
 const getStyles = (theme: GrafanaTheme2) => {
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const teaching = getFluentTeachingBubbleChrome(theme);
   const info = buildTooltipTheme(
     theme,
-    theme.colors.background.primary,
+    teaching?.background ?? theme.colors.background.primary,
     theme.colors.border.weak,
-    theme.components.tooltip.text,
+    teaching?.bodyColor ?? theme.components.tooltip.text,
     { topBottom: 2, rightLeft: 2 }
   );
   const error = buildTooltipTheme(
@@ -191,7 +210,45 @@ const getStyles = (theme: GrafanaTheme2) => {
   );
 
   return {
-    info,
+    info: teaching
+      ? {
+          ...info,
+          container: cx(
+            info.container,
+            css({
+              border: teaching.border,
+              borderRadius: teaching.borderRadius,
+              boxShadow: teaching.boxShadow,
+            })
+          ),
+          header: cx(
+            info.header,
+            css({
+              color: teaching.titleColor,
+              fontSize: theme.typography.body.fontSize,
+              fontWeight: teaching.titleFontWeight,
+              paddingRight: theme.spacing(3),
+            })
+          ),
+          body: cx(
+            info.body,
+            css({
+              color: teaching.bodyColor,
+              fontSize: theme.typography.body.fontSize,
+            })
+          ),
+          footer: cx(
+            info.footer,
+            css({
+              borderTop: teaching.footerBorder,
+              display: 'flex',
+              gap: theme.spacing(1),
+              justifyContent: 'flex-end',
+              marginTop: theme.spacing(1),
+            })
+          ),
+        }
+      : info,
     error,
     fitContent: css({
       maxWidth: 'fit-content',

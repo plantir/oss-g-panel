@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { type IconName } from '../../types/icon';
@@ -36,21 +36,39 @@ export const FilterPill = ({ label, selected, onClick, icon = 'check' }: FilterP
   );
 };
 
+/** Neutral Fluent chip. Stock themes keep the pill. */
+export function getFilterPillChrome(theme: GrafanaTheme2, selected: boolean) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
+
+  return {
+    borderRadius: theme.shape.radius.default,
+    borderColor: selected ? theme.colors.border.strong : theme.colors.border.medium,
+    background: selected ? theme.colors.action.selected : theme.colors.background.secondary,
+    fontWeight: theme.typography.fontWeightRegular,
+    color: theme.colors.text.primary,
+  };
+}
+
 const getStyles = (theme: GrafanaTheme2) => {
+  const resting = getFilterPillChrome(theme, false);
+  const selectedChrome = getFilterPillChrome(theme, true);
+
   return {
     wrapper: css({
-      background: theme.colors.background.secondary,
-      borderRadius: theme.shape.radius.pill,
+      background: resting?.background ?? theme.colors.background.secondary,
+      borderRadius: resting?.borderRadius ?? theme.shape.radius.pill,
       padding: theme.spacing(0, 2),
       fontSize: theme.typography.bodySmall.fontSize,
-      fontWeight: theme.typography.fontWeightMedium,
+      fontWeight: resting?.fontWeight ?? theme.typography.fontWeightMedium,
       lineHeight: theme.typography.bodySmall.lineHeight,
-      color: theme.colors.text.secondary,
+      color: resting?.color ?? theme.colors.text.secondary,
       display: 'flex',
       alignItems: 'center',
       height: '32px',
       position: 'relative',
-      border: `1px solid ${theme.colors.background.secondary}`,
+      border: resting ? `1px solid ${resting.borderColor}` : `1px solid ${theme.colors.background.secondary}`,
       whiteSpace: 'nowrap',
 
       '&:hover': {
@@ -60,11 +78,13 @@ const getStyles = (theme: GrafanaTheme2) => {
     }),
     selected: css({
       color: theme.colors.text.primary,
-      background: theme.colors.action.selected,
-      border: `1px solid ${theme.colors.action.selectedBorder}`,
+      background: selectedChrome?.background ?? theme.colors.action.selected,
+      border: selectedChrome
+        ? `1px solid ${selectedChrome.borderColor}`
+        : `1px solid ${theme.colors.action.selectedBorder}`,
 
       '&:hover': {
-        background: theme.colors.action.focus,
+        background: selectedChrome ? theme.colors.action.hover : theme.colors.action.focus,
       },
     }),
     icon: css({

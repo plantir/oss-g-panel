@@ -1,9 +1,11 @@
 import { cx, css } from '@emotion/css';
 import { useMemo, type JSX } from 'react';
 
+import { type GrafanaTheme2 } from '@grafana/data';
 import { Trans } from '@grafana/i18n';
 
-import { stylesFactory } from '../../themes/stylesFactory';
+import { useStyles2 } from '../../themes/ThemeContext';
+import { getFluentListItemChrome } from '../../themes/mixins';
 import { Button } from '../Button/Button';
 
 import { useLimit } from './hooks';
@@ -21,17 +23,27 @@ interface AbstractListProps<T> extends ListProps<T> {
   limit?: number;
 }
 
-const getStyles = stylesFactory((inlineList = false) => ({
-  list: css({
-    listStyleType: 'none',
-    margin: 0,
-    padding: 0,
-  }),
+const getStyles = (theme: GrafanaTheme2, inlineList = false) => {
+  const fluentRow = inlineList ? undefined : getFluentListItemChrome(theme);
 
-  item: css({
-    display: (inlineList && 'inline-block') || 'block',
-  }),
-}));
+  return {
+    list: css({
+      listStyleType: 'none',
+      margin: 0,
+      padding: 0,
+    }),
+
+    item: css({
+      display: (inlineList && 'inline-block') || 'block',
+      ...(fluentRow && {
+        borderRadius: fluentRow.borderRadius,
+        '&:hover': {
+          background: fluentRow.hoverBackground,
+        },
+      }),
+    }),
+  };
+};
 
 /** @deprecated Use ul/li/arr.map directly instead */
 // no point converting, this is deprecated
@@ -44,7 +56,7 @@ export const AbstractList = <T,>({
   inline,
   limit = 0,
 }: AbstractListProps<T>) => {
-  const styles = getStyles(inline);
+  const styles = useStyles2(getStyles, inline);
 
   const [curLimit, setLimit] = useLimit(limit);
 

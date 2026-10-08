@@ -3,10 +3,19 @@ import { getThemeById } from '@grafana/data';
 import { getPropertiesForVariant } from '../components/Button/Button';
 import { getFluentSwatchSelection } from '../components/ColorPicker/ColorSwatch';
 import { getFluentSpectrumChrome } from '../components/ColorPicker/SpectrumPalette';
+import { getFilterPillChrome } from '../components/FilterPill/FilterPill';
 import { getFluentFieldFocusStyle } from '../components/Forms/commonStyles';
 import { getFluentSpinnerArc } from '../components/Spinner/Spinner';
+import { getFluentTeachingBubbleChrome } from '../components/Toggletip/Toggletip';
+import { getFluentOverflowLayout } from '../components/ToolbarButton/ToolbarButtonRow';
 
-import { getCalloutChrome, getFluentGroupHeaderChrome, getFluentShimmerColors, getFocusStyles } from './mixins';
+import {
+  getCalloutChrome,
+  getFluentGroupHeaderChrome,
+  getFluentListItemChrome,
+  getFluentShimmerColors,
+  getFocusStyles,
+} from './mixins';
 
 describe('fluent control chrome', () => {
   const light = getThemeById('fluent_light');
@@ -78,6 +87,53 @@ describe('fluent control chrome', () => {
 
   it('leaves shimmer colors to the stock theme', () => {
     expect(getFluentShimmerColors(stock)).toBeUndefined();
+  });
+
+  it('gives a plain list row a neutral hover wash', () => {
+    expect(getFluentListItemChrome(light)).toEqual({
+      borderRadius: '4px',
+      hoverBackground: '#f5f5f5',
+    });
+    expect(getFluentListItemChrome(dark)?.hoverBackground).toBe('#383838');
+    expect(getFluentListItemChrome(stock)).toBeUndefined();
+  });
+
+  it('draws filter pills as neutral chips', () => {
+    expect(getFilterPillChrome(light, false)).toMatchObject({
+      borderRadius: '4px',
+      borderColor: '#d1d1d1',
+      background: '#f5f5f5',
+      fontWeight: 400,
+    });
+    expect(getFilterPillChrome(light, true)).toMatchObject({
+      background: '#ebebeb',
+      borderColor: '#616161',
+    });
+    expect(getFilterPillChrome(stock, true)).toBeUndefined();
+  });
+
+  it('draws a teaching bubble as an elevated card', () => {
+    expect(getFluentTeachingBubbleChrome(light)).toMatchObject({
+      background: '#ffffff',
+      border: '1px solid #e0e0e0',
+      borderRadius: '8px',
+      titleColor: '#242424',
+      titleFontWeight: 600,
+      footerBorder: '1px solid #e0e0e0',
+    });
+    expect(getFluentTeachingBubbleChrome(dark)?.background).toBe('#292929');
+    expect(getFluentTeachingBubbleChrome(stock)).toBeUndefined();
+  });
+
+  it('stacks overflow commands in a callout', () => {
+    expect(getFluentOverflowLayout(light)).toMatchObject({
+      borderRadius: '4px',
+      border: '1px solid #e0e0e0',
+      backgroundColor: '#ffffff',
+      flexDirection: 'column',
+      flexWrap: 'nowrap',
+    });
+    expect(getFluentOverflowLayout(stock)).toBeUndefined();
   });
 
   it('selects a swatch with a brand ring', () => {

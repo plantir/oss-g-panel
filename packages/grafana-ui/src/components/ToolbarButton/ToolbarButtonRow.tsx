@@ -4,10 +4,11 @@ import { FocusScope } from '@react-aria/focus';
 import { useOverlay } from '@react-aria/overlays';
 import { Children, forwardRef, type HTMLAttributes, useState, useRef, useLayoutEffect, createRef } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { t } from '@grafana/i18n';
 
 import { useTheme2 } from '../../themes/ThemeContext';
+import { getCalloutChrome } from '../../themes/mixins';
 import { getPortalContainer } from '../Portal/Portal';
 
 import { ToolbarButton } from './ToolbarButton';
@@ -115,6 +116,23 @@ export const ToolbarButtonRow = forwardRef<HTMLDivElement, Props>(
 
 ToolbarButtonRow.displayName = 'ToolbarButtonRow';
 
+/** Hidden toolbar commands stack in the shared Fluent callout. */
+export function getFluentOverflowLayout(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
+
+  return {
+    ...getCalloutChrome(theme),
+    alignItems: 'stretch' as const,
+    backgroundColor: theme.colors.background.elevated,
+    flexDirection: 'column' as const,
+    flexWrap: 'nowrap' as const,
+    gap: theme.spacing(0.5),
+    padding: theme.spacing(0.5),
+  };
+}
+
 const getStyles = (theme: GrafanaTheme2, overflowButtonOrder: number, alignment: Props['alignment']) => ({
   overflowButton: css({
     order: overflowButtonOrder,
@@ -135,6 +153,7 @@ const getStyles = (theme: GrafanaTheme2, overflowButtonOrder: number, alignment:
     top: '100%',
     width: 'max-content',
     zIndex: theme.zIndex.dropdown,
+    ...getFluentOverflowLayout(theme),
   }),
   container: css({
     alignItems: 'center',

@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import { useMemo } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { InlineList } from '../List/InlineList';
@@ -115,6 +115,12 @@ const getStyles = (theme: GrafanaTheme2) => {
     ),
     rightWrapper: css({
       padding: theme.spacing(0.5),
+      // Plain Fluent lists paint a hover wash on the row. Legend rows keep their own hover.
+      ...(hasSolidBrandGradient(theme) && {
+        '& li:hover': {
+          background: 'transparent',
+        },
+      }),
     }),
     bottomWrapper: css({
       display: 'flex',

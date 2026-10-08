@@ -117,6 +117,18 @@ export function getFluentShimmerColors(theme: GrafanaTheme2) {
   };
 }
 
+/** Plain Fluent list rows: small corner and a neutral hover wash. */
+export function getFluentListItemChrome(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
+
+  return {
+    borderRadius: theme.shape.radius.default,
+    hoverBackground: theme.colors.action.hover,
+  };
+}
+
 /** Grouped-list header: semibold primary label, hairline rule, neutral hover. */
 export function getFluentGroupHeaderChrome(theme: GrafanaTheme2) {
   if (!hasSolidBrandGradient(theme)) {

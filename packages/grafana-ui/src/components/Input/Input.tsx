@@ -1,13 +1,15 @@
 import { css, cx } from '@emotion/css';
-import { forwardRef, type HTMLProps, type ReactNode, useContext } from 'react';
+import { forwardRef, type ForwardedRef, type HTMLProps, type ReactNode, useContext, useRef } from 'react';
 import { useMeasure } from 'react-use';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
+import { t } from '@grafana/i18n';
 
 import { useTheme2 } from '../../themes/ThemeContext';
 import { stylesFactory } from '../../themes/stylesFactory';
 import { useFieldContext } from '../Forms/FieldContext';
 import { getFocusStyle, sharedInputStyle } from '../Forms/commonStyles';
+import { Icon } from '../Icon/Icon';
 import { Spinner } from '../Spinner/Spinner';
 
 import { AutoSizeInputContext } from './AutoSizeInputContext';
@@ -82,11 +84,15 @@ export const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const autoSizeWidth = isInAutoSizeInput && width ? width + accessoriesWidth / 8 : undefined;
 
   const theme = useTheme2();
+  const fluent = hasSolidBrandGradient(theme);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Don't pass the width prop, as this causes an unnecessary amount of Emotion calls when auto sizing
   const styles = getInputStyles({ theme, invalid: !!invalid, width: autoSizeWidth ? undefined : width });
 
   const suffix = suffixProp || (loading && <Spinner inline={true} />);
+  const showSteppers = fluent && restProps.type === 'number' && !suffix;
+  const steppersLocked = Boolean(disabled || restProps.readOnly);
 
   return (
     <div
@@ -105,7 +111,10 @@ export const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
         )}
 
         <input
-          ref={ref}
+          ref={(node) => {
+            inputRef.current = node;
+            assignInputRef(ref, node);
+          }}
           className={styles.input}
           aria-invalid={!!invalid}
           id={id}
@@ -123,9 +132,36 @@ export const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
           }
           style={{
             paddingLeft: prefix ? prefixRect.width + 12 : undefined,
-            paddingRight: suffix || loading ? suffixRect.width + 12 : undefined,
+            paddingRight: showSteppers ? 36 : suffix || loading ? suffixRect.width + 12 : undefined,
           }}
         />
+
+        {showSteppers && (
+          <div className={styles.spinColumn}>
+            <button
+              type="button"
+              className={styles.spinButton}
+              aria-label={t('grafana-ui.input.increase-value', 'Increase value')}
+              disabled={steppersLocked || isNumberBoundReached(restProps.value, restProps.max, 1)}
+              tabIndex={-1}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => inputRef.current && stepNumberInput(inputRef.current, 1)}
+            >
+              <Icon name="angle-up" size="xs" />
+            </button>
+            <button
+              type="button"
+              className={cx(styles.spinButton, styles.spinButtonDown)}
+              aria-label={t('grafana-ui.input.decrease-value', 'Decrease value')}
+              disabled={steppersLocked || isNumberBoundReached(restProps.value, restProps.min, -1)}
+              tabIndex={-1}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => inputRef.current && stepNumberInput(inputRef.current, -1)}
+            >
+              <Icon name="angle-down" size="xs" />
+            </button>
+          </div>
+        )}
 
         {suffix && (
           <div className={styles.suffix} ref={suffixRef}>
@@ -140,7 +176,103 @@ export const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
 
 Input.displayName = 'Input';
 
+function assignInputRef(ref: ForwardedRef<HTMLInputElement>, node: HTMLInputElement | null) {
+  if (typeof ref === 'function') {
+    ref(node);
+  } else if (ref) {
+    ref.current = node;
+  }
+}
+
+export function isNumberBoundReached(
+  value: HTMLProps<HTMLInputElement>['value'],
+  bound: HTMLProps<HTMLInputElement>['min'],
+  direction: 1 | -1
+) {
+  if (value === undefined || value === '' || Array.isArray(value) || bound === undefined || bound === '') {
+    return false;
+  }
+
+  const current = Number(value);
+  const limit = Number(bound);
+  if (Number.isNaN(current) || Number.isNaN(limit)) {
+    return false;
+  }
+
+  return direction > 0 ? current >= limit : current <= limit;
+}
+
+function nextSteppedValue(input: HTMLInputElement, direction: 1 | -1) {
+  const step = input.step === '' || input.step === 'any' ? 1 : Number(input.step);
+  if (!Number.isFinite(step) || step <= 0) {
+    return undefined;
+  }
+
+  const min = input.min === '' ? undefined : Number(input.min);
+  const max = input.max === '' ? undefined : Number(input.max);
+  const current = input.value === '' || Number.isNaN(Number(input.value)) ? 0 : Number(input.value);
+  let next = current + direction * step;
+  const places = (String(step).split('.')[1] ?? '').length;
+  next = Number(next.toFixed(Math.min(places, 20)));
+
+  if (min !== undefined && Number.isFinite(min) && next < min) {
+    if (direction < 0) {
+      return undefined;
+    }
+    next = min;
+  }
+  if (max !== undefined && Number.isFinite(max) && next > max) {
+    return undefined;
+  }
+  if (next === current) {
+    return undefined;
+  }
+
+  return String(next);
+}
+
+/** Steps a number input and notifies React. Native steppers throw when step is "any". */
+export function stepNumberInput(input: HTMLInputElement, direction: 1 | -1) {
+  if (input.disabled || input.readOnly) {
+    return;
+  }
+
+  const previous = input.value;
+  try {
+    if (direction > 0) {
+      input.stepUp();
+    } else {
+      input.stepDown();
+    }
+  } catch {
+    // step="any" has no native step.
+  }
+
+  if (input.value === previous) {
+    const next = nextSteppedValue(input, direction);
+    if (next === undefined) {
+      return;
+    }
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set?.call(input, next);
+  }
+
+  if (input.value === previous) {
+    return;
+  }
+
+  const tracker = Object.getOwnPropertyDescriptor(input, '_valueTracker')?.value;
+  if (isValueTracker(tracker)) {
+    tracker.setValue(previous);
+  }
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function isValueTracker(value: unknown): value is { setValue: (next: string) => void } {
+  return typeof value === 'object' && value !== null && 'setValue' in value && typeof value.setValue === 'function';
+}
+
 export const getInputStyles = stylesFactory(({ theme, invalid = false, width }: StyleDeps) => {
+  const fluent = hasSolidBrandGradient(theme);
   const prefixSuffixStaticWidth = '28px';
   const prefixSuffix = css({
     position: 'absolute',
@@ -167,23 +299,35 @@ export const getInputStyles = stylesFactory(({ theme, invalid = false, width }: 
         width: width ? theme.spacing(width) : '100%',
         height: theme.spacing(theme.components.height.md),
         borderRadius: theme.shape.radius.default,
+        ...(fluent && {
+          "input[type='number']": {
+            appearance: 'textfield',
+            MozAppearance: 'textfield',
+          },
+          "input[type='number']::-webkit-inner-spin-button, input[type='number']::-webkit-outer-spin-button": {
+            WebkitAppearance: 'none',
+            margin: 0,
+          },
+        }),
         '&:hover': {
           '> .prefix, .suffix, .input': {
             borderColor: invalid ? theme.colors.error.border : theme.colors.primary.border,
           },
 
           // only show number buttons on hover
-          "input[type='number']": {
-            appearance: 'textfield',
-          },
+          ...(!fluent && {
+            "input[type='number']": {
+              appearance: 'textfield',
+            },
 
-          "input[type='number']::-webkit-inner-spin-button, input[type='number']::-webkit-outer-spin-button": {
-            // Need type assertion here due to the use of !important
-            // see https://github.com/frenic/csstype/issues/114#issuecomment-697201978
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            WebkitAppearance: 'inner-spin-button !important' as 'inner-spin-button',
-            opacity: 1,
-          },
+            "input[type='number']::-webkit-inner-spin-button, input[type='number']::-webkit-outer-spin-button": {
+              // Need type assertion here due to the use of !important
+              // see https://github.com/frenic/csstype/issues/114#issuecomment-697201978
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+              WebkitAppearance: 'inner-spin-button !important' as 'inner-spin-button',
+              opacity: 1,
+            },
+          }),
         },
       })
     ),
@@ -301,6 +445,48 @@ export const getInputStyles = stylesFactory(({ theme, invalid = false, width }: 
         borderBottomRightRadius: 'unset',
       })
     ),
+    spinColumn: css({
+      label: 'input-spinColumn',
+      position: 'absolute',
+      top: 1,
+      right: 1,
+      bottom: 1,
+      zIndex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      width: 24,
+      overflow: 'hidden',
+      borderLeft: `1px solid ${theme.colors.border.medium}`,
+      borderTopRightRadius: `calc(${theme.shape.radius.default} - 1px)`,
+      borderBottomRightRadius: `calc(${theme.shape.radius.default} - 1px)`,
+    }),
+    spinButton: css({
+      label: 'input-spinButton',
+      appearance: 'none',
+      flex: 1,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: 0,
+      padding: 0,
+      border: 'none',
+      background: 'transparent',
+      color: theme.colors.text.secondary,
+      cursor: 'pointer',
+
+      '&:hover:not(:disabled)': {
+        background: theme.colors.action.hover,
+        color: theme.colors.text.primary,
+      },
+
+      '&:disabled': {
+        color: theme.colors.text.disabled,
+        cursor: 'default',
+      },
+    }),
+    spinButtonDown: css({
+      borderTop: `1px solid ${theme.colors.border.weak}`,
+    }),
     suffix: cx(
       prefixSuffix,
       css({
