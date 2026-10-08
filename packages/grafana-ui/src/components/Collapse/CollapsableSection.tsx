@@ -2,10 +2,10 @@ import { css, cx } from '@emotion/css';
 import { type ReactNode, useId, useState } from 'react';
 import * as React from 'react';
 
-import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
+import { type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
-import { getFocusStyles } from '../../themes/mixins';
+import { getFluentGroupHeaderChrome, getFocusStyles } from '../../themes/mixins';
 import { Icon } from '../Icon/Icon';
 import { Spinner } from '../Spinner/Spinner';
 
@@ -108,54 +108,59 @@ export const CollapsableSection = ({
   );
 };
 
-const collapsableSectionStyles = (theme: GrafanaTheme2) => ({
-  header: css({
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-    boxSizing: 'border-box',
-    position: 'relative',
-    justifyContent: 'flex-start',
-    fontSize: theme.typography.size.lg,
-    padding: `${theme.spacing(0.5)} 0`,
-    '&:focus-within': getFocusStyles(theme),
-    ...(hasSolidBrandGradient(theme) && {
-      borderRadius: theme.shape.radius.default,
-      '&:hover': {
-        background: theme.colors.action.hover,
+const collapsableSectionStyles = (theme: GrafanaTheme2) => {
+  const group = getFluentGroupHeaderChrome(theme);
+
+  return {
+    header: css({
+      display: 'flex',
+      alignItems: 'center',
+      cursor: 'pointer',
+      boxSizing: 'border-box',
+      position: 'relative',
+      justifyContent: 'flex-start',
+      fontSize: group ? group.labelFontSize : theme.typography.size.lg,
+      padding: `${theme.spacing(0.5)} 0`,
+      '&:focus-within': getFocusStyles(theme),
+      ...(group && {
+        borderRadius: group.radius,
+        borderBottom: group.borderBottom,
+        '&:hover': {
+          background: group.hoverBackground,
+        },
+      }),
+    }),
+    button: css({
+      all: 'unset',
+      marginRight: theme.spacing(1),
+      '&:focus-visible': {
+        outline: 'none',
+        outlineOffset: 'unset',
+        [theme.transitions.handleMotion('no-preference', 'reduce')]: {
+          transition: 'none',
+        },
+        boxShadow: 'none',
       },
     }),
-  }),
-  button: css({
-    all: 'unset',
-    marginRight: theme.spacing(1),
-    '&:focus-visible': {
-      outline: 'none',
-      outlineOffset: 'unset',
-      [theme.transitions.handleMotion('no-preference', 'reduce')]: {
-        transition: 'none',
-      },
-      boxShadow: 'none',
-    },
-  }),
-  icon: css({
-    color: theme.colors.text.secondary,
-  }),
-  content: css({
-    padding: `${theme.spacing(2)} 0`,
-  }),
-  contentHidden: css({
-    display: 'none',
-  }),
-  spinner: css({
-    display: 'flex',
-    alignItems: 'center',
-    width: theme.spacing(2),
-  }),
-  label: css({
-    display: 'flex',
-    flex: '1 1 auto',
-    fontWeight: theme.typography.fontWeightMedium,
-    color: theme.colors.text.maxContrast,
-  }),
-});
+    icon: css({
+      color: theme.colors.text.secondary,
+    }),
+    content: css({
+      padding: `${theme.spacing(2)} 0`,
+    }),
+    contentHidden: css({
+      display: 'none',
+    }),
+    spinner: css({
+      display: 'flex',
+      alignItems: 'center',
+      width: theme.spacing(2),
+    }),
+    label: css({
+      display: 'flex',
+      flex: '1 1 auto',
+      fontWeight: group ? group.labelFontWeight : theme.typography.fontWeightMedium,
+      color: group ? group.labelColor : theme.colors.text.maxContrast,
+    }),
+  };
+};

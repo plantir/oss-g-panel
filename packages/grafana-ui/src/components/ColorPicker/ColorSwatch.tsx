@@ -3,11 +3,12 @@ import { useFocusRing } from '@react-aria/focus';
 import * as React from 'react';
 import tinycolor from 'tinycolor2';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 
 import { useTheme2 } from '../../themes/ThemeContext';
+import { getFocusStyles } from '../../themes/mixins';
 
 /** @internal */
 export enum ColorSwatchVariant {
@@ -63,6 +64,15 @@ export const ColorSwatch = React.forwardRef<HTMLDivElement, Props>(
   }
 );
 
+/** Brand ring around a selected Fluent swatch. Undefined on other themes. */
+export function getFluentSwatchSelection(theme: GrafanaTheme2, isSelected?: boolean) {
+  if (!hasSolidBrandGradient(theme) || !isSelected) {
+    return undefined;
+  }
+
+  return `0 0 0 2px ${theme.colors.background.elevated}, 0 0 0 4px ${theme.colors.primary.main}`;
+}
+
 const getStyles = (
   theme: GrafanaTheme2,
   variant: ColorSwatchVariant,
@@ -73,6 +83,9 @@ const getStyles = (
   const tc = tinycolor(color);
   const isSmall = variant === ColorSwatchVariant.Small;
   const swatchSize = isSmall ? '16px' : '32px';
+  const fluent = hasSolidBrandGradient(theme);
+  const fluentSelection = getFluentSwatchSelection(theme, isSelected);
+  const focus = getFocusStyles(theme);
   let border = 'none';
 
   if (tc.getAlpha() < 0.1) {
@@ -93,20 +106,28 @@ const getStyles = (
       height: swatchSize,
       background: `${color}`,
       border,
-      borderRadius: theme.shape.radius.circle,
-      outlineOffset: '1px',
-      outline: isFocusVisible ? `2px solid  ${theme.colors.primary.main}` : 'none',
-      boxShadow: isSelected
-        ? `inset 0 0 0 2px ${color}, inset 0 0 0 4px ${theme.colors.getContrastText(color)}`
-        : 'none',
-      [theme.transitions.handleMotion('no-preference')]: {
-        transition: theme.transitions.create(['transform'], {
-          duration: theme.transitions.duration.short,
-        }),
-      },
-      '&:hover': {
-        transform: 'scale(1.1)',
-      },
+      borderRadius: fluent ? theme.shape.radius.default : theme.shape.radius.circle,
+      outlineOffset: fluent ? focus.outlineOffset : '1px',
+      outline: isFocusVisible ? (fluent ? focus.outline : `2px solid  ${theme.colors.primary.main}`) : 'none',
+      boxShadow: fluentSelection
+        ? fluentSelection
+        : isSelected
+          ? `inset 0 0 0 2px ${color}, inset 0 0 0 4px ${theme.colors.getContrastText(color)}`
+          : 'none',
+      ...(!fluent && {
+        [theme.transitions.handleMotion('no-preference')]: {
+          transition: theme.transitions.create(['transform'], {
+            duration: theme.transitions.duration.short,
+          }),
+        },
+      }),
+      '&:hover': fluent
+        ? {
+            boxShadow: fluentSelection ?? `0 0 0 1px ${theme.colors.border.strong}`,
+          }
+        : {
+            transform: 'scale(1.1)',
+          },
       '@media (forced-colors: active)': {
         forcedColorAdjust: 'none',
       },

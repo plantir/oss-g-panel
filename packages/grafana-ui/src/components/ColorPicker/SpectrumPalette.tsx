@@ -4,7 +4,7 @@ import { RgbaStringColorPicker } from 'react-colorful';
 import { useThrottleFn } from 'react-use';
 import tinycolor from 'tinycolor2';
 
-import { type GrafanaTheme2, colorManipulator } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, colorManipulator } from '@grafana/data';
 import { t } from '@grafana/i18n';
 
 import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
@@ -49,29 +49,62 @@ const SpectrumPalette = ({ color, onChange }: SpectrumPaletteProps) => {
   );
 };
 
-export const getStyles = (theme: GrafanaTheme2) => ({
-  root: css({
-    '&.react-colorful': {
-      width: 'auto',
-    },
+/** Separated 4px color panel, thin sliders, and a white-ring thumb. */
+export function getFluentSpectrumChrome(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
 
-    '.react-colorful': {
-      '&__saturation': {
-        borderRadius: `${theme.shape.radius.default} ${theme.shape.radius.default} 0 0`,
+  return {
+    gap: theme.spacing(1),
+    radius: theme.shape.radius.default,
+    sliderHeight: theme.spacing(1),
+    thumbSize: theme.spacing(2),
+    thumbBorder: '2px solid #ffffff',
+  };
+}
+
+export const getStyles = (theme: GrafanaTheme2) => {
+  const fluent = getFluentSpectrumChrome(theme);
+
+  return {
+    root: css({
+      '&.react-colorful': {
+        width: 'auto',
+        ...(fluent && { gap: fluent.gap }),
       },
-      '&__alpha': {
-        borderRadius: `0 0 ${theme.shape.radius.default} ${theme.shape.radius.default}`,
+
+      '.react-colorful': {
+        '&__saturation': {
+          borderRadius: fluent ? fluent.radius : `${theme.shape.radius.default} ${theme.shape.radius.default} 0 0`,
+        },
+        '&__hue': {
+          ...(fluent && {
+            borderRadius: fluent.radius,
+            overflow: 'visible',
+          }),
+        },
+        '&__alpha': {
+          borderRadius: fluent ? fluent.radius : `0 0 ${theme.shape.radius.default} ${theme.shape.radius.default}`,
+          ...(fluent && { overflow: 'visible' }),
+        },
+        '&__alpha, &__hue': {
+          height: fluent ? fluent.sliderHeight : theme.spacing(2),
+          position: 'relative',
+        },
+        '&__pointer': {
+          height: fluent ? fluent.thumbSize : theme.spacing(2),
+          width: fluent ? fluent.thumbSize : theme.spacing(2),
+          ...(fluent && {
+            border: fluent.thumbBorder,
+            borderRadius: theme.shape.radius.circle,
+            boxShadow: 'none',
+            boxSizing: 'border-box',
+          }),
+        },
       },
-      '&__alpha, &__hue': {
-        height: theme.spacing(2),
-        position: 'relative',
-      },
-      '&__pointer': {
-        height: theme.spacing(2),
-        width: theme.spacing(2),
-      },
-    },
-  }),
-});
+    }),
+  };
+};
 
 export default SpectrumPalette;

@@ -5,6 +5,7 @@ import { SkeletonTheme } from 'react-loading-skeleton';
 import { getThemeById, type GrafanaTheme2, ThemeContext } from '@grafana/data';
 import { ThemeChangedEvent, config } from '@grafana/runtime';
 import { useFlagGrafanaVisualDesignRefresh } from '@grafana/runtime/internal';
+import { styleMixins } from '@grafana/ui';
 
 import { appEvents } from '../app_events';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -77,11 +78,13 @@ export const ThemeProvider = ({ children, value }: { children: React.ReactNode; 
     setTheme(maybeRemapTheme(value, visualRefreshEnabled));
   }, [value, visualRefreshEnabled]);
 
+  const shimmer = styleMixins.getFluentShimmerColors(theme);
+
   return (
     <ThemeContext.Provider value={theme}>
       <SkeletonTheme
-        baseColor={theme.colors.emphasize(theme.colors.background.secondary)}
-        highlightColor={theme.colors.emphasize(theme.colors.background.secondary, 0.1)}
+        baseColor={shimmer?.baseColor ?? theme.colors.emphasize(theme.colors.background.secondary)}
+        highlightColor={shimmer?.highlightColor ?? theme.colors.emphasize(theme.colors.background.secondary, 0.1)}
         borderRadius={theme.shape.radius.default}
       >
         {children}

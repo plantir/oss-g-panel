@@ -5,11 +5,11 @@ import SVG from 'react-inlinesvg';
 import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { t } from '@grafana/i18n';
 
-import { useStyles2 } from '../../themes/ThemeContext';
+import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
 import { type IconSize, isIconSize } from '../../types/icon';
 import { spin } from '../../utils/keyframes';
 import { Icon } from '../Icon/Icon';
-import { getIconRoot, getIconSubDir } from '../Icon/utils';
+import { getIconRoot, getIconSubDir, getSvgSize } from '../Icon/utils';
 
 export interface Props {
   className?: string;
@@ -34,6 +34,63 @@ interface PropsWithDeprecatedSize extends Omit<Props, 'size'> {
  *
  * https://developers.grafana.com/ui/latest/index.html?path=/docs/information-spinner--docs
  */
+/** Rounded brand arc used by the Fluent spinner. `size` is the outer box in px. */
+export function getFluentSpinnerArc(size: number) {
+  const stroke = size >= 32 ? 3 : size >= 20 ? 2 : 1.5;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const arcLength = circumference * 0.28;
+
+  return {
+    stroke,
+    radius,
+    dasharray: `${arcLength} ${circumference - arcLength}`,
+  };
+}
+
+function fluentPixelSize(size: number | string): number | undefined {
+  if (typeof size === 'string' && isIconSize(size)) {
+    return getSvgSize(size);
+  }
+  if (typeof size === 'number' && Number.isFinite(size)) {
+    return size;
+  }
+  if (typeof size === 'string') {
+    const match = /^(\d+(?:\.\d+)?)px$/.exec(size.trim());
+    if (match) {
+      return Number(match[1]);
+    }
+  }
+  return undefined;
+}
+
+const FluentSpinnerGlyph = ({ size, className }: { size: number; className?: string }) => {
+  const arc = getFluentSpinnerArc(size);
+  const center = size / 2;
+
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      fill="none"
+      role="progressbar"
+      aria-label={t('grafana-ui.spinner.aria-label', 'Loading')}
+    >
+      <circle
+        cx={center}
+        cy={center}
+        r={arc.radius}
+        stroke="currentColor"
+        strokeWidth={arc.stroke}
+        strokeLinecap="round"
+        strokeDasharray={arc.dasharray}
+      />
+    </svg>
+  );
+};
+
 export const Spinner = ({
   className,
   inline = false,
@@ -41,11 +98,30 @@ export const Spinner = ({
   style,
   size = 'md',
 }: Props | PropsWithDeprecatedSize) => {
+  const theme = useTheme2();
   const styles = useStyles2(getStyles);
 
   const deprecatedStyles = useStyles2(getDeprecatedStyles, size);
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const iconName = prefersReducedMotion ? 'hourglass' : 'spinner';
+  const pixelSize = fluentPixelSize(size);
+
+  if (hasSolidBrandGradient(theme) && !prefersReducedMotion && pixelSize !== undefined) {
+    return (
+      <div
+        data-testid="Spinner"
+        style={style}
+        className={cx(
+          {
+            [styles.inline]: inline,
+          },
+          className
+        )}
+      >
+        <FluentSpinnerGlyph size={pixelSize} className={cx(styles.spin, iconClassName)} />
+      </div>
+    );
+  }
 
   // this entire if statement is handling the deprecated size prop
   // TODO remove once we fully remove the deprecated type
@@ -105,9 +181,10 @@ const getStyles = (theme: GrafanaTheme2) => ({
   spin: css({
     ...(hasSolidBrandGradient(theme) && {
       color: theme.colors.primary.main,
+      display: 'block',
     }),
     [theme.transitions.handleMotion('no-preference')]: {
-      animation: `${spin} 2s infinite linear`,
+      animation: `${spin} ${hasSolidBrandGradient(theme) ? '1.5s' : '2s'} infinite linear`,
     },
   }),
 });

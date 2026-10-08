@@ -1,9 +1,12 @@
 import { getThemeById } from '@grafana/data';
 
 import { getPropertiesForVariant } from '../components/Button/Button';
+import { getFluentSwatchSelection } from '../components/ColorPicker/ColorSwatch';
+import { getFluentSpectrumChrome } from '../components/ColorPicker/SpectrumPalette';
 import { getFluentFieldFocusStyle } from '../components/Forms/commonStyles';
+import { getFluentSpinnerArc } from '../components/Spinner/Spinner';
 
-import { getCalloutChrome, getFocusStyles } from './mixins';
+import { getCalloutChrome, getFluentGroupHeaderChrome, getFluentShimmerColors, getFocusStyles } from './mixins';
 
 describe('fluent control chrome', () => {
   const light = getThemeById('fluent_light');
@@ -54,5 +57,61 @@ describe('fluent control chrome', () => {
       border: '1px solid #e0e0e0',
     });
     expect(getCalloutChrome(stock)).toEqual({});
+  });
+
+  it('draws a short brand arc for the spinner', () => {
+    const arc = getFluentSpinnerArc(16);
+
+    expect(arc.stroke).toBe(1.5);
+    expect(arc.radius).toBe(7.25);
+    expect(getFluentSpinnerArc(24).stroke).toBe(2);
+    expect(getFluentSpinnerArc(36).stroke).toBe(3);
+    expect(arc.dasharray.split(' ').map(Number)[0]).toBeLessThan(2 * Math.PI * arc.radius);
+  });
+
+  it.each([
+    ['fluent light', light, { baseColor: '#ebebeb', highlightColor: '#f5f5f5' }],
+    ['fluent dark', dark, { baseColor: '#292929', highlightColor: '#383838' }],
+  ] as const)('uses a neutral shimmer on %s', (_name, theme, colors) => {
+    expect(getFluentShimmerColors(theme)).toEqual(colors);
+  });
+
+  it('leaves shimmer colors to the stock theme', () => {
+    expect(getFluentShimmerColors(stock)).toBeUndefined();
+  });
+
+  it('selects a swatch with a brand ring', () => {
+    expect(getFluentSwatchSelection(light, true)).toBe('0 0 0 2px #ffffff, 0 0 0 4px #0f6cbd');
+    expect(getFluentSwatchSelection(dark, true)).toBe('0 0 0 2px #292929, 0 0 0 4px #479ef5');
+    expect(getFluentSwatchSelection(light, false)).toBeUndefined();
+    expect(getFluentSwatchSelection(stock, true)).toBeUndefined();
+  });
+
+  it('splits the color spectrum into a panel and thin sliders', () => {
+    expect(getFluentSpectrumChrome(light)).toEqual({
+      gap: '8px',
+      radius: '4px',
+      sliderHeight: '8px',
+      thumbSize: '16px',
+      thumbBorder: '2px solid #ffffff',
+    });
+    expect(getFluentSpectrumChrome(dark)?.thumbBorder).toBe('2px solid #ffffff');
+    expect(getFluentSpectrumChrome(stock)).toBeUndefined();
+  });
+
+  it('styles a grouped list header as a ruled semibold row', () => {
+    expect(getFluentGroupHeaderChrome(light)).toMatchObject({
+      borderBottom: '1px solid #e0e0e0',
+      hoverBackground: '#f5f5f5',
+      labelColor: '#242424',
+      labelFontWeight: 600,
+      radius: '4px',
+    });
+    expect(getFluentGroupHeaderChrome(dark)).toMatchObject({
+      borderBottom: '1px solid #333333',
+      hoverBackground: '#383838',
+      labelColor: '#ffffff',
+    });
+    expect(getFluentGroupHeaderChrome(stock)).toBeUndefined();
   });
 });

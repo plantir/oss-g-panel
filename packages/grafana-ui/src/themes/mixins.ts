@@ -98,6 +98,41 @@ export function getCalloutChrome(theme: GrafanaTheme2) {
   };
 }
 
+/** Neutral block and the lighter wave that crosses a Fluent shimmer. */
+export function getFluentShimmerColors(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
+
+  if (theme.isDark) {
+    return {
+      baseColor: theme.colors.background.secondary,
+      highlightColor: theme.colors.action.hover,
+    };
+  }
+
+  return {
+    baseColor: theme.colors.action.selected,
+    highlightColor: theme.colors.background.secondary,
+  };
+}
+
+/** Grouped-list header: semibold primary label, hairline rule, neutral hover. */
+export function getFluentGroupHeaderChrome(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
+
+  return {
+    borderBottom: `1px solid ${theme.colors.border.weak}`,
+    hoverBackground: theme.colors.action.hover,
+    labelColor: theme.colors.text.primary,
+    labelFontSize: theme.typography.body.fontSize,
+    labelFontWeight: theme.typography.fontWeightMedium,
+    radius: theme.shape.radius.default,
+  };
+}
+
 export function getButtonFocusStyles(theme: GrafanaTheme2) {
   return {
     ...getFocusStyles(theme),
