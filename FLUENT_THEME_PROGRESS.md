@@ -177,7 +177,7 @@ These surfaces are not named controls on the catalog page. They already branch o
 - Panel title hover is a neutral wash with no shadow. The panel hover widget has no shadow.
 - Legacy select focus is the brand underline, and the focused option has no brand side bar.
 - The mono favorite icon uses the brand color.
-- Query operators, matched query text, and syntax tokens use the Fluent code colors. Highlighted words use brand text.
+- Query operators, matched query text, and syntax tokens use the Fluent code colors. Highlighted words use brand text. A pending live channel uses the warning text color.
 - The home menu highlight and recommended cards use the selected wash.
 
 Field validation is a soft error surface: error background, border, and text, 4px radius, no speech-bubble arrow. The code editor uses the field bottom edge, a line highlight, and the Fluent token colors in `components.codeEditor`.

@@ -4,6 +4,7 @@ import { PureComponent } from 'react';
 import { type Unsubscribable, type PartialObserver } from 'rxjs';
 
 import {
+  hasSolidBrandGradient,
   type GrafanaTheme2,
   type PanelProps,
   type LiveChannelStatusEvent,
@@ -288,7 +289,7 @@ const getStyles = stylesFactory((theme: GrafanaTheme2) => ({
   }),
   status: {
     [LiveChannelConnectionState.Pending]: css({
-      border: `1px solid ${theme.v1.palette.orange}`,
+      border: `1px solid ${hasSolidBrandGradient(theme) ? theme.colors.warning.text : theme.v1.palette.orange}`,
     }),
     [LiveChannelConnectionState.Connected]: css({
       border: `1px solid ${theme.colors.success.main}`,
