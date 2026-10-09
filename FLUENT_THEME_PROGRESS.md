@@ -186,7 +186,7 @@ Field validation is a soft error surface: error background, border, and text, 4p
 
 - Brand and product logos (Google, GitHub, Grafana, Slack, and the other marks in `fluentBrandIconNames`) stay the original artwork
 - Chart rendering other than the palette
-- Rating, Persona, Facepile, PeoplePicker, and Coachmark
+- Rating, PeoplePicker, ActivityItem, Facepile, Persona, and Coachmark. Grafana has no component for these, so they stay at status None
 - Stock, visual refresh, and accessibility themes
 
 ## Check
