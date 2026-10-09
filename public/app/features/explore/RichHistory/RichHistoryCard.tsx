@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import * as React from 'react';
 import { connect, type ConnectedProps } from 'react-redux';
 
-import { type GrafanaTheme2, type DataSourceApi } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type DataSourceApi } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { config, reportInteraction, getAppEvents } from '@grafana/runtime';
 import { type DataQuery } from '@grafana/schema';
@@ -60,7 +60,7 @@ const getStyles = (theme: GrafanaTheme2) => {
       backgroundColor: cardColor,
       borderRadius: theme.shape.radius.default,
       '.starred': {
-        color: theme.v1.palette.orange,
+        color: hasSolidBrandGradient(theme) ? theme.colors.primary.main : theme.v1.palette.orange,
       },
     }),
     cardRow: css({

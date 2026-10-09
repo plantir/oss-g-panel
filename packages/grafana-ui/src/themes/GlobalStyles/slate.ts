@@ -1,8 +1,11 @@
 import { css } from '@emotion/react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 export function getSlateStyles(theme: GrafanaTheme2) {
+  const fluent = hasSolidBrandGradient(theme);
+  const matchColor = fluent ? theme.visualization.getColorByName('yellow') : theme.v1.palette.yellow;
+
   return css({
     '.slate-query-field': {
       fontSize: theme.typography.fontSize,
@@ -86,8 +89,8 @@ export function getSlateStyles(theme: GrafanaTheme2) {
       },
 
       '.typeahead-match': {
-        color: theme.v1.palette.yellow,
-        borderBottom: `1px solid ${theme.v1.palette.yellow}`,
+        color: matchColor,
+        borderBottom: `1px solid ${matchColor}`,
         // Undoing mark styling
         padding: 'inherit',
         background: 'inherit',
@@ -114,16 +117,36 @@ export function getSlateStyles(theme: GrafanaTheme2) {
       },
 
       '.token.boolean, .token.number, .token.operator, .token.url': {
-        color: '#fe85fc',
+        color: fluent ? theme.components.codeEditor.number : '#fe85fc',
       },
 
       '.token.function, .token.attr-name, .token.function-name, .token.atrule, .token.keyword, .token.class-name': {
         color: theme.colors.primary.text,
       },
 
-      '.token.punctuation, .token.regex, .token.important': {
-        color: theme.v1.palette.orange,
-      },
+      ...(fluent
+        ? {
+            '.token.operator': {
+              color: theme.components.codeEditor.operator,
+            },
+            '.token.url': {
+              color: theme.components.codeEditor.link,
+            },
+            '.token.punctuation': {
+              color: theme.components.codeEditor.operator,
+            },
+            '.token.regex': {
+              color: theme.components.codeEditor.regexp,
+            },
+            '.token.important': {
+              color: theme.components.codeEditor.keyword,
+            },
+          }
+        : {
+            '.token.punctuation, .token.regex, .token.important': {
+              color: theme.v1.palette.orange,
+            },
+          }),
 
       '.token.important': {
         fontWeight: 'normal',

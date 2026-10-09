@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { Fragment, useMemo, useState, type ReactNode } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { type IconName, Button, Icon, Stack, Text, Dropdown, Menu, useTheme2, useStyles2 } from '@grafana/ui';
 import { useStoredString } from 'app/core/hooks/useStored';
@@ -146,8 +146,8 @@ const getStyles = (theme: GrafanaTheme2) => ({
       display: 'block',
       position: 'absolute',
       inset: 0,
-      background: theme.colors.gradients.brandHorizontal,
-      opacity: 0.125,
+      background: hasSolidBrandGradient(theme) ? theme.colors.action.selected : theme.colors.gradients.brandHorizontal,
+      opacity: hasSolidBrandGradient(theme) ? 1 : 0.125,
       pointerEvents: 'none',
       zIndex: -1,
     },

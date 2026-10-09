@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { Draggable } from '@hello-pangea/dnd';
 import { type ReactElement, useState } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 import { reportInteraction } from '@grafana/runtime';
@@ -226,7 +226,7 @@ function getStyles(theme: GrafanaTheme2) {
       marginRight: theme.spacing(2),
     }),
     iconFailed: css({
-      color: theme.v1.palette.orange,
+      color: hasSolidBrandGradient(theme) ? theme.colors.warning.text : theme.v1.palette.orange,
       marginRight: theme.spacing(2),
     }),
     icons: css({

@@ -9,6 +9,9 @@ import { getFluentSpinnerArc } from '../components/Spinner/Spinner';
 import { getFluentTeachingBubbleChrome } from '../components/Toggletip/Toggletip';
 import { getFluentOverflowLayout } from '../components/ToolbarButton/ToolbarButtonRow';
 
+import { getQueryEditorStyles } from './GlobalStyles/queryEditor';
+import { getSlateStyles } from './GlobalStyles/slate';
+import { getUtilityClassStyles } from './GlobalStyles/utilityClasses';
 import {
   getCalloutChrome,
   getFluentActiveChrome,
@@ -205,5 +208,27 @@ describe('fluent control chrome', () => {
       labelColor: '#ffffff',
     });
     expect(getFluentGroupHeaderChrome(stock)).toBeUndefined();
+  });
+
+  it('uses fluent code colors for query operators and highlights', () => {
+    const fluentQuery = getQueryEditorStyles(light).styles;
+    const stockQuery = getQueryEditorStyles(stock).styles;
+
+    expect(fluentQuery).toContain(`${light.components.codeEditor.operator} !important`);
+    expect(fluentQuery).not.toContain(light.v1.palette.orange);
+    expect(stockQuery).toContain(`${stock.v1.palette.orange} !important`);
+
+    expect(getUtilityClassStyles(light).styles).toContain(light.colors.primary.text);
+    expect(getUtilityClassStyles(stock).styles).toContain(stock.v1.palette.orange);
+
+    const fluentSlate = getSlateStyles(light).styles;
+    const stockSlate = getSlateStyles(stock).styles;
+
+    expect(fluentSlate).toContain(light.components.codeEditor.regexp);
+    expect(fluentSlate).toContain(light.components.codeEditor.operator);
+    expect(fluentSlate).not.toContain('#fe85fc');
+    expect(fluentSlate).not.toContain(light.v1.palette.orange);
+    expect(stockSlate).toContain('#fe85fc');
+    expect(stockSlate).toContain(stock.v1.palette.orange);
   });
 });

@@ -3,7 +3,7 @@ import { autoUpdate, offset, useFloating } from '@floating-ui/react';
 import { useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { FixedSizeList } from 'react-window';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
 import { type CompletionItem, type CompletionItemGroup, CompletionItemKind } from '../../types/completion';
@@ -215,7 +215,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     boxShadow: theme.shadows.z2,
 
     strong: {
-      color: theme.v1.palette.yellow,
+      color: hasSolidBrandGradient(theme) ? theme.visualization.getColorByName('yellow') : theme.v1.palette.yellow,
     },
   }),
 });

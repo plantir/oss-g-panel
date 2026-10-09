@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { type CSSInterpolation } from '@emotion/serialize';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 function buttonBackgroundMixin(
   startColor: string,
@@ -58,7 +58,7 @@ function widthMixin(theme: GrafanaTheme2, max: number) {
 export function getUtilityClassStyles(theme: GrafanaTheme2) {
   return css({
     '.highlight-word': {
-      color: theme.v1.palette.orange,
+      color: hasSolidBrandGradient(theme) ? theme.colors.primary.text : theme.v1.palette.orange,
     },
     '.hide': {
       display: 'none',

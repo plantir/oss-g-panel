@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { useCallback, useEffect } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { Trans, t } from '@grafana/i18n';
 import { config } from '@grafana/runtime';
@@ -289,7 +289,7 @@ function getStyles(theme: GrafanaTheme2) {
       maxWidth: '890px',
     }),
     appsIcon: css({
-      fill: theme.v1.palette.orange,
+      fill: hasSolidBrandGradient(theme) ? theme.colors.primary.main : theme.v1.palette.orange,
     }),
   };
 }

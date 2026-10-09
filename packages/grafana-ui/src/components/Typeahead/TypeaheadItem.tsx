@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import Highlighter from 'react-highlight-words';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { type CompletionItem, CompletionItemKind } from '../../types/completion';
@@ -49,8 +49,10 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
   typeaheadItemMatch: css({
     label: 'type-ahead-item-match',
-    color: theme.v1.palette.yellow,
-    borderBottom: `1px solid ${theme.v1.palette.yellow}`,
+    color: hasSolidBrandGradient(theme) ? theme.visualization.getColorByName('yellow') : theme.v1.palette.yellow,
+    borderBottom: `1px solid ${
+      hasSolidBrandGradient(theme) ? theme.visualization.getColorByName('yellow') : theme.v1.palette.yellow
+    }`,
     padding: 'inherit',
     background: 'inherit',
   }),

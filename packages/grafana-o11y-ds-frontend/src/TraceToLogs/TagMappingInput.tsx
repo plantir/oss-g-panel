@@ -1,6 +1,6 @@
 import { css, cx } from '@emotion/css';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { InlineLabel, SegmentInput, ToolbarButton, useStyles2 } from '@grafana/ui';
 
 import { type TraceToLogsTag } from './TraceToLogsSettings';
@@ -96,7 +96,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     alignItems: 'center',
   }),
   operator: css({
-    color: theme.v1.palette.orange,
+    color: hasSolidBrandGradient(theme) ? theme.components.codeEditor.operator : theme.v1.palette.orange,
     width: 'auto',
   }),
   removeTag: css({

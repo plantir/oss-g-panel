@@ -2,7 +2,7 @@ import { css, cx } from '@emotion/css';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { t, Trans } from '@grafana/i18n';
 import { Badge, Button, Grid, Icon, Stack, Text, useStyles2 } from '@grafana/ui';
 
@@ -275,8 +275,10 @@ const getStyles = (theme: GrafanaTheme2) => ({
       content: '""',
       position: 'absolute',
       inset: 0,
-      background: theme.colors.gradients.brandHorizontal,
-      opacity: 0.05,
+      background: hasSolidBrandGradient(theme)
+        ? theme.colors.action.selected
+        : theme.colors.gradients.brandHorizontal,
+      opacity: hasSolidBrandGradient(theme) ? 1 : 0.05,
       pointerEvents: 'none',
     },
   }),

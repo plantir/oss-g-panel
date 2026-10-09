@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 export function getQueryEditorStyles(theme: GrafanaTheme2) {
   return css({
@@ -25,7 +25,9 @@ export function getQueryEditorStyles(theme: GrafanaTheme2) {
       },
     },
     '.query-segment-operator': {
-      color: `${theme.v1.palette.orange} !important`,
+      color: `${
+        hasSolidBrandGradient(theme) ? theme.components.codeEditor.operator : theme.v1.palette.orange
+      } !important`,
     },
     '.tight-form-func': {
       background: theme.colors.background.secondary,

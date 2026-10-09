@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 import React, { useState, type ChangeEvent, type FocusEvent, useCallback } from 'react';
 
-import { rangeUtil, type PanelData, type DataSourceApi, type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, rangeUtil, type PanelData, type DataSourceApi, type GrafanaTheme2 } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
 import { Input, InlineSwitch, useStyles2, InlineLabel } from '@grafana/ui';
 import { QueryOperationRow } from 'app/core/components/QueryOperationRow/QueryOperationRow';
@@ -451,7 +451,7 @@ function getStyles(theme: GrafanaTheme2) {
       justifySelf: 'left',
     }),
     operator: css({
-      color: theme.v1.palette.orange,
+      color: hasSolidBrandGradient(theme) ? theme.components.codeEditor.operator : theme.v1.palette.orange,
     }),
   };
 }
