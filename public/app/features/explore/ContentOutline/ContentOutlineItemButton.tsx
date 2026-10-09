@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { type IconName, isIconName, type GrafanaTheme2 } from '@grafana/data';
 import { t } from '@grafana/i18n';
-import { Button, Icon, Tooltip, useTheme2 } from '@grafana/ui';
+import { Button, Icon, styleMixins, Tooltip, useTheme2 } from '@grafana/ui';
 import { type TooltipPlacement } from '@grafana/ui/internal';
 
 type CommonProps = {
@@ -131,6 +131,9 @@ function OutlineIcon({ icon }: { icon: IconName | React.ReactNode }) {
 }
 
 const getStyles = (theme: GrafanaTheme2, color?: string) => {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
+  const hideBrandBar = Boolean(activeChrome) && color === undefined;
+
   return {
     buttonContainer: css({
       position: 'relative',
@@ -177,43 +180,49 @@ const getStyles = (theme: GrafanaTheme2, color?: string) => {
       marginLeft: theme.spacing(0.5),
     }),
     active: css({
-      backgroundColor: theme.colors.background.secondary,
+      backgroundColor: hideBrandBar ? activeChrome?.background : theme.colors.background.secondary,
+      borderRadius: hideBrandBar ? theme.shape.radius.default : undefined,
       borderTopRightRadius: theme.shape.radius.default,
       borderBottomRightRadius: theme.shape.radius.default,
       position: 'relative',
       height: theme.spacing(theme.components.height.md),
 
-      '&::before': {
-        backgroundImage: color !== undefined ? 'none' : theme.colors.gradients.brandVertical,
-        backgroundColor: color !== undefined ? color : 'none',
-        borderRadius: theme.shape.radius.default,
-        content: '" "',
-        display: 'block',
-        height: '100%',
-        position: 'absolute',
-        transform: 'translateX(-50%)',
-        width: theme.spacing(0.5),
-        left: '2px',
-      },
+      '&::before': hideBrandBar
+        ? { display: 'none' }
+        : {
+            backgroundImage: color !== undefined ? 'none' : theme.colors.gradients.brandVertical,
+            backgroundColor: color !== undefined ? color : 'none',
+            borderRadius: theme.shape.radius.default,
+            content: '" "',
+            display: 'block',
+            height: '100%',
+            position: 'absolute',
+            transform: 'translateX(-50%)',
+            width: theme.spacing(0.5),
+            left: '2px',
+          },
     }),
     extraHighlight: css({
-      backgroundColor: theme.colors.background.secondary,
+      backgroundColor: hideBrandBar ? activeChrome?.background : theme.colors.background.secondary,
+      borderRadius: hideBrandBar ? theme.shape.radius.default : undefined,
       borderTopRightRadius: theme.shape.radius.default,
       borderBottomRightRadius: theme.shape.radius.default,
       position: 'relative',
 
-      '&::before': {
-        backgroundImage: color !== undefined ? 'none' : theme.colors.gradients.brandVertical,
-        backgroundColor: color !== undefined ? color : 'none',
-        borderRadius: theme.shape.radius.default,
-        content: '" "',
-        display: 'block',
-        height: '100%',
-        position: 'absolute',
-        transform: 'translateX(-50%)',
-        width: theme.spacing(0.5),
-        left: '2px',
-      },
+      '&::before': hideBrandBar
+        ? { display: 'none' }
+        : {
+            backgroundImage: color !== undefined ? 'none' : theme.colors.gradients.brandVertical,
+            backgroundColor: color !== undefined ? color : 'none',
+            borderRadius: theme.shape.radius.default,
+            content: '" "',
+            display: 'block',
+            height: '100%',
+            position: 'absolute',
+            transform: 'translateX(-50%)',
+            width: theme.spacing(0.5),
+            left: '2px',
+          },
     }),
     deleteButton: css({
       width: theme.spacing(1),

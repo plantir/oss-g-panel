@@ -16,6 +16,7 @@ import { type GrafanaTheme2, type IconName, isTruthy } from '@grafana/data';
 import { t } from '@grafana/i18n';
 
 import { useStyles2 } from '../../themes/ThemeContext';
+import { getFluentDetailsListChrome } from '../../themes/mixins';
 import { Icon } from '../Icon/Icon';
 import { Pagination } from '../Pagination/Pagination';
 import { Tooltip } from '../Tooltip/Tooltip';
@@ -25,7 +26,8 @@ import { type Column } from './types';
 import { EXPANDER_CELL_ID, getColumns } from './utils';
 
 const getStyles = (theme: GrafanaTheme2) => {
-  const rowHoverBg = theme.colors.emphasize(theme.colors.background.primary, 0.03);
+  const details = getFluentDetailsListChrome(theme);
+  const rowHoverBg = details?.rowHover ?? theme.colors.emphasize(theme.colors.background.primary, 0.03);
 
   return {
     container: css({
@@ -47,12 +49,19 @@ const getStyles = (theme: GrafanaTheme2) => {
       width: 0,
     }),
     header: css({
-      borderBottom: `1px solid ${theme.colors.border.weak}`,
+      borderBottom: details?.headerBorder ?? `1px solid ${theme.colors.border.weak}`,
+      background: details?.headerBackground,
+      color: details?.headerColor,
+      fontWeight: details?.headerWeight,
       minWidth: theme.spacing(3),
       '&, & > button': {
         position: 'relative',
         whiteSpace: 'nowrap',
         padding: theme.spacing(1),
+        ...(details && {
+          color: details.headerColor,
+          fontWeight: details.headerWeight,
+        }),
       },
       '& > button': {
         '&:after': {

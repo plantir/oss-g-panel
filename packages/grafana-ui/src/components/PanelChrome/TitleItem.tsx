@@ -2,7 +2,7 @@ import { cx, css } from '@emotion/css';
 import { forwardRef } from 'react';
 import * as React from 'react';
 
-import { type GrafanaTheme2, type LinkModel, type LinkTarget } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2, type LinkModel, type LinkTarget } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
 import { getFocusStyles, getMouseFocusStyles } from '../../themes/mixins';
@@ -62,6 +62,7 @@ export const TitleItem = forwardRef<TitleItemElement, TitleItemProps>(
 TitleItem.displayName = 'TitleItem';
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const fluent = hasSolidBrandGradient(theme);
   const item = css({
     color: `${theme.colors.text.secondary}`,
     label: 'panel-header-item',
@@ -80,8 +81,8 @@ const getStyles = (theme: GrafanaTheme2) => {
     '&: focus:not(:focus-visible)': getMouseFocusStyles(theme),
 
     '&:hover ': {
-      boxShadow: `${theme.shadows.z1}`,
-      background: theme.colors.secondary.shade,
+      boxShadow: fluent ? 'none' : `${theme.shadows.z1}`,
+      background: fluent ? theme.colors.action.hover : theme.colors.secondary.shade,
       color: `${theme.colors.text.primary}`,
     },
   });

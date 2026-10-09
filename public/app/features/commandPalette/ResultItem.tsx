@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { type GrafanaTheme2 } from '@grafana/data';
 import { config } from '@grafana/runtime';
-import { useStyles2 } from '@grafana/ui';
+import { styleMixins, useStyles2 } from '@grafana/ui';
 import { type ManagerKind } from 'app/features/apiserver/types';
 import { ManagedBadge } from 'app/features/provisioning/components/ManagedBadge';
 
@@ -82,6 +82,8 @@ export const ResultItem = React.forwardRef(
 ResultItem.displayName = 'ResultItem';
 
 const getResultItemStyles = (theme: GrafanaTheme2) => {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
+
   return {
     row: css({
       padding: theme.spacing(1, 2),
@@ -94,19 +96,21 @@ const getResultItemStyles = (theme: GrafanaTheme2) => {
       margin: theme.spacing(0, 1),
     }),
     activeRow: css({
-      color: theme.colors.text.maxContrast,
-      background: theme.colors.emphasize(theme.colors.background.primary, 0.03),
-      '&:before': {
-        display: 'block',
-        content: '" "',
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        width: theme.spacing(0.5),
-        borderRadius: theme.shape.radius.default,
-        backgroundImage: theme.colors.gradients.brandVertical,
-      },
+      color: activeChrome?.color ?? theme.colors.text.maxContrast,
+      background: activeChrome?.background ?? theme.colors.emphasize(theme.colors.background.primary, 0.03),
+      '&:before': activeChrome
+        ? { display: 'none' }
+        : {
+            display: 'block',
+            content: '" "',
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: theme.spacing(0.5),
+            borderRadius: theme.shape.radius.default,
+            backgroundImage: theme.colors.gradients.brandVertical,
+          },
     }),
     actionContainer: css({
       display: 'flex',

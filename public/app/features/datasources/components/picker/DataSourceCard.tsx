@@ -1,7 +1,7 @@
 import { css, cx } from '@emotion/css';
 
 import { type DataSourceInstanceSettings, type GrafanaTheme2 } from '@grafana/data';
-import { Card, Icon, TagList, useTheme2 } from '@grafana/ui';
+import { Card, Icon, styleMixins, TagList, useTheme2 } from '@grafana/ui';
 
 interface DataSourceCardProps {
   ds: DataSourceInstanceSettings;
@@ -63,6 +63,7 @@ export function DataSourceCard({
 // Get styles for the component
 function getStyles(theme: GrafanaTheme2, builtIn = false) {
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
   return {
     card: css(
       {
@@ -155,18 +156,20 @@ function getStyles(theme: GrafanaTheme2, builtIn = false) {
       color: theme.colors.border.weak,
     }),
     selected: css({
-      background: theme.colors.action.selected,
+      background: activeChrome?.background ?? theme.colors.action.selected,
 
-      '&::before': {
-        backgroundImage: theme.colors.gradients.brandVertical,
-        borderRadius: theme.shape.radius.default,
-        content: '" "',
-        display: 'block',
-        height: '100%',
-        position: 'absolute',
-        width: theme.spacing(0.5),
-        left: 0,
-      },
+      '&::before': activeChrome
+        ? { display: 'none' }
+        : {
+            backgroundImage: theme.colors.gradients.brandVertical,
+            borderRadius: theme.shape.radius.default,
+            content: '" "',
+            display: 'block',
+            height: '100%',
+            position: 'absolute',
+            width: theme.spacing(0.5),
+            left: 0,
+          },
     }),
     meta: css({
       display: 'block',

@@ -5,7 +5,7 @@ import { type VariableSizeList } from 'react-window';
 import { escapeRegex, type GrafanaTheme2, shallowCompare } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { reportInteraction } from '@grafana/runtime';
-import { IconButton, Input, useStyles2 } from '@grafana/ui';
+import { IconButton, Input, styleMixins, useStyles2 } from '@grafana/ui';
 
 import { useLogListContext } from './LogListContext';
 import { useLogListSearchContext } from './LogListSearchContext';
@@ -160,33 +160,44 @@ export const LogListSearch = ({ listRef, logs }: Props) => {
   );
 };
 
-const getStyles = (theme: GrafanaTheme2) => ({
-  container: css({
-    background: theme.colors.background.elevated,
-    display: 'flex',
-    gap: theme.spacing(1),
-    padding: theme.spacing(1),
-    zIndex: theme.zIndex.modal,
-    overflow: 'hidden',
-    width: '100%',
-  }),
-  wrapper: css({
-    width: '50%',
-  }),
-  controlButtonActive: css({
-    '&:after': {
-      display: 'block',
-      content: '" "',
-      position: 'absolute',
-      height: 2,
-      borderRadius: theme.shape.radius.default,
-      bottom: 2,
-      backgroundImage: theme.colors.gradients.brandHorizontal,
-      width: '95%',
-      opacity: 1,
-    },
-  }),
-});
+const getStyles = (theme: GrafanaTheme2) => {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
+
+  return {
+    container: css({
+      background: theme.colors.background.elevated,
+      display: 'flex',
+      gap: theme.spacing(1),
+      padding: theme.spacing(1),
+      zIndex: theme.zIndex.modal,
+      overflow: 'hidden',
+      width: '100%',
+    }),
+    wrapper: css({
+      width: '50%',
+    }),
+    controlButtonActive: css({
+      ...(activeChrome && {
+        background: activeChrome.background,
+        borderRadius: theme.shape.radius.default,
+        color: activeChrome.color,
+      }),
+      '&:after': activeChrome
+        ? { display: 'none' }
+        : {
+            display: 'block',
+            content: '" "',
+            position: 'absolute',
+            height: 2,
+            borderRadius: theme.shape.radius.default,
+            bottom: 2,
+            backgroundImage: theme.colors.gradients.brandHorizontal,
+            width: '95%',
+            opacity: 1,
+          },
+    }),
+  };
+};
 
 function findMatchingLogs(logs: LogListModel[], search: string, displayedFields: string[]) {
   const regex = new RegExp(escapeRegex(search), 'i');

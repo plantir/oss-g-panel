@@ -15,6 +15,7 @@ import {
   MultiCombobox,
   Stack,
   Text,
+  styleMixins,
   Tooltip,
   useStyles2,
   useTheme2,
@@ -625,6 +626,8 @@ function ToggleButtonGroup<T>({ options, value, onChange, 'aria-labelledby': lab
 }
 
 function getStyles(theme: GrafanaTheme2) {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
+
   return {
     sidebar: css({
       width: SIDEBAR_WIDTH,
@@ -658,18 +661,25 @@ function getStyles(theme: GrafanaTheme2) {
       position: 'relative',
     }),
     fieldValueActive: css({
-      paddingLeft: theme.spacing(1),
-      '&::before': {
-        content: '""',
-        display: 'block',
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        width: theme.spacing(0.25),
-        backgroundImage: theme.colors.gradients.brandVertical,
-        borderRadius: theme.shape.radius.default,
-      },
+      ...(activeChrome
+        ? {
+            color: activeChrome.color,
+            fontWeight: theme.typography.fontWeightMedium,
+          }
+        : {
+            paddingLeft: theme.spacing(1),
+            '&::before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: theme.spacing(0.25),
+              backgroundImage: theme.colors.gradients.brandVertical,
+              borderRadius: theme.shape.radius.default,
+            },
+          }),
     }),
     toggleButton: css({
       display: 'flex',

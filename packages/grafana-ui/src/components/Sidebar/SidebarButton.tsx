@@ -4,7 +4,7 @@ import React, { type ButtonHTMLAttributes } from 'react';
 import { type GrafanaTheme2, type IconName, isIconName } from '@grafana/data';
 
 import { useStyles2 } from '../../themes/ThemeContext';
-import { getFocusStyles, getMouseFocusStyles } from '../../themes/mixins';
+import { getFluentActiveChrome, getFocusStyles, getMouseFocusStyles } from '../../themes/mixins';
 import { type ButtonVariant } from '../Button/Button';
 import { Icon } from '../Icon/Icon';
 import { Tooltip } from '../Tooltip/Tooltip';
@@ -67,6 +67,8 @@ function renderIcon(icon: IconName | React.ReactNode) {
 }
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const activeChrome = getFluentActiveChrome(theme);
+
   return {
     button: css({
       label: 'toolbar-button',
@@ -122,23 +124,26 @@ const getStyles = (theme: GrafanaTheme2) => {
       },
     }),
     iconActive: css({
-      color: theme.colors.text.primary,
-      background: theme.colors.secondary.main,
-      '&::before': {
-        display: 'block',
-        content: '" "',
-        position: 'absolute',
-        right: 0,
-        bottom: 0,
-        width: '100%',
-        height: '2px',
-        borderBottomLeftRadius: theme.shape.radius.sm,
-        borderBottomRightRadius: theme.shape.radius.sm,
-        backgroundImage: theme.colors.gradients.brandHorizontal,
-        [theme.transitions.handleMotion('no-preference', 'reduce')]: {
-          ...getIconTransitionStyles(theme),
-        },
-      },
+      color: activeChrome?.color ?? theme.colors.text.primary,
+      background: activeChrome?.background ?? theme.colors.secondary.main,
+      borderRadius: activeChrome ? theme.shape.radius.default : undefined,
+      '&::before': activeChrome
+        ? { display: 'none' }
+        : {
+            display: 'block',
+            content: '" "',
+            position: 'absolute',
+            right: 0,
+            bottom: 0,
+            width: '100%',
+            height: '2px',
+            borderBottomLeftRadius: theme.shape.radius.sm,
+            borderBottomRightRadius: theme.shape.radius.sm,
+            backgroundImage: theme.colors.gradients.brandHorizontal,
+            [theme.transitions.handleMotion('no-preference', 'reduce')]: {
+              ...getIconTransitionStyles(theme),
+            },
+          },
       svg: {
         [theme.transitions.handleMotion('no-preference', 'reduce')]: {
           ...getIconTransitionStyles(theme),

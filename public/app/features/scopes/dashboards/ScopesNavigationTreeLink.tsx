@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom-v5-compat';
 
 import { type GrafanaTheme2, type IconName, locationUtil, type UrlQueryMap, urlUtil } from '@grafana/data';
 import { locationService } from '@grafana/runtime';
-import { Icon, useStyles2 } from '@grafana/ui';
+import { Icon, styleMixins, useStyles2 } from '@grafana/ui';
 
 import { useScopesServices } from '../ScopesContextProvider';
 
@@ -116,6 +116,8 @@ const linkMap = new Map<string, IconName>([
 ]);
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
+
   return {
     container: css({
       display: 'flex',
@@ -133,19 +135,23 @@ const getStyles = (theme: GrafanaTheme2) => {
     }),
     current: css({
       position: 'relative',
-      background: theme.colors.action.selected,
-      borderRadius: `0 ${theme.shape.radius.default} ${theme.shape.radius.default} 0`,
-      '&::before': {
-        backgroundImage: theme.colors.gradients.brandVertical,
-        borderRadius: theme.shape.radius.default,
-        content: '" "',
-        display: 'block',
-        height: '100%',
-        position: 'absolute',
-        width: theme.spacing(0.5),
-        top: 0,
-        left: 0,
-      },
+      background: activeChrome?.background ?? theme.colors.action.selected,
+      borderRadius: activeChrome
+        ? theme.shape.radius.default
+        : `0 ${theme.shape.radius.default} ${theme.shape.radius.default} 0`,
+      '&::before': activeChrome
+        ? { display: 'none' }
+        : {
+            backgroundImage: theme.colors.gradients.brandVertical,
+            borderRadius: theme.shape.radius.default,
+            content: '" "',
+            display: 'block',
+            height: '100%',
+            position: 'absolute',
+            width: theme.spacing(0.5),
+            top: 0,
+            left: 0,
+          },
     }),
   };
 };

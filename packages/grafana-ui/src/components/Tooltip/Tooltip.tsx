@@ -1,3 +1,4 @@
+import { css, cx } from '@emotion/css';
 import {
   arrow,
   autoUpdate,
@@ -12,10 +13,11 @@ import {
 } from '@floating-ui/react';
 import { forwardRef, cloneElement, isValidElement, useCallback, useId, useRef, useState, type JSX } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 
-import { useStyles2 } from '../../themes/ThemeContext';
+import { useStyles2, useTheme2 } from '../../themes/ThemeContext';
+import { getFluentTooltipChrome } from '../../themes/mixins';
 import { getPositioningMiddleware } from '../../utils/floating';
 import { buildTooltipTheme, getPlacement } from '../../utils/tooltipUtils';
 import { Portal } from '../Portal/Portal';
@@ -38,7 +40,9 @@ export interface TooltipProps {
  * https://developers.grafana.com/ui/latest/index.html?path=/docs/overlays-tooltip--docs
  */
 export const Tooltip = forwardRef<HTMLElement, TooltipProps>(
-  ({ children, theme, interactive, show, placement, content }, forwardedRef) => {
+  ({ children, theme: tooltipTheme, interactive, show, placement, content }, forwardedRef) => {
+    const grafanaTheme = useTheme2();
+    const fluent = hasSolidBrandGradient(grafanaTheme);
     const arrowRef = useRef(null);
     const [controlledVisible, setControlledVisible] = useState(show);
     const isOpen = show ?? controlledVisible;
@@ -48,12 +52,16 @@ export const Tooltip = forwardRef<HTMLElement, TooltipProps>(
     // `arrow` should almost always be at the end
     // see https://floating-ui.com/docs/arrow#order
     const middleware = [
-      offset(8),
+      offset(fluent ? 4 : 8),
       ...getPositioningMiddleware(floatingUIPlacement),
-      arrow({
-        element: arrowRef,
-        padding: 12,
-      }),
+      ...(fluent
+        ? []
+        : [
+            arrow({
+              element: arrowRef,
+              padding: 12,
+            }),
+          ]),
     ];
 
     const { context, refs, floatingStyles } = useFloating({
@@ -77,7 +85,7 @@ export const Tooltip = forwardRef<HTMLElement, TooltipProps>(
     const contentIsFunction = typeof content === 'function';
 
     const styles = useStyles2(getStyles);
-    const style = styles[theme ?? 'info'];
+    const style = styles[tooltipTheme ?? 'info'];
 
     const handleRef = useCallback(
       (ref: HTMLElement | null) => {
@@ -115,16 +123,18 @@ export const Tooltip = forwardRef<HTMLElement, TooltipProps>(
               className={style.container}
               {...getFloatingProps()}
             >
-              <FloatingArrow
-                strokeWidth={0.3}
-                stroke={style.borderColor}
-                width={8}
-                height={4}
-                tipRadius={2}
-                className={style.arrow}
-                ref={arrowRef}
-                context={context}
-              />
+              {!fluent && (
+                <FloatingArrow
+                  strokeWidth={0.3}
+                  stroke={style.borderColor}
+                  width={8}
+                  height={4}
+                  tipRadius={2}
+                  className={style.arrow}
+                  ref={arrowRef}
+                  context={context}
+                />
+              )}
               {typeof content === 'string' && content}
               {isValidElement(content) && cloneElement(content)}
               {contentIsFunction && content({})}
@@ -140,6 +150,7 @@ Tooltip.displayName = 'Tooltip';
 
 const getStyles = (theme: GrafanaTheme2) => {
   const visualRefreshEnabled = theme.flags.visualDesignRefresh;
+  const fluentTip = getFluentTooltipChrome(theme);
   const info = buildTooltipTheme(
     theme,
     theme.components.tooltip.background,
@@ -149,15 +160,41 @@ const getStyles = (theme: GrafanaTheme2) => {
   );
   const error = buildTooltipTheme(
     theme,
-    theme.colors.error[visualRefreshEnabled ? 'background' : 'main'],
-    theme.colors.error[visualRefreshEnabled ? 'border' : 'main'],
-    theme.colors.error[visualRefreshEnabled ? 'text' : 'contrastText'],
+    fluentTip ? theme.colors.error.background : theme.colors.error[visualRefreshEnabled ? 'background' : 'main'],
+    fluentTip ? theme.colors.error.border : theme.colors.error[visualRefreshEnabled ? 'border' : 'main'],
+    fluentTip ? theme.colors.error.text : theme.colors.error[visualRefreshEnabled ? 'text' : 'contrastText'],
     { topBottom: 0.5, rightLeft: 1 }
   );
 
+  if (!fluentTip) {
+    return {
+      info,
+      ['info-alt']: info,
+      error,
+    };
+  }
+
+  const fluentInfo = {
+    ...info,
+    borderColor: theme.colors.border.weak,
+    container: cx(
+      info.container,
+      css({
+        backgroundColor: fluentTip.background,
+        border: fluentTip.border,
+        borderRadius: fluentTip.borderRadius,
+        boxShadow: fluentTip.boxShadow,
+        color: fluentTip.color,
+      })
+    ),
+  };
+
   return {
-    info,
-    ['info-alt']: info,
-    error,
+    info: fluentInfo,
+    ['info-alt']: fluentInfo,
+    error: {
+      ...error,
+      container: cx(error.container, css({ borderRadius: fluentTip.borderRadius, boxShadow: fluentTip.boxShadow })),
+    },
   };
 };

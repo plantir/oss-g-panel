@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { useCallback, useEffect } from 'react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 import { config } from '@grafana/runtime';
@@ -11,7 +11,7 @@ import {
   useFlagFeedbackButton,
 } from '@grafana/runtime/internal';
 import { sceneGraph, type SceneVariable, useSceneObjectState } from '@grafana/scenes';
-import { Sidebar, useStyles2, useSidebarContext } from '@grafana/ui';
+import { Sidebar, useStyles2, useSidebarContext, useTheme2 } from '@grafana/ui';
 import { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';
 
 import { type DashboardScene } from '../scene/DashboardScene';
@@ -45,6 +45,7 @@ export function DashboardSidebarRenderer({ dashboard }: Props) {
   });
   const { isEditing, meta, uid, viewPanel } = dashboard.useState();
   const styles = useStyles2(getStyles, isEditing);
+  const fluent = hasSolidBrandGradient(useTheme2());
   const hasUid = Boolean(uid);
   const isEmbedded = meta.isEmbedded;
   const selectedObject = sidebar.getSelectedObject();
@@ -101,7 +102,7 @@ export function DashboardSidebarRenderer({ dashboard }: Props) {
             />
             {feedbackButton && (
               <Sidebar.Button
-                style={{ color: '#ff671d' }}
+                style={fluent ? undefined : { color: '#ff671d' }}
                 icon="comment-alt-message"
                 onClick={() =>
                   window.open(

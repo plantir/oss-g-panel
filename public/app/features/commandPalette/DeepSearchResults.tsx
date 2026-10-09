@@ -4,7 +4,7 @@ import { useImperativeHandle, useRef } from 'react';
 
 import { type GrafanaTheme2, locationUtil } from '@grafana/data';
 import { t } from '@grafana/i18n';
-import { LoadingBar, TagList, useStyles2 } from '@grafana/ui';
+import { LoadingBar, styleMixins, TagList, useStyles2 } from '@grafana/ui';
 
 import { type DeepSearchDashboardResult } from './actions/deepSearchActions';
 
@@ -126,6 +126,7 @@ const DeepSearchResultItem = React.forwardRef<HTMLAnchorElement, DeepSearchResul
 DeepSearchResultItem.displayName = 'DeepSearchResultItem';
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
   return {
     container: css({
       display: 'flex',
@@ -174,23 +175,25 @@ const getStyles = (theme: GrafanaTheme2) => {
         boxShadow: 'none',
       },
       '&:hover': {
-        background: theme.colors.emphasize(theme.colors.background.primary, 0.03),
+        background: activeChrome?.background ?? theme.colors.emphasize(theme.colors.background.primary, 0.03),
       },
       // Keyboard navigation mode — mirror the active style of keyword results
       '&:focus': {
-        color: theme.colors.text.maxContrast,
-        background: theme.colors.emphasize(theme.colors.background.primary, 0.03),
-        '&:before': {
-          display: 'block',
-          content: '" "',
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: theme.spacing(0.5),
-          borderRadius: theme.shape.radius.default,
-          backgroundImage: theme.colors.gradients.brandVertical,
-        },
+        color: activeChrome?.color ?? theme.colors.text.maxContrast,
+        background: activeChrome?.background ?? theme.colors.emphasize(theme.colors.background.primary, 0.03),
+        '&:before': activeChrome
+          ? { display: 'none' }
+          : {
+              display: 'block',
+              content: '" "',
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: theme.spacing(0.5),
+              borderRadius: theme.shape.radius.default,
+              backgroundImage: theme.colors.gradients.brandVertical,
+            },
       },
     }),
     titleRow: css({

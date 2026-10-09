@@ -129,6 +129,49 @@ export function getFluentListItemChrome(theme: GrafanaTheme2) {
   };
 }
 
+/** Small Fluent tooltip: 4px callout, hairline border, no beak. */
+export function getFluentTooltipChrome(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
+
+  return {
+    background: theme.colors.background.elevated,
+    border: `1px solid ${theme.colors.border.weak}`,
+    borderRadius: theme.shape.radius.default,
+    boxShadow: theme.shadows.z2,
+    color: theme.colors.text.primary,
+  };
+}
+
+/** Active Fluent command: neutral wash, no brand underline. */
+export function getFluentActiveChrome(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
+
+  return {
+    background: theme.colors.action.selected,
+    color: theme.colors.text.primary,
+    boxShadow: 'none' as const,
+  };
+}
+
+/** DetailsList header and row washes for tables outside TableNG. */
+export function getFluentDetailsListChrome(theme: GrafanaTheme2) {
+  if (!hasSolidBrandGradient(theme)) {
+    return undefined;
+  }
+
+  return {
+    headerBackground: theme.colors.background.secondary,
+    headerColor: theme.colors.text.secondary,
+    headerWeight: theme.typography.fontWeightMedium,
+    headerBorder: `1px solid ${theme.colors.border.medium}`,
+    rowHover: theme.components.table.rowHoverBackground,
+  };
+}
+
 /** Grouped-list header: semibold primary label, hairline rule, neutral hover. */
 export function getFluentGroupHeaderChrome(theme: GrafanaTheme2) {
   if (!hasSolidBrandGradient(theme)) {

@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { CoreApp, type GrafanaTheme2, LogsSortOrder, store } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { config, reportInteraction } from '@grafana/runtime';
-import { Dropdown, Menu, usePanelContext, useStyles2 } from '@grafana/ui';
+import { Dropdown, Menu, styleMixins, usePanelContext, useStyles2 } from '@grafana/ui';
 
 import { DownloadFormat } from '../../utils';
 
@@ -164,6 +164,7 @@ export const LogTableControls = ({
 };
 
 const getStyles = (theme: GrafanaTheme2, controlsExpanded: boolean) => {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
   return {
     navContainer: css({
       height: '100%',
@@ -189,19 +190,23 @@ const getStyles = (theme: GrafanaTheme2, controlsExpanded: boolean) => {
     }),
     controlButtonActive: css({
       margin: 0,
-      color: theme.colors.text.secondary,
+      color: activeChrome?.color ?? theme.colors.text.secondary,
+      background: activeChrome?.background,
+      borderRadius: activeChrome ? theme.shape.radius.default : undefined,
       height: theme.spacing(2),
-      '&:after': {
-        display: 'block',
-        content: '" "',
-        position: 'absolute',
-        height: 2,
-        borderRadius: theme.shape.radius.default,
-        bottom: theme.spacing(-1),
-        backgroundImage: theme.colors.gradients.brandHorizontal,
-        width: theme.spacing(2.25),
-        opacity: 1,
-      },
+      '&:after': activeChrome
+        ? { display: 'none' }
+        : {
+            display: 'block',
+            content: '" "',
+            position: 'absolute',
+            height: 2,
+            borderRadius: theme.shape.radius.default,
+            bottom: theme.spacing(-1),
+            backgroundImage: theme.colors.gradients.brandHorizontal,
+            width: theme.spacing(2.25),
+            opacity: 1,
+          },
     }),
     divider: css({
       borderTop: `solid 1px ${theme.colors.border.medium}`,

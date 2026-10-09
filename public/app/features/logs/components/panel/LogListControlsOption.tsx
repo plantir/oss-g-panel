@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import React, { type JSX, useId } from 'react';
 
 import { type GrafanaTheme2 } from '@grafana/data';
-import { Dropdown, Icon, IconButton, Tooltip, useStyles2 } from '@grafana/ui';
+import { Dropdown, Icon, IconButton, styleMixins, Tooltip, useStyles2 } from '@grafana/ui';
 
 interface LogControlOptionProps {
   label?: string;
@@ -126,6 +126,7 @@ export const LogListControlsSelectOption = React.forwardRef<SVGElement, SelectPr
 LogListControlsSelectOption.displayName = 'LogListControlsSelectOption';
 const getStyles = (theme: GrafanaTheme2, expanded: boolean) => {
   const hoverSize = '26';
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
   return {
     customControlTag: css({
       color: theme.colors.primary.text,
@@ -156,7 +157,9 @@ const getStyles = (theme: GrafanaTheme2, expanded: boolean) => {
     }),
     controlButtonActive: css({
       margin: 0,
-      color: theme.colors.text.secondary,
+      color: activeChrome?.color ?? theme.colors.text.secondary,
+      background: activeChrome?.background,
+      borderRadius: activeChrome ? theme.shape.radius.default : undefined,
       height: theme.spacing(2),
       '&:hover': {
         '&:before': {
@@ -178,17 +181,19 @@ const getStyles = (theme: GrafanaTheme2, expanded: boolean) => {
           transitionProperty: 'opacity',
         },
       },
-      '&:after': {
-        display: 'block',
-        content: '" "',
-        position: 'absolute',
-        height: 2,
-        borderRadius: theme.shape.radius.default,
-        bottom: theme.spacing(-1),
-        backgroundImage: theme.colors.gradients.brandHorizontal,
-        width: theme.spacing(2.25),
-        opacity: 1,
-      },
+      '&:after': activeChrome
+        ? { display: 'none' }
+        : {
+            display: 'block',
+            content: '" "',
+            position: 'absolute',
+            height: 2,
+            borderRadius: theme.shape.radius.default,
+            bottom: theme.spacing(-1),
+            backgroundImage: theme.colors.gradients.brandHorizontal,
+            width: theme.spacing(2.25),
+            opacity: 1,
+          },
     }),
     controlButton: css({
       margin: 0,

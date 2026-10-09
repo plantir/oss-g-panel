@@ -2,9 +2,11 @@
 // TODO we should aim to remove this for Grafana 12
 import { css } from '@emotion/react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 export function getLegacySelectStyles(theme: GrafanaTheme2) {
+  const fluent = hasSolidBrandGradient(theme);
+
   return css({
     '.gf-form-select-box__control': {
       width: '100%',
@@ -20,12 +22,19 @@ export function getLegacySelectStyles(theme: GrafanaTheme2) {
       position: 'relative',
     },
 
-    '.gf-form-select-box__control--is-focused': {
-      backgroundColor: theme.components.input.background,
-      borderColor: theme.colors.primary.border,
-      outline: 'none',
-      boxShadow: `inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px ${theme.colors.primary.border}`,
-    },
+    '.gf-form-select-box__control--is-focused': fluent
+      ? {
+          backgroundColor: theme.components.input.background,
+          borderColor: theme.components.input.borderColor,
+          outline: 'none',
+          boxShadow: `inset 0 -1px 0 0 ${theme.colors.primary.main}`,
+        }
+      : {
+          backgroundColor: theme.components.input.background,
+          borderColor: theme.colors.primary.border,
+          outline: 'none',
+          boxShadow: `inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px ${theme.colors.primary.border}`,
+        },
 
     '.gf-form-select-box__control--is-disabled': {
       backgroundColor: theme.colors.action.disabledBackground,
@@ -93,13 +102,17 @@ export function getLegacySelectStyles(theme: GrafanaTheme2) {
       '&.gf-form-select-box__option--is-focused': {
         color: theme.colors.text.primary,
         background: theme.colors.action.hover,
-        borderImage: theme.colors.gradients.brandVertical,
-        borderImageSlice: 1,
-        borderStyle: 'solid',
-        borderTop: 0,
-        borderRight: 0,
-        borderBottom: 0,
-        borderLeftWidth: '2px',
+        ...(fluent
+          ? { borderLeftColor: 'transparent' }
+          : {
+              borderImage: theme.colors.gradients.brandVertical,
+              borderImageSlice: 1,
+              borderStyle: 'solid',
+              borderTop: 0,
+              borderRight: 0,
+              borderBottom: 0,
+              borderLeftWidth: '2px',
+            }),
       },
 
       '&.gf-form-select-box__option--is-selected': {

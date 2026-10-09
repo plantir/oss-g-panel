@@ -8,7 +8,7 @@ import InfiniteLoader from 'react-window-infinite-loader';
 import { type GrafanaTheme2 } from '@grafana/data';
 import { Trans } from '@grafana/i18n';
 import { reportInteraction } from '@grafana/runtime';
-import { Avatar, IconButton, Text, useStyles2 } from '@grafana/ui';
+import { Avatar, IconButton, styleMixins, Text, useStyles2 } from '@grafana/ui';
 import { Indent } from 'app/core/components/Indent/Indent';
 import { childrenByParentUIDSelector, rootItemsSelector } from 'app/features/browse-dashboards/state/hooks';
 import { type DashboardsTreeItem } from 'app/features/browse-dashboards/types';
@@ -276,6 +276,7 @@ function Row({ index, style: virtualStyles, data }: RowProps) {
 }
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
   const rowBody = css({
     label: 'rowBody',
     height: ROW_HEIGHT,
@@ -317,17 +318,23 @@ const getStyles = (theme: GrafanaTheme2) => {
     }),
 
     rowSelected: css({
-      '&::before': {
-        display: 'block',
-        content: '""',
-        position: 'absolute',
-        left: 0,
-        bottom: 0,
-        top: 0,
-        width: 4,
+      ...(activeChrome && {
+        background: activeChrome.background,
         borderRadius: theme.shape.radius.default,
-        backgroundImage: theme.colors.gradients.brandVertical,
-      },
+      }),
+      '&::before': activeChrome
+        ? { display: 'none' }
+        : {
+            display: 'block',
+            content: '""',
+            position: 'absolute',
+            left: 0,
+            bottom: 0,
+            top: 0,
+            width: 4,
+            borderRadius: theme.shape.radius.default,
+            backgroundImage: theme.colors.gradients.brandVertical,
+          },
     }),
 
     rowBody,

@@ -2,6 +2,8 @@
 import userEvent from '@testing-library/user-event';
 import { type MutableRefObject } from 'react';
 
+import { getThemeById, ThemeContext } from '@grafana/data';
+
 import { TextLink } from '../Link/TextLink';
 
 import { Tooltip } from './Tooltip';
@@ -74,6 +76,30 @@ describe('Tooltip', () => {
     );
     await userEvent.hover(screen.getByText('On the page'));
     expect(screen.queryByText('Tooltip content')).not.toBeInTheDocument();
+  });
+
+  it('omits the beak on fluent themes', () => {
+    render(
+      <ThemeContext.Provider value={getThemeById('fluent_light')}>
+        <Tooltip content="Tooltip content" show>
+          <span>On the page</span>
+        </Tooltip>
+      </ThemeContext.Provider>
+    );
+
+    expect(screen.getByRole('tooltip').querySelector('svg')).not.toBeInTheDocument();
+  });
+
+  it('keeps the beak on stock themes', () => {
+    render(
+      <ThemeContext.Provider value={getThemeById('light')}>
+        <Tooltip content="Tooltip content" show>
+          <span>On the page</span>
+        </Tooltip>
+      </ThemeContext.Provider>
+    );
+
+    expect(screen.getByRole('tooltip').querySelector('svg')).toBeInTheDocument();
   });
 
   it('exposes the tooltip text to screen readers', async () => {

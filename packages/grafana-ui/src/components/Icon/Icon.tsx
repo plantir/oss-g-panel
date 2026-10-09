@@ -39,7 +39,7 @@ const getIconStyles = (theme: GrafanaTheme2) => {
       strokeLinejoin: 'round',
     }),
     orange: css({
-      fill: theme.v1.palette.orange,
+      fill: hasSolidBrandGradient(theme) ? theme.colors.primary.main : theme.v1.palette.orange,
     }),
     spin: css({
       [theme.transitions.handleMotion('no-preference', 'reduce')]: {

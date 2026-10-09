@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import { type GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
-import { IconButton, type IconName, useStyles2 } from '@grafana/ui';
+import { IconButton, type IconName, styleMixins, useStyles2 } from '@grafana/ui';
 
 interface BaseQueryOperationActionProps {
   icon: IconName;
@@ -45,6 +45,8 @@ export const QueryOperationToggleAction = (props: QueryOperationToggleActionProp
 };
 
 const getStyles = (theme: GrafanaTheme2) => {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
+
   return {
     icon: css({
       display: 'flex',
@@ -52,17 +54,24 @@ const getStyles = (theme: GrafanaTheme2) => {
       color: theme.colors.text.secondary,
     }),
     active: css({
-      '&:before': {
-        display: 'block',
-        content: '" "',
-        position: 'absolute',
-        left: -1,
-        right: 2,
-        height: 3,
+      ...(activeChrome && {
+        background: activeChrome.background,
         borderRadius: theme.shape.radius.default,
-        bottom: -8,
-        backgroundImage: theme.colors.gradients.brandHorizontal,
-      },
+        color: activeChrome.color,
+      }),
+      '&:before': activeChrome
+        ? { display: 'none' }
+        : {
+            display: 'block',
+            content: '" "',
+            position: 'absolute',
+            left: -1,
+            right: 2,
+            height: 3,
+            borderRadius: theme.shape.radius.default,
+            bottom: -8,
+            backgroundImage: theme.colors.gradients.brandHorizontal,
+          },
     }),
   };
 };

@@ -11,9 +11,12 @@ import { getFluentOverflowLayout } from '../components/ToolbarButton/ToolbarButt
 
 import {
   getCalloutChrome,
+  getFluentActiveChrome,
+  getFluentDetailsListChrome,
   getFluentGroupHeaderChrome,
   getFluentListItemChrome,
   getFluentShimmerColors,
+  getFluentTooltipChrome,
   getFocusStyles,
 } from './mixins';
 
@@ -153,6 +156,39 @@ describe('fluent control chrome', () => {
     });
     expect(getFluentSpectrumChrome(dark)?.thumbBorder).toBe('2px solid #ffffff');
     expect(getFluentSpectrumChrome(stock)).toBeUndefined();
+  });
+
+  it('draws a tooltip as a small callout', () => {
+    expect(getFluentTooltipChrome(light)).toEqual({
+      background: '#ffffff',
+      border: '1px solid #e0e0e0',
+      borderRadius: '4px',
+      boxShadow: light.shadows.z2,
+      color: '#242424',
+    });
+    expect(getFluentTooltipChrome(dark)?.background).toBe('#292929');
+    expect(getFluentTooltipChrome(stock)).toBeUndefined();
+  });
+
+  it('marks an active command with a neutral wash', () => {
+    expect(getFluentActiveChrome(light)).toEqual({
+      background: '#ebebeb',
+      color: '#242424',
+      boxShadow: 'none',
+    });
+    expect(getFluentActiveChrome(dark)?.background).toBe('#333333');
+    expect(getFluentActiveChrome(stock)).toBeUndefined();
+  });
+
+  it('styles a plain data grid like a details list', () => {
+    expect(getFluentDetailsListChrome(light)).toMatchObject({
+      headerBackground: '#f5f5f5',
+      headerColor: '#424242',
+      headerWeight: 600,
+      headerBorder: '1px solid #d1d1d1',
+      rowHover: '#f5f5f5',
+    });
+    expect(getFluentDetailsListChrome(stock)).toBeUndefined();
   });
 
   it('styles a grouped list header as a ruled semibold row', () => {
