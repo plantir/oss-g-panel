@@ -1,12 +1,17 @@
 import type { ReactNode } from 'react';
 
+import { isIconName } from '@grafana/data';
+
 import type { IconName } from '../../types/icon';
+
+import { fluentIconCatalog } from './fluentIconCatalog';
 
 /**
  * Stroke glyphs drawn in place of the matching Unicon when the theme is Fluent.
  * The icon name stays the same, so callers and plugins do not change.
+ * Hand-tuned glyphs win over the catalog when a name is in both.
  */
-const fluentChromeIcons: Partial<Record<IconName, ReactNode>> = {
+const handTunedIcons: Partial<Record<IconName, ReactNode>> = {
   'angle-down': <path d="M4.25 6.25 8 10 11.75 6.25" />,
   'angle-up': <path d="M4.25 9.75 8 6 11.75 9.75" />,
   'angle-left': <path d="M9.75 4.25 6 8 9.75 11.75" />,
@@ -167,6 +172,78 @@ const fluentChromeIcons: Partial<Record<IconName, ReactNode>> = {
       <path d="M5.45 7.2V5.35a2.55 2.55 0 0 1 5.1 0V7.2" />
     </>
   ),
+  bookmark: <path d="M4.15 2.6h7.7v10.8L8 10.55 4.15 13.4z" />,
+  star: <path d="m8 2.45 1.5 3.2 3.5.42-2.6 2.4.72 3.48L8 10.25l-3.12 1.7.72-3.48-2.6-2.4 3.5-.42z" />,
+  apps: (
+    <>
+      <rect x="2.4" y="2.4" width="4.5" height="4.5" rx="0.9" />
+      <rect x="9.1" y="2.4" width="4.5" height="4.5" rx="0.9" />
+      <rect x="2.4" y="9.1" width="4.5" height="4.5" rx="0.9" />
+      <rect x="9.1" y="9.1" width="4.5" height="4.5" rx="0.9" />
+    </>
+  ),
+  compass: (
+    <>
+      <circle cx="8" cy="8" r="5.75" />
+      <path d="m6.15 9.85 1.15-3.15 3.55-1.55-1.15 3.15z" />
+    </>
+  ),
+  drilldown: (
+    <>
+      <path d="M2.6 4.15h10.8M2.6 8h7.2M2.6 11.85h3.8" />
+      <path d="m10.15 10.15 2.85 2.85M10.55 13h2.55v-2.55" />
+    </>
+  ),
+  'adjust-circle': (
+    <>
+      <circle cx="8" cy="8" r="5.75" />
+      <path d="M8 2.25v11.5" />
+    </>
+  ),
+};
+
+function renderSpec(spec: string | readonly string[]): ReactNode {
+  const parts = typeof spec === 'string' ? [spec] : spec;
+  const nodes = parts.map((part, index) => renderPart(part, index));
+  return nodes.length === 1 ? nodes[0] : <>{nodes}</>;
+}
+
+function renderPart(part: string, key: number): ReactNode {
+  if (part.startsWith('o:')) {
+    const [cx, cy, r] = part.slice(2).split(',').map(Number);
+    return <circle key={key} cx={cx} cy={cy} r={r} />;
+  }
+  if (part.startsWith('q:')) {
+    const [x, y, width, height, rx] = part.slice(2).split(',').map(Number);
+    return <rect key={key} x={x} y={y} width={width} height={height} rx={rx} />;
+  }
+  if (part.startsWith('e:')) {
+    const [cx, cy, rx, ry] = part.slice(2).split(',').map(Number);
+    return <ellipse key={key} cx={cx} cy={cy} rx={rx} ry={ry} />;
+  }
+  if (part.startsWith('d5:')) {
+    return <path key={key} strokeWidth="5" d={part.slice(3)} />;
+  }
+  if (part.startsWith('d:') || part.startsWith('d2:')) {
+    const d = part.startsWith('d2:') ? part.slice(3) : part.slice(2);
+    return <path key={key} strokeWidth="2.25" d={d} />;
+  }
+  return <path key={key} d={part} />;
+}
+
+function catalogGlyphs(): Partial<Record<IconName, ReactNode>> {
+  const icons: Partial<Record<IconName, ReactNode>> = {};
+  for (const [name, spec] of Object.entries(fluentIconCatalog)) {
+    if (isIconName(name)) {
+      icons[name] = renderSpec(spec);
+    }
+  }
+  return icons;
+}
+
+const fluentChromeIcons: Partial<Record<IconName, ReactNode>> = {
+  ...catalogGlyphs(),
+  ...handTunedIcons,
 };
 
 export const fluentChromeIconNames = Object.keys(fluentChromeIcons).filter(isChromeIconName);

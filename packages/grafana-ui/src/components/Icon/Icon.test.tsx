@@ -1,9 +1,10 @@
 import { render, screen } from '@testing-library/react';
 
-import { getThemeById, ThemeContext } from '@grafana/data';
+import { availableIconsIndex, getThemeById, ThemeContext } from '@grafana/data';
 
 import { Icon } from './Icon';
 import { fluentChromeIconNames } from './fluentChrome';
+import { fluentBrandIconNames } from './fluentIconCatalog';
 
 /**
  * These tests are a bit weird because they use an entirely mocked out react-inlinesvg, so these are very superficial
@@ -95,6 +96,12 @@ describe('Icon', () => {
         'folder',
         'database',
         'expand-arrows',
+        'bookmark',
+        'star',
+        'apps',
+        'compass',
+        'drilldown',
+        'adjust-circle',
       ])
     );
   });
@@ -109,7 +116,19 @@ describe('Icon', () => {
     const svg = screen.getByTestId(`icon-${name}`);
     expect(svg).toHaveAttribute('viewBox', '0 0 16 16');
     expect(svg).toHaveAttribute('stroke-width', '1.25');
-    expect(svg.querySelector('path, circle, rect')).toBeInTheDocument();
+    expect(svg.querySelector('path, circle, rect, ellipse')).toBeInTheDocument();
+  });
+
+  it('covers every UI icon and leaves brand marks on the original files', () => {
+    const brands = new Set<string>(fluentBrandIconNames);
+    const names = Object.keys(availableIconsIndex);
+    const missing = names.filter(
+      (name) => name !== 'fa fa-spinner' && !brands.has(name) && !fluentChromeIconNames.includes(name)
+    );
+    const branded = names.filter((name) => brands.has(name) && fluentChromeIconNames.includes(name));
+
+    expect(missing).toEqual([]);
+    expect(branded).toEqual([]);
   });
 
   it('keeps the unicon file for chrome names on stock themes', () => {
@@ -122,13 +141,13 @@ describe('Icon', () => {
     expect(screen.getByTestId('icon-search')).toHaveAttribute('id', expect.stringContaining('search.svg'));
   });
 
-  it('keeps the unicon file for icons outside the chrome set', () => {
+  it('keeps the original file for brand marks', () => {
     render(
       <ThemeContext.Provider value={getThemeById('fluent_dark')}>
-        <Icon name="heart" />
+        <Icon name="github" />
       </ThemeContext.Provider>
     );
 
-    expect(screen.getByTestId('icon-heart')).toHaveAttribute('id', expect.stringContaining('heart.svg'));
+    expect(screen.getByTestId('icon-github')).toHaveAttribute('id', expect.stringContaining('github.svg'));
   });
 });

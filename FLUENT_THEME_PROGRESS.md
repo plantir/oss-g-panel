@@ -161,7 +161,7 @@ Status:
 
 The catalog also lists AreaChart, DonutChart, GaugeChart, HeatMapChart, HorizontalBarChart, Legends, LineChart, PieChart, SankeyChart, SparklineChart, TreeChart, VerticalBarChart, plus utilities (FocusZone, Layer, and similar) and icon references.
 
-Grafana charts stay uPlot. Series colors come from the Fluent palette above. Axes, legends, and glyphs are not rebuilt. Utilities have no visual skin. Fluent themes draw chevron, dismiss, search, calendar, check, help, menu, save, copy, delete, add, settings, refresh, info, more, filter, user, bell, home, clock, pen, eye, link, download, upload, play, folder, database, move, history, and lock as 16px stroke glyphs. The rest of the icon font is not swapped in.
+Grafana charts stay uPlot. Series colors come from the Fluent palette above. Axes, legends, and glyphs are not rebuilt. Utilities have no visual skin. Fluent themes draw UI icons as 16px stroke glyphs. Brand and product logos stay the original marks.
 
 ## App chrome
 
@@ -182,7 +182,7 @@ Field validation is a soft error surface: error background, border, and text, 4p
 
 ## Left as Grafana
 
-- Fluent system icons other than chevron, dismiss, search, calendar, check, help, menu, save, copy, delete, add, settings, refresh, info, more, filter, user, bell, home, clock, pen, eye, link, download, upload, play, folder, database, move, history, and lock
+- Brand and product logos (Google, GitHub, Grafana, Slack, and the other marks in `fluentBrandIconNames`) stay the original artwork
 - Chart rendering other than the palette
 - Rating, Persona, Facepile, PeoplePicker, and Coachmark
 - Stock, visual refresh, and accessibility themes
