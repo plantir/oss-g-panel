@@ -81,6 +81,20 @@ describe('Icon', () => {
         'save',
         'copy',
         'trash-alt',
+        'filter',
+        'user',
+        'bell',
+        'home',
+        'clock-nine',
+        'pen',
+        'eye',
+        'link',
+        'download-alt',
+        'upload',
+        'play',
+        'folder',
+        'database',
+        'expand-arrows',
       ])
     );
   });

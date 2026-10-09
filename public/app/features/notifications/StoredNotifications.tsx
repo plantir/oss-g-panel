@@ -5,7 +5,7 @@ import { useEffectOnce } from 'react-use';
 
 import { type GrafanaTheme2 } from '@grafana/data';
 import { Trans, t } from '@grafana/i18n';
-import { Alert, Button, Checkbox, EmptyState, useStyles2 } from '@grafana/ui';
+import { Alert, Button, Checkbox, EmptyState, styleMixins, useStyles2 } from '@grafana/ui';
 import { StoredNotificationItem } from 'app/core/components/AppNotifications/StoredNotificationItem';
 import {
   clearAllNotifications,
@@ -104,6 +104,8 @@ export function StoredNotifications() {
 }
 
 function getStyles(theme: GrafanaTheme2) {
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
+
   return {
     topRow: css({
       alignItems: 'center',
@@ -122,16 +124,23 @@ function getStyles(theme: GrafanaTheme2) {
       position: 'relative',
     }),
     newItem: css({
-      '&::before': {
-        content: '""',
-        height: '100%',
-        position: 'absolute',
-        left: '-7px',
-        top: 0,
-        background: theme.colors.gradients.brandVertical,
-        width: theme.spacing(0.5),
+      ...(activeChrome && {
+        background: activeChrome.background,
         borderRadius: theme.shape.radius.default,
-      },
+        color: activeChrome.color,
+      }),
+      '&::before': activeChrome
+        ? { display: 'none' }
+        : {
+            content: '""',
+            height: '100%',
+            position: 'absolute',
+            left: '-7px',
+            top: 0,
+            background: theme.colors.gradients.brandVertical,
+            width: theme.spacing(0.5),
+            borderRadius: theme.shape.radius.default,
+          },
     }),
     noNotifsWrapper: css({
       display: 'flex',

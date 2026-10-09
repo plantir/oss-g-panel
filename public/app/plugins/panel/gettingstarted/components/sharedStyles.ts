@@ -1,8 +1,9 @@
 import { css } from '@emotion/css';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 export const cardStyle = (theme: GrafanaTheme2, complete: boolean) => {
+  const fluent = hasSolidBrandGradient(theme);
   const completeGradient = `linear-gradient(to right, ${theme.colors.success.main} 0%, ${theme.colors.success.main} 100%)`;
   const incompleteGradient = theme.colors.gradients.brandHorizontal;
 
@@ -28,7 +29,12 @@ export const cardStyle = (theme: GrafanaTheme2, complete: boolean) => {
       right: 0,
       height: '2px',
       top: 0,
-      backgroundImage: borderGradient,
+      ...(fluent
+        ? {
+            backgroundColor: complete ? theme.colors.success.main : theme.colors.border.strong,
+            backgroundImage: 'none',
+          }
+        : { backgroundImage: borderGradient }),
     },
   } as const;
 };

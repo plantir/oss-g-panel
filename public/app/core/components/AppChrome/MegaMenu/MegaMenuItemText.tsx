@@ -5,7 +5,7 @@ import { hasSolidBrandGradient, type GrafanaTheme2, type IconName } from '@grafa
 import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 import { useFlagGrafanaVisualDesignRefresh } from '@grafana/runtime/internal';
-import { Icon, IconButton, Link, Stack, useTheme2 } from '@grafana/ui';
+import { Icon, IconButton, Link, Stack, styleMixins, useTheme2 } from '@grafana/ui';
 import { getFocusStyles } from '@grafana/ui/internal';
 import { contextSrv } from 'app/core/services/context_srv';
 
@@ -163,25 +163,29 @@ MegaMenuItemText.displayName = 'MegaMenuItemText';
 
 const getStyles = (theme: GrafanaTheme2, isActive: Props['isActive'], visualRefreshEnabled: boolean) => {
   const fluent = hasSolidBrandGradient(theme);
+  const activeChrome = styleMixins.getFluentActiveChrome(theme);
   const wrapperActiveOld = css({
-    backgroundColor: theme.colors.action.selected,
-    borderTopRightRadius: theme.shape.radius.default,
-    borderBottomRightRadius: theme.shape.radius.default,
+    backgroundColor: activeChrome?.background ?? theme.colors.action.selected,
+    borderRadius: activeChrome ? theme.shape.radius.default : undefined,
+    borderTopRightRadius: activeChrome ? undefined : theme.shape.radius.default,
+    borderBottomRightRadius: activeChrome ? undefined : theme.shape.radius.default,
     position: 'relative',
-    color: theme.colors.text.primary,
+    color: activeChrome?.color ?? theme.colors.text.primary,
 
-    '&::before': {
-      backgroundImage: theme.colors.gradients.brandVertical,
-      backgroundColor: theme.colors.gradients.brandVertical,
-      borderRadius: theme.shape.radius.default,
-      content: '" "',
-      display: 'block',
-      height: '100%',
-      position: 'absolute',
-      transform: 'translateX(-50%)',
-      left: 0,
-      width: fluent ? theme.spacing(0.5) : theme.spacing(0.25),
-    },
+    '&::before': activeChrome
+      ? { display: 'none' }
+      : {
+          backgroundImage: theme.colors.gradients.brandVertical,
+          backgroundColor: theme.colors.gradients.brandVertical,
+          borderRadius: theme.shape.radius.default,
+          content: '" "',
+          display: 'block',
+          height: '100%',
+          position: 'absolute',
+          transform: 'translateX(-50%)',
+          left: 0,
+          width: theme.spacing(0.25),
+        },
   });
 
   const wrapperActiveVisualRefresh = css({

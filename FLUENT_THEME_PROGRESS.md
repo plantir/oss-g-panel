@@ -126,7 +126,7 @@ Status:
 | Breadcrumb     | Chevron separators. Current page is semibold. Earlier items are regular and turn brand with an underline on hover.  | `Breadcrumbs`                           | Current crumb is primary text at weight 600. Links are regular, brand and underlined on hover.              | Matched |
 | CommandBar     | Flat icon and text commands. Hover is a neutral wash. The active command is a selected fill, not a brand underline. | `ToolbarButton`, dashboard time toolbar | The canvas variant looks like a field. Active state is `action.selected` with no brand bar.                 | Matched |
 | ContextualMenu | Callout list, 4px corner, hairline border, short shadow. Items highlight with a neutral wash.                       | `Menu`, `SubMenu`                       | Weak border, z2 shadow, menu radius from the theme token.                                                   | Matched |
-| Nav            | Vertical items, neutral hover, selected wash, brand only as a marker when needed.                                   | Mega menu, nav chrome                   | Already branched for Fluent: neutral surfaces, no Grafana orange chrome.                                    | Matched |
+| Nav            | Vertical items, neutral hover, selected wash, brand only as a marker when needed.                                   | Mega menu, nav chrome                   | Selected item is the neutral wash on all corners. The brand side bar is hidden.                             | Matched |
 | OverflowSet    | Commands that collapse into a menu.                                                                                 | `ToolbarButtonRow`                      | Hidden commands stack in the shared callout: weak border, elevated surface, z2 shadow.                      | Matched |
 | Pivot          | Text tabs. The active tab is brand text with a solid brand underline. Hover is a neutral wash, not a bar.           | `Tabs` / `Tab`                          | Hover is `action.hover`. Active label is primary text, weight 600, solid brand underline, square indicator. | Matched |
 
@@ -161,7 +161,7 @@ Status:
 
 The catalog also lists AreaChart, DonutChart, GaugeChart, HeatMapChart, HorizontalBarChart, Legends, LineChart, PieChart, SankeyChart, SparklineChart, TreeChart, VerticalBarChart, plus utilities (FocusZone, Layer, and similar) and icon references.
 
-Grafana charts stay uPlot. Series colors come from the Fluent palette above. Axes, legends, and glyphs are not rebuilt. Utilities have no visual skin. Fluent themes draw chevron, dismiss, search, calendar, check, help, menu, save, copy, delete, add, settings, refresh, info, and more as 16px stroke glyphs. The rest of the icon font is not swapped in.
+Grafana charts stay uPlot. Series colors come from the Fluent palette above. Axes, legends, and glyphs are not rebuilt. Utilities have no visual skin. Fluent themes draw chevron, dismiss, search, calendar, check, help, menu, save, copy, delete, add, settings, refresh, info, more, filter, user, bell, home, clock, pen, eye, link, download, upload, play, folder, database, move, history, and lock as 16px stroke glyphs. The rest of the icon font is not swapped in.
 
 ## App chrome
 
@@ -182,7 +182,7 @@ Field validation is a soft error surface: error background, border, and text, 4p
 
 ## Left as Grafana
 
-- Fluent system icons other than chevron, dismiss, search, calendar, check, help, menu, save, copy, delete, add, settings, refresh, info, and more
+- Fluent system icons other than chevron, dismiss, search, calendar, check, help, menu, save, copy, delete, add, settings, refresh, info, more, filter, user, bell, home, clock, pen, eye, link, download, upload, play, folder, database, move, history, and lock
 - Chart rendering other than the palette
 - Rating, Persona, Facepile, PeoplePicker, and Coachmark
 - Stock, visual refresh, and accessibility themes
