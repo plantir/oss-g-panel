@@ -95,8 +95,8 @@ const getStyles = (theme: GrafanaTheme2) => {
       width: theme.spacing(0.75),
     }),
     img: css({
-      height: theme.spacing(1),
-      width: theme.spacing(1),
+      height: theme.spacing(2),
+      width: 'auto',
     }),
     panel: css({
       background: theme.components.panel.background,

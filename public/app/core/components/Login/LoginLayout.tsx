@@ -114,12 +114,14 @@ export const getLoginStyles = (theme: GrafanaTheme2) => {
       width: '100%',
     }),
     loginLogo: css({
-      width: '100%',
-      maxWidth: fluent ? 48 : 60,
+      // Wide mark: constrain height and let width follow the image ratio.
+      height: fluent ? 56 : 72,
+      width: 'auto',
+      maxWidth: '100%',
       marginBottom: fluent ? 0 : theme.spacing(2),
 
       [theme.breakpoints.up('sm')]: {
-        maxWidth: fluent ? 48 : 100,
+        height: fluent ? 64 : 88,
       },
     }),
     loginLogoWrapper: css({

@@ -75,8 +75,8 @@ const getStyles = (theme: GrafanaTheme2) => ({
     },
 
     img: {
-      width: '60px',
       height: '60px',
+      width: 'auto',
     },
   }),
 });

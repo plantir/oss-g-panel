@@ -7,7 +7,7 @@ import { reportInteraction } from '@grafana/runtime';
 import { Text, Tooltip, useStyles2, useTheme2 } from '@grafana/ui';
 import g8LoginDarkSvg from 'img/g8_login_dark.svg';
 import g8LoginLightSvg from 'img/g8_login_light.svg';
-import grafanaIconSvg from 'img/grafana_icon.svg';
+import resaaLogoPng from 'img/resaa_logo.png';
 
 export interface BrandComponentProps {
   className?: string;
@@ -15,7 +15,7 @@ export interface BrandComponentProps {
 }
 
 const LoginLogo: FC<BrandComponentProps & { logo?: string }> = ({ className, logo }) => {
-  return <img className={className} src={`${logo ? logo : grafanaIconSvg}`} alt="Monitor Panel" />;
+  return <img className={className} src={`${logo ? logo : resaaLogoPng}`} alt="Monitor Panel" />;
 };
 
 const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
@@ -69,7 +69,7 @@ const LoginBackground: FC<BrandComponentProps> = ({ className, children }) => {
 };
 
 const MenuLogo: FC<BrandComponentProps> = ({ className }) => {
-  return <img className={className} src={grafanaIconSvg} alt="Monitor Panel" />;
+  return <img className={className} src={resaaLogoPng} alt="Monitor Panel" />;
 };
 
 export function HomeLogo({ homeNav, onClick }: { homeNav?: NavModelItem; onClick?: () => void }) {
@@ -101,12 +101,14 @@ function homeLogoStyles(theme: GrafanaTheme2) {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      // The mark is wider than Grafana's square icon (237x131). Size by height so it is not cropped.
       height: theme.spacing(3),
-      width: theme.spacing(3),
+      width: 'auto',
       margin: theme.spacing(0, 0.5),
       img: {
-        maxHeight: '100%',
-        maxWidth: '100%',
+        display: 'block',
+        height: '100%',
+        width: 'auto',
       },
     }),
   };
