@@ -16,6 +16,34 @@ export function getFluentFieldFocusStyle(theme: GrafanaTheme2, invalid = false) 
   };
 }
 
+/**
+ * Chrome paints autofilled inputs with its own background and a blue ring.
+ * Cover the fill, and keep the Fluent border instead of that ring.
+ */
+export function getFluentAutofillStyle(theme: GrafanaTheme2, invalid = false) {
+  const background = theme.components.input.background;
+  const stroke = invalid ? theme.colors.error.border : theme.colors.primary.main;
+  const borderColor = invalid ? theme.colors.error.border : theme.components.input.borderColor;
+  const bottomBorder = invalid ? theme.colors.error.border : theme.colors.border.strong;
+  const cover = `inset 0 0 0 100px ${background}`;
+
+  return {
+    rest: {
+      boxShadow: `${cover} !important`,
+      WebkitBoxShadow: `${cover} !important`,
+      borderColor,
+      borderBottomColor: bottomBorder,
+    },
+    focus: {
+      outline: 'none',
+      borderColor,
+      borderBottomColor: stroke,
+      boxShadow: `inset 0 -1px 0 0 ${stroke}, ${cover} !important`,
+      WebkitBoxShadow: `inset 0 -1px 0 0 ${stroke}, ${cover} !important`,
+    },
+  };
+}
+
 export const getFocusStyle = (theme: GrafanaTheme2) =>
   hasSolidBrandGradient(theme)
     ? ''
@@ -53,18 +81,28 @@ export const sharedInputStyle = (theme: GrafanaTheme2, invalid = false) => {
         borderBottomColor: bottomBorder,
       }),
 
-      '&:-webkit-autofill, &:-webkit-autofill:hover': {
-        /* Welcome to 2005. This is a HACK to get rid od Chromes default autofill styling */
-        boxShadow: `inset 0 0 0 1px rgba(255, 255, 255, 0), inset 0 0 0 100px ${background}!important`,
-        WebkitTextFillColor: `${textColor} !important`,
-        borderColor: autoFillBorder,
-      },
+      '&:-webkit-autofill, &:-webkit-autofill:hover': fluent
+        ? {
+            ...getFluentAutofillStyle(theme, invalid).rest,
+            WebkitTextFillColor: `${textColor} !important`,
+          }
+        : {
+            /* Welcome to 2005. This is a HACK to get rid od Chromes default autofill styling */
+            boxShadow: `inset 0 0 0 1px rgba(255, 255, 255, 0), inset 0 0 0 100px ${background}!important`,
+            WebkitTextFillColor: `${textColor} !important`,
+            borderColor: autoFillBorder,
+          },
 
-      '&:-webkit-autofill:focus': {
-        /* Welcome to 2005. This is a HACK to get rid od Chromes default autofill styling */
-        boxShadow: `0 0 0 2px ${theme.colors.background.primary}, 0 0 0px 4px ${theme.colors.primary.main}, inset 0 0 0 1px rgba(255, 255, 255, 0), inset 0 0 0 100px ${background}!important`,
-        WebkitTextFillColor: `${textColor} !important`,
-      },
+      '&:-webkit-autofill:focus': fluent
+        ? {
+            ...getFluentAutofillStyle(theme, invalid).focus,
+            WebkitTextFillColor: `${textColor} !important`,
+          }
+        : {
+            /* Welcome to 2005. This is a HACK to get rid od Chromes default autofill styling */
+            boxShadow: `0 0 0 2px ${theme.colors.background.primary}, 0 0 0px 4px ${theme.colors.primary.main}, inset 0 0 0 1px rgba(255, 255, 255, 0), inset 0 0 0 100px ${background}!important`,
+            WebkitTextFillColor: `${textColor} !important`,
+          },
 
       '&:hover': {
         borderColor: fluent ? borderColor : borderColorHover,

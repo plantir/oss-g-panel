@@ -4,7 +4,7 @@ import { getPropertiesForVariant } from '../components/Button/Button';
 import { getFluentSwatchSelection } from '../components/ColorPicker/ColorSwatch';
 import { getFluentSpectrumChrome } from '../components/ColorPicker/SpectrumPalette';
 import { getFilterPillChrome } from '../components/FilterPill/FilterPill';
-import { getFluentFieldFocusStyle } from '../components/Forms/commonStyles';
+import { getFluentAutofillStyle, getFluentFieldFocusStyle } from '../components/Forms/commonStyles';
 import { getFluentSpinnerArc } from '../components/Spinner/Spinner';
 import { getFluentTeachingBubbleChrome } from '../components/Toggletip/Toggletip';
 import { getFluentOverflowLayout } from '../components/ToolbarButton/ToolbarButtonRow';
@@ -44,6 +44,15 @@ describe('fluent control chrome', () => {
     expect(getFluentFieldFocusStyle(light).borderBottomColor).toBe('#0f6cbd');
     expect(getFluentFieldFocusStyle(light).boxShadow).toBe('inset 0 -1px 0 0 #0f6cbd');
     expect(getFluentFieldFocusStyle(light, true).borderBottomColor).toBe(light.colors.error.border);
+  });
+
+  it('covers Chrome autofill without the stock blue ring', () => {
+    const autofill = getFluentAutofillStyle(light);
+
+    expect(autofill.focus.boxShadow).not.toContain('0 0 0px 4px');
+    expect(autofill.focus.boxShadow).toContain('inset 0 -1px 0 0 #0f6cbd');
+    expect(autofill.focus.borderBottomColor).toBe('#0f6cbd');
+    expect(autofill.rest.borderBottomColor).toBe('#616161');
   });
 
   it('styles primary and secondary buttons like Fluent', () => {

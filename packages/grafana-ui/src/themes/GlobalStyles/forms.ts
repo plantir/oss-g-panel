@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import { type GrafanaTheme2 } from '@grafana/data';
+import { hasSolidBrandGradient, type GrafanaTheme2 } from '@grafana/data';
 
 export function getFormElementStyles(theme: GrafanaTheme2) {
   return css({
@@ -80,12 +80,18 @@ export function getFormElementStyles(theme: GrafanaTheme2) {
       },
 
     'input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill, textarea:-webkit-autofill, textarea:-webkit-autofill:hover, textarea:-webkit-autofill:focus, select:-webkit-autofill, select:-webkit-autofill:hover, select:-webkit-autofill:focus':
-      {
-        WebkitBoxShadow: `0 0 0px 1000px ${theme.components.input.background} inset !important`,
-        WebkitTextFillColor: theme.components.input.text,
-        boxShadow: `0 0 0px 1000px ${theme.components.input.background} inset`,
-        border: `1px solid ${theme.components.input.background}`,
-      },
+      hasSolidBrandGradient(theme)
+        ? {
+            WebkitBoxShadow: `0 0 0px 1000px ${theme.components.input.background} inset !important`,
+            WebkitTextFillColor: theme.components.input.text,
+            boxShadow: `0 0 0px 1000px ${theme.components.input.background} inset !important`,
+          }
+        : {
+            WebkitBoxShadow: `0 0 0px 1000px ${theme.components.input.background} inset !important`,
+            WebkitTextFillColor: theme.components.input.text,
+            boxShadow: `0 0 0px 1000px ${theme.components.input.background} inset`,
+            border: `1px solid ${theme.components.input.background}`,
+          },
 
     '.gf-form': {
       display: 'flex',
