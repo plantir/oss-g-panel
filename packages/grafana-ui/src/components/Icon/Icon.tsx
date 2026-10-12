@@ -118,7 +118,7 @@ export const Icon = memo(
 
       const composedClassName = cx(
         styles.icon,
-        fluentChrome && styles.fluentChrome,
+        fluentChrome ? styles.fluentChrome : undefined,
         className,
         type === 'mono' ? { [styles.orange]: name === 'favorite' } : '',
         {
@@ -138,16 +138,16 @@ export const Icon = memo(
           <svg
             data-testid={`icon-${iconName}`}
             aria-hidden={hiddenFromScreenReaders}
-            ref={ref}
+            ref={ref as React.Ref<SVGSVGElement>}
             width={svgWid}
             height={svgHgt}
             viewBox="0 0 16 16"
             strokeWidth={1.25}
-            title={title}
             className={composedClassName}
             style={style}
             {...rest}
           >
+            {title ? <title>{title}</title> : null}
             {fluentChrome}
           </svg>
         );
